@@ -19,7 +19,6 @@ Este repositorio contiene el bloque "Student Path" para Moodle, diseñado para a
 - `styles.css`: Estilos del bloque.
 - `teacher_view.php`: Vista para profesores.
 - `test_db.php`: Pruebas de la base de datos.
-- `TRANSLATIONS_SUMMARY.md`: Resumen de traducciones.
 - `version.php`: Versión del bloque.
 - `view.php`: Vista principal del bloque.
 - `ajax/`: Operaciones AJAX (ej. `get_student_profile.php`).

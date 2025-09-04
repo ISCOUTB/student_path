@@ -66,6 +66,7 @@ class block_student_path extends block_base
             // Verificar si ya tiene información guardada
             $entry = $DB->get_record('student_path', array('user' => $USER->id, 'course' => $COURSE->id));
 
+            $this->content->text .= '<div class="block_student_path_container">';
             if (!$entry) {
                 // Si no tiene información, redirigir a la vista para llenar el formulario
                 $this->content->text .= '<div class="student-path-block">';
@@ -94,9 +95,11 @@ class block_student_path extends block_base
                 $this->content->text .= '</div>';
                 $this->content->text .= '</div>';
             }
+            $this->content->text .= '</div>';
         } else if (isset($COURSE_ROLED_AS_TEACHER->id) && $COURSE_ROLED_AS_TEACHER->id) {
             // Vista para profesores - mostrar estadísticas y enlace a lista de estudiantes
             $stats = get_student_path_stats($COURSE->id);
+            $this->content->text .= '<div class="block_student_path_container">';
             $this->content->text .= '<div class="student-path-block teacher-view">';
             $this->content->text .= '<h4>' . get_string('teacher_dashboard', 'block_student_path') . '</h4>';
             
@@ -124,10 +127,13 @@ class block_student_path extends block_base
                                    get_string('view_students_list', 'block_student_path') . '</a>';
             $this->content->text .= '</div>';
             $this->content->text .= '</div>';
+            $this->content->text .= '</div>';
         } else {
             // Si no es estudiante ni profesor, mostrar mensaje genérico
+            $this->content->text .= '<div class="block_student_path_container">';
             $this->content->text .= '<div class="student-path-block">';
             $this->content->text .= '<p>' . get_string('no_access', 'block_student_path') . '</p>';
+            $this->content->text .= '</div>';
             $this->content->text .= '</div>';
         }
 

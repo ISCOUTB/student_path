@@ -42,7 +42,7 @@ $PAGE->set_heading($title . " : " . $course->fullname);
 
 echo $OUTPUT->header();
 echo "<link rel='stylesheet' href='" . $CFG->wwwroot . "/blocks/student_path/styles.css'>";
-echo "<div class='block_student_path_container container-fluid'>";
+echo "<div class='block_student_path_container'>";
 
 echo "<h1 class='title_student_path'>" . get_string('students_path_list', 'block_student_path') . "</h1>";
 
@@ -197,7 +197,6 @@ echo "</div>";
 echo "</div>";
 
 // JavaScript para funcionalidad de la tabla
-echo "<script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'></script>";
 echo "<script>
 document.addEventListener('DOMContentLoaded', function() {
     // Búsqueda en tiempo real
@@ -243,7 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.text())
         .then(data => {
             document.getElementById('modalContent').innerHTML = data;
-            new bootstrap.Modal(document.getElementById('profileModal')).show();
+            document.getElementById('profileModal').style.display = 'block';
+            document.getElementById('profileModal').classList.add('show');
         })
         .catch(error => {
             console.error('Error:', error);
@@ -251,7 +251,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Función para exportar datos (definida globalmente)
+    /* Función para cerrar modal */
+    document.querySelectorAll('[data-bs-dismiss=\"modal\"]').forEach(button => {
+        button.addEventListener('click', function() {
+            document.getElementById('profileModal').style.display = 'none';
+            document.getElementById('profileModal').classList.remove('show');
+        });
+    });
+
+    /* Función para exportar datos (definida globalmente) */
     window.exportData = function(format) {
         console.log('Exportando en formato:', format);
         var url = '" . new moodle_url('/blocks/student_path/export.php') . "';

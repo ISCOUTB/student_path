@@ -1,71 +1,72 @@
-/* Estilos para el bloque Student Path */
+
+/* Estilos para el bloque Student Path - Aislados con clase contenedora */
 
 /* Estilos para el Mapa de Identidad */
-.identity-map-section {
+.block_student_path_container .identity-map-section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-left: 4px solid #007bff;
     margin-bottom: 1.5rem;
 }
 
-.identity-map-section .alert-heading {
+.block_student_path_container .identity-map-section .alert-heading {
     color: #007bff;
     font-size: 1.25rem;
     margin-bottom: 1rem;
 }
 
-.identity-map-section .fa-map-o {
+.block_student_path_container .identity-map-section .fa-map-o {
     margin-right: 0.5rem;
 }
 
-.identity-map-section ul {
+.block_student_path_container .identity-map-section ul {
     padding-left: 1.2rem;
 }
 
-.identity-map-section ul li {
+.block_student_path_container .identity-map-section ul li {
     margin-bottom: 0.5rem;
     line-height: 1.4;
 }
 
-.identity-map-section ul li strong {
+.block_student_path_container .identity-map-section ul li strong {
     color: #007bff;
 }
 
-.student-path-block {
+.block_student_path_container .student-path-block {
     padding: 15px;
     border-radius: 8px;
     background-color: #f8f9fa;
     border-left: 4px solid #007bff;
 }
 
-.student-path-block h4 {
+.block_student_path_container .student-path-block h4 {
     color: #495057;
     margin-bottom: 15px;
     font-weight: 600;
 }
 
-.student-info {
+.block_student_path_container .student-info {
     margin-bottom: 15px;
     line-height: 1.6;
 }
 
-.student-path-actions {
+.block_student_path_container .student-path-actions {
     text-align: center;
 }
 
 /* Estilos para la vista del profesor en el bloque */
-.teacher-view {
+.block_student_path_container .teacher-view {
     background-color: #e8f4fd;
     border-left-color: #17a2b8;
 }
 
-.stats-grid {
+.block_student_path_container .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 10px;
     margin-bottom: 15px;
 }
 
-.stat-item {
+.block_student_path_container .stat-item {
     text-align: center;
     padding: 10px;
     background: white;
@@ -73,26 +74,26 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.stat-number {
+.block_student_path_container .stat-number {
     display: block;
     font-size: 1.5em;
     font-weight: bold;
     color: #007bff;
 }
 
-.stat-label {
+.block_student_path_container .stat-label {
     display: block;
     font-size: 0.85em;
     color: #6c757d;
     margin-top: 5px;
 }
 
-.teacher-actions {
+.block_student_path_container .teacher-actions {
     text-align: center;
 }
 
 /* Estilos para la vista principal */
-.title_student_path {
+.block_student_path_container .title_student_path {
     color: #2c3e50;
     text-align: center;
     margin-bottom: 30px;
@@ -100,7 +101,7 @@
     font-size: 2.2em;
 }
 
-.intro-text {
+.block_student_path_container .intro-text {
     text-align: center;
     font-size: 1.1em;
     color: #6c757d;
@@ -109,12 +110,12 @@
 }
 
 /* Estilos para la vista de información */
-.student-path-view {
+.block_student_path_container .student-path-view {
     max-width: 900px;
     margin: 0 auto;
 }
 
-.section-card {
+.block_student_path_container .section-card {
     background: #ffffff;
     border-radius: 12px;
     padding: 25px;
@@ -123,7 +124,7 @@
     border-left: 5px solid #007bff;
 }
 
-.section-card h3 {
+.block_student_path_container .section-card h3 {
     color: #2c3e50;
     margin-bottom: 20px;
     font-weight: 600;
@@ -131,7 +132,7 @@
     padding-bottom: 10px;
 }
 
-.section-card h4 {
+.block_student_path_container .section-card h4 {
     color: #495057;
     margin-top: 20px;
     margin-bottom: 10px;
@@ -139,31 +140,31 @@
     font-size: 1.1em;
 }
 
-.info-grid {
+.block_student_path_container .info-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 15px;
     margin-top: 15px;
 }
 
-.info-item {
+.block_student_path_container .info-item {
     padding: 10px;
     background: #f8f9fa;
     border-radius: 6px;
     border-left: 3px solid #28a745;
 }
 
-.subsection {
+.block_student_path_container .subsection {
     margin-bottom: 20px;
 }
 
-.subsection p {
+.block_student_path_container .subsection p {
     color: #495057;
     line-height: 1.6;
     margin: 10px 0;
 }
 
-.action-buttons {
+.block_student_path_container .action-buttons {
     text-align: center;
     margin-top: 30px;
     gap: 15px;
@@ -173,12 +174,12 @@
 }
 
 /* Estilos para el formulario */
-.student-path-form {
+.block_student_path_container .student-path-form {
     max-width: 900px;
     margin: 0 auto;
 }
 
-.form-section {
+.block_student_path_container .form-section {
     background: #ffffff;
     border-radius: 12px;
     padding: 25px;
@@ -187,7 +188,7 @@
     border-left: 5px solid #007bff;
 }
 
-.form-section h3 {
+.block_student_path_container .form-section h3 {
     color: #2c3e50;
     margin-bottom: 15px;
     font-weight: 600;
@@ -195,31 +196,31 @@
     padding-bottom: 10px;
 }
 
-.section-description {
+.block_student_path_container .section-description {
     color: #6c757d;
     font-style: italic;
     margin-bottom: 20px;
     line-height: 1.5;
 }
 
-.form-grid {
+.block_student_path_container .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
 }
 
-.form-group {
+.block_student_path_container .form-group {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.block_student_path_container .form-group label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
     color: #495057;
 }
 
-.form-control {
+.block_student_path_container .form-control {
     width: 100%;
     padding: 12px;
     border: 2px solid #e9ecef;
@@ -228,13 +229,13 @@
     transition: border-color 0.3s ease;
 }
 
-.form-control:focus {
+.block_student_path_container .form-control:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
-.form-control::placeholder {
+.block_student_path_container .form-control::placeholder {
     color: #adb5bd;
     font-style: italic;
 }
@@ -245,7 +246,7 @@ textarea.form-control {
 }
 
 /* Campos de solo lectura */
-.readonly-field {
+.block_student_path_container .readonly-field {
     padding: 12px;
     background-color: #e9ecef;
     border: 2px solid #e9ecef;
@@ -255,16 +256,16 @@ textarea.form-control {
     font-weight: 500;
 }
 
-.form-text {
+.block_student_path_container .form-text {
     font-size: 0.875em;
     margin-top: 5px;
 }
 
-.text-muted {
+.block_student_path_container .text-muted {
     color: #6c757d !important;
 }
 
-.form-actions {
+.block_student_path_container .form-actions {
     text-align: center;
     margin-top: 30px;
     gap: 15px;
@@ -274,11 +275,11 @@ textarea.form-control {
 }
 
 /* Estilos para la vista del profesor - Dashboard */
-.stats-dashboard {
+.block_student_path_container .stats-dashboard {
     margin-bottom: 30px;
 }
 
-.stat-card {
+.block_student_path_container .stat-card {
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -288,55 +289,55 @@ textarea.form-control {
     transition: transform 0.2s ease;
 }
 
-.stat-card:hover {
+.block_student_path_container .stat-card:hover {
     transform: translateY(-2px);
 }
 
-.stat-card .stat-number {
+.block_student_path_container .stat-card .stat-number {
     font-size: 2.5em;
     font-weight: bold;
     color: #007bff;
     display: block;
 }
 
-.stat-card .stat-label {
+.block_student_path_container .stat-card .stat-label {
     font-size: 0.9em;
     color: #6c757d;
     margin-top: 8px;
 }
 
 /* Estilos para la tabla de estudiantes */
-.students-table-container {
+.block_student_path_container .students-table-container {
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.students-table-container h3 {
+.block_student_path_container .students-table-container h3 {
     color: #2c3e50;
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 2px solid #e9ecef;
 }
 
-.table-filters {
+.block_student_path_container .table-filters {
     background: #f8f9fa;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
 }
 
-.table-responsive {
+.block_student_path_container .table-responsive {
     border-radius: 8px;
     overflow: hidden;
 }
 
-.table {
+.block_student_path_container .table {
     margin-bottom: 0;
 }
 
-.table th {
+.block_student_path_container .table th {
     background-color: #343a40;
     color: white;
     font-weight: 600;
@@ -344,17 +345,17 @@ textarea.form-control {
     padding: 12px;
 }
 
-.table td {
+.block_student_path_container .table td {
     padding: 12px;
     vertical-align: middle;
     border-top: 1px solid #e9ecef;
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
+.block_student_path_container .table-striped tbody tr:nth-of-type(odd) {
     background-color: #f8f9fa;
 }
 
-.table-hover tbody tr:hover {
+.block_student_path_container .table-hover tbody tr:hover {
     background-color: #e8f4fd;
 }
 
@@ -362,47 +363,47 @@ textarea.form-control {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .form-grid {
+    .block_student_path_container .form-grid {
         grid-template-columns: 1fr;
     }
     
-    .action-buttons,
-    .form-actions {
+    .block_student_path_container .action-buttons,
+    .block_student_path_container .form-actions {
         flex-direction: column;
         align-items: center;
     }
     
-    .btn {
+    .block_student_path_container .btn {
         width: 100%;
         max-width: 300px;
     }
     
-    .info-grid {
+    .block_student_path_container .info-grid {
         grid-template-columns: 1fr;
     }
     
-    .section-card,
-    .form-section {
+    .block_student_path_container .section-card,
+    .block_student_path_container .form-section {
         padding: 20px;
     }
     
-    .title_student_path {
+    .block_student_path_container .title_student_path {
         font-size: 1.8em;
     }
     
-    .stats-grid {
+    .block_student_path_container .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
     
-    .stat-card .stat-number {
+    .block_student_path_container .stat-card .stat-number {
         font-size: 2em;
     }
     
-    .table-responsive {
+    .block_student_path_container .table-responsive {
         font-size: 0.875em;
     }
     
-    .students-table-container {
+    .block_student_path_container .students-table-container {
         padding: 15px;
     }
 }

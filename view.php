@@ -32,7 +32,7 @@ $entry = $DB->get_record('student_path', array('user' => $USER->id, 'course' => 
 echo $OUTPUT->header();
 
 // Usar las clases CSS nativas de Moodle en lugar de Bootstrap externo
-echo "<div class='block_student_path_container container-fluid'>";
+echo "<div class='block_student_path_container'>";
 
 if ($entry && !$edit) {
     // Mostrar información existente con opción de editar

@@ -149,6 +149,10 @@ function get_student_complete_profile($user_id, $course_id) {
                    sp.program, sp.admission_year, sp.code,
                    sp.personality_aspects, sp.professional_interests, sp.emotional_skills,
                    sp.goals_aspirations, sp.action_plan,
+                   sp.personality_strengths, sp.personality_weaknesses, 
+                   sp.vocational_areas, sp.vocational_areas_secondary, sp.vocational_description,
+                   sp.emotional_skills_level, sp.goal_short_term, sp.goal_medium_term, sp.goal_long_term,
+                   sp.action_short_term, sp.action_medium_term, sp.action_long_term,
                    sp.created_at, sp.updated_at
             FROM {user} u
             INNER JOIN {student_path} sp ON u.id = sp.user
@@ -210,4 +214,109 @@ function get_students_path_data($course_id) {
     }
     
     return $students_data;
+}
+
+/**
+ * Guarda o actualiza la información del student_path con la nueva estructura
+ */
+function save_student_path_updated($course, $name, $program, $admission_year, $email, $code, 
+                          $personality_strengths, $personality_weaknesses, $vocational_areas, 
+                          $vocational_areas_secondary, $vocational_description, $emotional_skills_level,
+                          $goal_short_term, $goal_medium_term, $goal_long_term,
+                          $action_short_term, $action_medium_term, $action_long_term, $edit = 0) {
+    global $DB, $USER, $CFG;
+    
+    // Debug: Log de entrada
+    error_log("save_student_path_updated called with: user={$USER->id}, course={$course}, program={$program}");
+    
+    try {
+        // Verificar que la tabla existe antes de hacer cualquier operación
+        $dbman = $DB->get_manager();
+        if (!$dbman->table_exists('student_path')) {
+            error_log("ERROR: Table student_path does not exist!");
+            return false;
+        }
+        
+        // Buscar si ya existe un registro
+        error_log("Searching for existing record: user={$USER->id}, course={$course}");
+        $existing_entry = $DB->get_record('student_path', array('user' => $USER->id, 'course' => $course));
+        error_log("Existing entry found: " . ($existing_entry ? 'YES (ID: ' . $existing_entry->id . ')' : 'NO'));
+        
+        if ($existing_entry) {
+            // Si existe, actualizar
+            error_log("Updating existing record ID: " . $existing_entry->id);
+            $existing_entry->name = $name;
+            $existing_entry->program = $program;
+            $existing_entry->admission_year = $admission_year;
+            $existing_entry->email = $email;
+            $existing_entry->code = $code;
+            
+            // Nuevos campos estructurados
+            $existing_entry->personality_strengths = $personality_strengths;
+            $existing_entry->personality_weaknesses = $personality_weaknesses;
+            $existing_entry->vocational_areas = $vocational_areas;
+            $existing_entry->vocational_areas_secondary = $vocational_areas_secondary;
+            $existing_entry->vocational_description = $vocational_description;
+            $existing_entry->emotional_skills_level = $emotional_skills_level;
+            
+            $existing_entry->goal_short_term = $goal_short_term;
+            $existing_entry->goal_medium_term = $goal_medium_term;
+            $existing_entry->goal_long_term = $goal_long_term;
+            
+            $existing_entry->action_short_term = $action_short_term;
+            $existing_entry->action_medium_term = $action_medium_term;
+            $existing_entry->action_long_term = $action_long_term;
+            
+            $existing_entry->updated_at = time();
+            
+            $result = $DB->update_record('student_path', $existing_entry);
+            error_log('Student Path Update: ' . ($result ? 'SUCCESS' : 'FAILED'));
+            return $result;
+        } else {
+            // Crear nuevo registro
+            error_log("Creating new record for user {$USER->id} in course {$course}");
+            $entry = new stdClass();
+            $entry->user = $USER->id;
+            $entry->course = $course;
+            $entry->name = $name;
+            $entry->program = $program;
+            $entry->admission_year = $admission_year;
+            $entry->email = $email;
+            $entry->code = $code;
+            
+            // Log de los datos principales
+            error_log("Main data - Name: {$name}, Program: {$program}, Year: {$admission_year}, Code: {$code}");
+            
+            // Nuevos campos estructurados
+            $entry->personality_strengths = $personality_strengths;
+            $entry->personality_weaknesses = $personality_weaknesses;
+            $entry->vocational_areas = $vocational_areas;
+            $entry->vocational_areas_secondary = $vocational_areas_secondary;
+            $entry->vocational_description = $vocational_description;
+            $entry->emotional_skills_level = $emotional_skills_level;
+            
+            error_log("Vocational data - Areas: {$vocational_areas}, Secondary: {$vocational_areas_secondary}");
+            
+            $entry->goal_short_term = $goal_short_term;
+            $entry->goal_medium_term = $goal_medium_term;
+            $entry->goal_long_term = $goal_long_term;
+            
+            $entry->action_short_term = $action_short_term;
+            $entry->action_medium_term = $action_medium_term;
+            $entry->action_long_term = $action_long_term;
+            
+            $entry->created_at = time();
+            $entry->updated_at = time();
+            
+            error_log("Attempting to insert record...");
+            $entry_id = $DB->insert_record('student_path', $entry);
+            error_log('Student Path Insert: ' . ($entry_id ? 'SUCCESS (ID: ' . $entry_id . ')' : 'FAILED'));
+            return $entry_id ? true : false;
+        }
+    } catch (Exception $e) {
+        // Log del error para debug
+        error_log('Error saving student_path: ' . $e->getMessage());
+        error_log('Stack trace: ' . $e->getTraceAsString());
+        return false;
+    }
 }

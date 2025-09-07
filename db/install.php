@@ -19,6 +19,24 @@ function xmldb_block_student_path_install() {
     $table->add_field('admission_year', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null);
     $table->add_field('email', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
     $table->add_field('code', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, null);
+    
+    // Nuevos campos estructurados
+    $table->add_field('personality_strengths', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    $table->add_field('personality_weaknesses', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    $table->add_field('vocational_areas', XMLDB_TYPE_CHAR, '50', null, null, null, null);
+    $table->add_field('vocational_areas_secondary', XMLDB_TYPE_CHAR, '50', null, null, null, null);
+    $table->add_field('vocational_description', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    $table->add_field('emotional_skills_level', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    
+    $table->add_field('goal_short_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    $table->add_field('goal_medium_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    $table->add_field('goal_long_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    
+    $table->add_field('action_short_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    $table->add_field('action_medium_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    $table->add_field('action_long_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
+    
+    // Campos legados (mantener compatibilidad)
     $table->add_field('personality_aspects', XMLDB_TYPE_TEXT, null, null, null, null, null);
     $table->add_field('professional_interests', XMLDB_TYPE_TEXT, null, null, null, null, null);
     $table->add_field('emotional_skills', XMLDB_TYPE_TEXT, null, null, null, null, null);

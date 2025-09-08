@@ -159,4 +159,19 @@ $string['identity_map_goals'] = '<strong>Metas y Aspiraciones:</strong> Definir 
 $string['identity_map_action_plan'] = '<strong>Plan de Acción:</strong> Establecer pasos concretos y estrategias para aprovechar los recursos disponibles y avanzar hacia tus metas.';
 $string['identity_map_conclusion'] = 'Este proceso de autoexploración y planificación no solo te ayudará a tener una visión más clara de tu futuro, sino que también te proporcionará una guía práctica para tomar decisiones informadas y estratégicas en tu vida académica y profesional. <br>Para el desarrollo de este mapa haz uso de los resultados obtenidos en el ejercicio de exploración individual (Tests)';
 
+// Admin management
+$string['admin_manage_title'] = 'Gestión de Mapas de Identidad';
+$string['admin_manage_heading'] = 'Administrar Participaciones en Mapas de Identidad';
+$string['admin_no_participations'] = 'No hay participaciones de estudiantes registradas.';
+$string['admin_total_participations'] = 'Total de participaciones: {$a}';
+$string['admin_table_student'] = 'Estudiante';
+$string['admin_table_email'] = 'Email';
+$string['admin_table_created'] = 'Fecha de Creación';
+$string['admin_table_modified'] = 'Última Modificación';
+$string['admin_table_actions'] = 'Acciones';
+$string['admin_action_view'] = 'Ver';
+$string['admin_action_delete'] = 'Eliminar';
+$string['admin_delete_confirm'] = '¿Estás seguro de que quieres eliminar la participación de {$a}? Esta acción no se puede deshacer.';
+$string['admin_delete_success'] = 'La participación del estudiante ha sido eliminada exitosamente.';
+
 ?>

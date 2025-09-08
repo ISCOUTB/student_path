@@ -72,6 +72,17 @@ if ($entry) {
 
 echo $OUTPUT->header();
 
+// Mostrar enlace de administración para administradores del sitio
+if (has_capability('moodle/site:config', context_system::instance())) {
+    echo '<div class="alert alert-info" style="margin-bottom: 20px;">';
+    echo '<div style="display: flex; justify-content: space-between; align-items: center;">';
+    echo '<span><strong>🔧 Panel de Administrador</strong></span>';
+    echo '<a href="' . new moodle_url('/blocks/student_path/admin_manage.php') . '" class="btn btn-primary btn-sm">';
+    echo get_string('admin_manage_title', 'block_student_path') . '</a>';
+    echo '</div>';
+    echo '</div>';
+}
+
 // Usar las clases CSS nativas de Moodle en lugar de Bootstrap externo
 echo "<div class='block_student_path_container'>";
 

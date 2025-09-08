@@ -160,4 +160,19 @@ $string['identity_map_goals'] = '<strong>Goals and Aspirations:</strong> Define 
 $string['identity_map_action_plan'] = '<strong>Action Plan:</strong> Establish concrete steps and strategies to leverage available resources and advance toward your goals.';
 $string['identity_map_conclusion'] = 'This process of self-exploration and planning will not only help you have a clearer vision of your future, but will also provide you with a practical guide to make informed and strategic decisions in your academic and professional life. <br><br>For the development of this map, use the results obtained in the individual exploration exercise (Tests)';
 
+// Admin management
+$string['admin_manage_title'] = 'Identity Map Management';
+$string['admin_manage_heading'] = 'Manage Identity Map Participations';
+$string['admin_no_participations'] = 'No student participations registered.';
+$string['admin_total_participations'] = 'Total participations: {$a}';
+$string['admin_table_student'] = 'Student';
+$string['admin_table_email'] = 'Email';
+$string['admin_table_created'] = 'Creation Date';
+$string['admin_table_modified'] = 'Last Modified';
+$string['admin_table_actions'] = 'Actions';
+$string['admin_action_view'] = 'View';
+$string['admin_action_delete'] = 'Delete';
+$string['admin_delete_confirm'] = 'Are you sure you want to delete {$a}\'s participation? This action cannot be undone.';
+$string['admin_delete_success'] = 'Student participation has been successfully deleted.';
+
 ?>

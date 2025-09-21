@@ -174,4 +174,30 @@ $string['admin_action_delete'] = 'Eliminar';
 $string['admin_delete_confirm'] = '¿Estás seguro de que quieres eliminar la participación de {$a}? Esta acción no se puede deshacer.';
 $string['admin_delete_success'] = 'La participación del estudiante ha sido eliminada exitosamente.';
 
+// View Profile page strings
+$string['back_to_list'] = 'Volver al Listado de Estudiantes';
+$string['student_identity_map'] = 'Mapa de Identidad del Estudiante';
+$string['profile_not_completed'] = 'Perfil No Completado';
+$string['complete_profile_message'] = 'Este estudiante aún no ha completado su mapa de identidad. Necesita completar el formulario para proporcionar su información personal, académica y profesional.';
+$string['personal_information'] = 'Información Personal';
+$string['academic_information'] = 'Información Académica';
+$string['professional_information'] = 'Información Profesional';
+$string['emotional_information'] = 'Habilidades Emocionales';
+$string['last_updated'] = 'Última Actualización';
+$string['basic_information'] = 'Información Básica';
+$string['not_specified'] = 'No especificado';
+$string['no_profile_found'] = 'Perfil No Encontrado';
+$string['student_has_not_completed_profile'] = 'Este estudiante aún no ha completado su mapa de identidad.';
+
+// Detailed profile sections
+$string['detailed_profile'] = 'Perfil Detallado';
+$string['primary_area'] = 'Área Primaria';
+$string['secondary_area'] = 'Área Secundaria';
+$string['description'] = 'Descripción';
+$string['goals_by_time'] = 'Metas por Tiempo';
+$string['short_term'] = 'Corto Plazo';
+$string['medium_term'] = 'Mediano Plazo';
+$string['long_term'] = 'Largo Plazo';
+$string['actions_by_time'] = 'Acciones por Tiempo';
+
 ?>

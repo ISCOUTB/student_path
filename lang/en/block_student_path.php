@@ -175,4 +175,30 @@ $string['admin_action_delete'] = 'Delete';
 $string['admin_delete_confirm'] = 'Are you sure you want to delete {$a}\'s participation? This action cannot be undone.';
 $string['admin_delete_success'] = 'Student participation has been successfully deleted.';
 
+// View Profile page strings
+$string['back_to_list'] = 'Back to Students List';
+$string['student_identity_map'] = 'Student Identity Map';
+$string['profile_not_completed'] = 'Profile Not Completed';
+$string['complete_profile_message'] = 'This student has not yet completed their identity map. They need to fill out the form to provide their personal, academic, and professional information.';
+$string['personal_information'] = 'Personal Information';
+$string['academic_information'] = 'Academic Information';
+$string['professional_information'] = 'Professional Information';
+$string['emotional_information'] = 'Emotional Skills';
+$string['last_updated'] = 'Last Updated';
+$string['basic_information'] = 'Basic Information';
+$string['not_specified'] = 'Not specified';
+$string['no_profile_found'] = 'No Profile Found';
+$string['student_has_not_completed_profile'] = 'This student has not completed their identity map yet.';
+
+// Detailed profile sections
+$string['detailed_profile'] = 'Detailed Profile';
+$string['primary_area'] = 'Primary Area';
+$string['secondary_area'] = 'Secondary Area';
+$string['description'] = 'Description';
+$string['goals_by_time'] = 'Goals by Time';
+$string['short_term'] = 'Short Term';
+$string['medium_term'] = 'Medium Term';
+$string['long_term'] = 'Long Term';
+$string['actions_by_time'] = 'Actions by Time';
+
 ?>

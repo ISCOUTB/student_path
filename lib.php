@@ -4,7 +4,7 @@
  * Guarda o actualiza la información del student_path
  */
 function save_student_path($course, $name, $program, $admission_year, $email, $code, 
-                          $personality_aspects, $professional_interests, $emotional_skills, 
+                          $personality_aspects, $professional_interests, $emotional_skills_level, 
                           $goals_aspirations, $action_plan, $edit = 0) {
     global $DB, $USER, $CFG;
     
@@ -25,7 +25,7 @@ function save_student_path($course, $name, $program, $admission_year, $email, $c
             $existing_entry->code = $code;
             $existing_entry->personality_aspects = $personality_aspects;
             $existing_entry->professional_interests = $professional_interests;
-            $existing_entry->emotional_skills = $emotional_skills;
+            $existing_entry->emotional_skills_level = $emotional_skills_level;
             $existing_entry->goals_aspirations = $goals_aspirations;
             $existing_entry->action_plan = $action_plan;
             $existing_entry->updated_at = time();
@@ -46,7 +46,7 @@ function save_student_path($course, $name, $program, $admission_year, $email, $c
             $entry->code = $code;
             $entry->personality_aspects = $personality_aspects;
             $entry->professional_interests = $professional_interests;
-            $entry->emotional_skills = $emotional_skills;
+            $entry->emotional_skills_level = $emotional_skills_level;
             $entry->goals_aspirations = $goals_aspirations;
             $entry->action_plan = $action_plan;
             $entry->created_at = time();
@@ -147,7 +147,7 @@ function get_student_complete_profile($user_id, $course_id) {
     
     $sql = "SELECT u.firstname, u.lastname, u.email,
                    sp.program, sp.admission_year, sp.code,
-                   sp.personality_aspects, sp.professional_interests, sp.emotional_skills,
+                   sp.personality_aspects, sp.professional_interests,
                    sp.goals_aspirations, sp.action_plan,
                    sp.personality_strengths, sp.personality_weaknesses, 
                    sp.vocational_areas, sp.vocational_areas_secondary, sp.vocational_description,
@@ -192,7 +192,7 @@ function get_students_path_data($course_id) {
             $student_data->code = $profile->code;
             $student_data->personality_aspects = $profile->personality_aspects;
             $student_data->professional_interests = $profile->professional_interests;
-            $student_data->emotional_skills = $profile->emotional_skills;
+            $student_data->emotional_skills_level = $profile->emotional_skills_level;
             $student_data->goals_aspirations = $profile->goals_aspirations;
             $student_data->action_plan = $profile->action_plan;
             $student_data->timecreated = $profile->created_at;
@@ -203,7 +203,7 @@ function get_students_path_data($course_id) {
             $student_data->code = '';
             $student_data->personality_aspects = '';
             $student_data->professional_interests = '';
-            $student_data->emotional_skills = '';
+            $student_data->emotional_skills_level = '';
             $student_data->goals_aspirations = '';
             $student_data->action_plan = '';
             $student_data->timecreated = null;

@@ -149,7 +149,7 @@ if (empty($students_data)) {
             echo "<td><span class='badge bg-success'>" . get_string('completed', 'block_student_path') . "</span></td>";
             echo "<td>" . date('d/m/Y H:i', $student->updated_at) . "</td>";
             echo "<td>";
-            echo "<button class='btn btn-sm btn-primary view-profile' data-userid='" . $student->id . "'>" . get_string('view_profile', 'block_student_path') . "</button>";
+            echo "<a href='" . $CFG->wwwroot . "/blocks/student_path/view_profile.php?userid=" . $student->id . "&cid=" . $courseid . "' class='btn btn-sm btn-primary'>" . get_string('view_profile', 'block_student_path') . "</a>";
             echo "</td>";
         } else {
             echo "<td class='text-muted'>-</td>";
@@ -170,24 +170,6 @@ if (empty($students_data)) {
     echo "</div>";
 }
 
-echo "</div>";
-
-// Modal para ver perfil del estudiante
-echo "<div class='modal fade' id='profileModal' tabindex='-1'>";
-echo "<div class='modal-dialog modal-lg'>";
-echo "<div class='modal-content'>";
-echo "<div class='modal-header'>";
-echo "<h5 class='modal-title'>" . get_string('student_profile', 'block_student_path') . "</h5>";
-echo "<button type='button' class='btn-close' data-bs-dismiss='modal'></button>";
-echo "</div>";
-echo "<div class='modal-body' id='modalContent'>";
-echo "<!-- Contenido del perfil se cargará aquí -->";
-echo "</div>";
-echo "<div class='modal-footer'>";
-echo "<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>" . get_string('close', 'block_student_path') . "</button>";
-echo "</div>";
-echo "</div>";
-echo "</div>";
 echo "</div>";
 
 echo "<div class='action-buttons mt-4'>";
@@ -222,42 +204,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     searchInput.addEventListener('input', filterTable);
     filterStatus.addEventListener('change', filterTable);
-
-    // Ver perfil del estudiante
-    document.querySelectorAll('.view-profile').forEach(button => {
-        button.addEventListener('click', function() {
-            const userId = this.dataset.userid;
-            loadStudentProfile(userId);
-        });
-    });
-
-    function loadStudentProfile(userId) {
-        fetch('" . $CFG->wwwroot . "/blocks/student_path/ajax/get_student_profile.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'userid=' + userId + '&courseid=' + $courseid
-        })
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('modalContent').innerHTML = data;
-            document.getElementById('profileModal').style.display = 'block';
-            document.getElementById('profileModal').classList.add('show');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('" . get_string('error_loading_profile', 'block_student_path') . "');
-        });
-    }
-
-    /* Función para cerrar modal */
-    document.querySelectorAll('[data-bs-dismiss=\"modal\"]').forEach(button => {
-        button.addEventListener('click', function() {
-            document.getElementById('profileModal').style.display = 'none';
-            document.getElementById('profileModal').classList.remove('show');
-        });
-    });
 
     /* Función para exportar datos (definida globalmente) */
     window.exportData = function(format) {

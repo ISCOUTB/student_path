@@ -60,3 +60,7 @@ temp/
 # Backup files
 *.bak
 *.backup
+test_access.php
+debug_save.php
+save_simple.php
+TRANSLATIONS_SUMMARY.md

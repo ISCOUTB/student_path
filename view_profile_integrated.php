@@ -95,87 +95,33 @@ echo '<i class="icon fa fa-compass"></i>';
 echo get_string('vocational_identity', 'block_student_path');
 echo '</h4>';
 
-if ($profile->student_path_data) {
-    echo '<div class="student-path-result">';
+if ($profile->holland_type) {
+    echo '<div class="holland-result">';
+    echo '<div class="holland-main-type">';
+    echo '<span class="holland-badge holland-' . strtolower($profile->holland_type) . '">';
+    echo $profile->holland_type;
+    echo '</span>';
+    echo '<div class="holland-type-name">' . get_string('holland_type_' . strtolower($profile->holland_type), 'block_student_path') . '</div>';
+    echo '</div>';
     
-    // Mostrar Holland Type en una línea
-    if (!empty($profile->holland_type)) {
-        echo '<div class="holland-result-inline mb-3">';
-        
-        $holland_types = explode(',', $profile->holland_type);
-        $primary_type = trim($holland_types[0]);
-        
-        // Mapear códigos a nombres y colores
-        $holland_map = array(
-            'R' => array('name' => 'Realista', 'class' => 'holland-realistic'),
-            'I' => array('name' => 'Investigativo', 'class' => 'holland-investigative'),
-            'A' => array('name' => 'Artístico', 'class' => 'holland-artistic'),
-            'S' => array('name' => 'Social', 'class' => 'holland-social'),
-            'E' => array('name' => 'Emprendedor', 'class' => 'holland-enterprising'),
-            'C' => array('name' => 'Convencional', 'class' => 'holland-conventional')
-        );
-        
-        if (isset($holland_map[$primary_type])) {
-            echo '<p><strong>Tipo Holland:</strong> ';
-            echo '<span class="holland-badge-inline ' . $holland_map[$primary_type]['class'] . '">' . $primary_type . '</span> ';
-            echo $holland_map[$primary_type]['name'];
-            echo '</p>';
-        } else {
-            echo '<p><strong>Tipo Holland:</strong> ' . htmlspecialchars($primary_type) . '</p>';
-        }
-        
-        echo '</div>';
-    }
+    echo '<div class="holland-score-detail">';
+    echo '<p><strong>' . get_string('dominant_score', 'block_student_path') . ':</strong> ' . $profile->holland_score . '</p>';
+    echo '</div>';
     
-    // Mostrar información académica
-    if (!empty($profile->program) || !empty($profile->admission_year) || !empty($profile->code)) {
-        echo '<div class="academic-info">';
-        echo '<h6>Información Académica:</h6>';
-        if (!empty($profile->program)) {
-            echo '<p><strong>Programa:</strong> ' . htmlspecialchars($profile->program) . '</p>';
-        }
-        if (!empty($profile->admission_year)) {
-            echo '<p><strong>Año de Ingreso:</strong> ' . htmlspecialchars($profile->admission_year) . '</p>';
-        }
-        if (!empty($profile->code)) {
-            echo '<p><strong>Código:</strong> ' . htmlspecialchars($profile->code) . '</p>';
-        }
-        echo '</div>';
-    }
-    
-    // Mostrar fortalezas y debilidades de personalidad
-    if (!empty($profile->personality_strengths) || !empty($profile->personality_weaknesses)) {
-        echo '<div class="personality-aspects">';
-        echo '<h6>Aspectos de Personalidad:</h6>';
-        if (!empty($profile->personality_strengths)) {
-            echo '<div class="strengths">';
-            echo '<strong>Fortalezas:</strong><br>';
-            echo '<p class="text-muted small">' . htmlspecialchars($profile->personality_strengths) . '</p>';
+    // Mostrar datos adicionales del perfil vocacional si están disponibles
+    if ($profile->student_path_data) {
+        $data = json_decode($profile->student_path_data, true);
+        if (isset($data['program'])) {
+            echo '<div class="additional-info">';
+            echo '<p><strong>' . get_string('program', 'block_student_path') . ':</strong> ' . $data['program'] . '</p>';
+            if (isset($data['admission_year'])) {
+                echo '<p><strong>' . get_string('admission_year', 'block_student_path') . ':</strong> ' . $data['admission_year'] . '</p>';
+            }
+            if (isset($data['code'])) {
+                echo '<p><strong>' . get_string('code', 'block_student_path') . ':</strong> ' . $data['code'] . '</p>';
+            }
             echo '</div>';
         }
-        if (!empty($profile->personality_weaknesses)) {
-            echo '<div class="weaknesses">';
-            echo '<strong>Áreas de Mejora:</strong><br>';
-            echo '<p class="text-muted small">' . htmlspecialchars($profile->personality_weaknesses) . '</p>';
-            echo '</div>';
-        }
-        echo '</div>';
-    }
-    
-    // Mostrar descripción vocacional
-    if (!empty($profile->vocational_description)) {
-        echo '<div class="vocational-description">';
-        echo '<h6>Descripción Vocacional:</h6>';
-        echo '<p class="text-muted small">' . htmlspecialchars($profile->vocational_description) . '</p>';
-        echo '</div>';
-    }
-    
-    // Mostrar nivel de habilidades emocionales
-    if (!empty($profile->emotional_skills_level)) {
-        echo '<div class="emotional-skills">';
-        echo '<h6>Nivel de Habilidades Emocionales:</h6>';
-        echo '<p><strong>' . htmlspecialchars($profile->emotional_skills_level) . '</strong></p>';
-        echo '</div>';
     }
     
     echo '</div>';
@@ -201,6 +147,23 @@ if ($profile->learning_style) {
     $style_details = get_learning_style_summary($profile->learning_style_data);
     echo '<div class="learning-style-summary">' . $style_details . '</div>';
     
+    // Mostrar detalles adicionales si están disponibles
+    if ($profile->learning_style_data) {
+        $ls_data = json_decode($profile->learning_style_data, true);
+        if (is_array($ls_data)) {
+            echo '<div class="learning-dimensions">';
+            echo '<h6>' . get_string('learning_dimensions', 'block_student_path') . ':</h6>';
+            echo '<ul class="dimension-list">';
+            foreach ($ls_data as $dimension => $value) {
+                if (is_numeric($value)) {
+                    echo '<li><strong>' . $dimension . ':</strong> ' . $value . '</li>';
+                }
+            }
+            echo '</ul>';
+            echo '</div>';
+        }
+    }
+    
     echo '</div>';
 } else {
     echo '<div class="no-data">';
@@ -221,8 +184,34 @@ echo '</h4>';
 
 if ($profile->personality_traits) {
     echo '<div class="personality-result">';
-    $personality_details = get_personality_summary($profile->personality_data);
+    $personality_details = get_personality_summary($profile->personality_traits);
     echo '<div class="personality-summary">' . $personality_details . '</div>';
+    
+    // Mostrar detalles de los cinco grandes si están disponibles
+    if ($profile->personality_data) {
+        $pt_data = json_decode($profile->personality_data, true);
+        if (is_array($pt_data)) {
+            echo '<div class="big-five-traits">';
+            echo '<h6>' . get_string('big_five_traits', 'block_student_path') . ':</h6>';
+            echo '<div class="traits-list">';
+            
+            $big_five = ['openness', 'conscientiousness', 'extraversion', 'agreeableness', 'neuroticism'];
+            foreach ($big_five as $trait) {
+                if (isset($pt_data[$trait])) {
+                    echo '<div class="trait-item">';
+                    echo '<span class="trait-name">' . get_string($trait, 'block_student_path') . '</span>';
+                    echo '<div class="trait-bar">';
+                    echo '<div class="trait-fill" style="width: ' . ($pt_data[$trait] * 10) . '%"></div>';
+                    echo '</div>';
+                    echo '<span class="trait-value">' . $pt_data[$trait] . '/10</span>';
+                    echo '</div>';
+                }
+            }
+            
+            echo '</div>';
+            echo '</div>';
+        }
+    }
     
     echo '</div>';
 } else {
@@ -236,76 +225,35 @@ echo '</div>';
 
 echo '</div>';
 
-// Sección de objetivos y plan de acción (si hay datos de student_path)
-if (!empty($profile->goals_short) || !empty($profile->goals_medium) || !empty($profile->goals_long) || 
-    !empty($profile->actions_short) || !empty($profile->actions_medium) || !empty($profile->actions_long)) {
+// Sección de análisis integrado (si hay datos suficientes)
+if ($profile->completion_percentage >= 67) { // Al menos 2 de 3 evaluaciones
+    echo '<div class="integrated-analysis mt-4">';
+    echo '<h4>' . get_string('integrated_analysis', 'block_student_path') . '</h4>';
+    echo '<div class="analysis-content">';
     
-    echo '<div class="goals-action-plan mt-4">';
-    echo '<h4>Objetivos y Plan de Acción</h4>';
     echo '<div class="row">';
     
-    // Columna de objetivos
-    if (!empty($profile->goals_short) || !empty($profile->goals_medium) || !empty($profile->goals_long)) {
+    // Compatibilidad vocacional-personalidad
+    if ($profile->holland_type && $profile->personality_traits) {
         echo '<div class="col-md-6">';
-        echo '<div class="goals-section">';
-        echo '<h6><i class="fa fa-bullseye"></i> Objetivos</h6>';
-        
-        if (!empty($profile->goals_short)) {
-            echo '<div class="goal-item">';
-            echo '<strong>Corto Plazo:</strong>';
-            echo '<p class="text-muted small">' . htmlspecialchars($profile->goals_short) . '</p>';
-            echo '</div>';
-        }
-        
-        if (!empty($profile->goals_medium)) {
-            echo '<div class="goal-item">';
-            echo '<strong>Mediano Plazo:</strong>';
-            echo '<p class="text-muted small">' . htmlspecialchars($profile->goals_medium) . '</p>';
-            echo '</div>';
-        }
-        
-        if (!empty($profile->goals_long)) {
-            echo '<div class="goal-item">';
-            echo '<strong>Largo Plazo:</strong>';
-            echo '<p class="text-muted small">' . htmlspecialchars($profile->goals_long) . '</p>';
-            echo '</div>';
-        }
-        
+        echo '<div class="analysis-card">';
+        echo '<h6>' . get_string('vocational_personality_match', 'block_student_path') . '</h6>';
+        echo '<p>' . get_string('analysis_vocational_personality', 'block_student_path') . '</p>';
         echo '</div>';
         echo '</div>';
     }
     
-    // Columna de acciones
-    if (!empty($profile->actions_short) || !empty($profile->actions_medium) || !empty($profile->actions_long)) {
+    // Recomendaciones de aprendizaje
+    if ($profile->learning_style && ($profile->holland_type || $profile->personality_traits)) {
         echo '<div class="col-md-6">';
-        echo '<div class="actions-section">';
-        echo '<h6><i class="fa fa-tasks"></i> Plan de Acción</h6>';
-        
-        if (!empty($profile->actions_short)) {
-            echo '<div class="action-item">';
-            echo '<strong>Corto Plazo:</strong>';
-            echo '<p class="text-muted small">' . htmlspecialchars($profile->actions_short) . '</p>';
-            echo '</div>';
-        }
-        
-        if (!empty($profile->actions_medium)) {
-            echo '<div class="action-item">';
-            echo '<strong>Mediano Plazo:</strong>';
-            echo '<p class="text-muted small">' . htmlspecialchars($profile->actions_medium) . '</p>';
-            echo '</div>';
-        }
-        
-        if (!empty($profile->actions_long)) {
-            echo '<div class="action-item">';
-            echo '<strong>Largo Plazo:</strong>';
-            echo '<p class="text-muted small">' . htmlspecialchars($profile->actions_long) . '</p>';
-            echo '</div>';
-        }
-        
+        echo '<div class="analysis-card">';
+        echo '<h6>' . get_string('learning_recommendations', 'block_student_path') . '</h6>';
+        echo '<p>' . get_string('analysis_learning_recommendations', 'block_student_path') . '</p>';
         echo '</div>';
         echo '</div>';
     }
     
+    echo '</div>';
     echo '</div>';
     echo '</div>';
 }
@@ -454,16 +402,6 @@ echo '<style>
     font-size: 1.2rem;
     color: white;
     margin-bottom: 8px;
-}
-
-.holland-badge-inline {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.9rem;
-    color: white;
-    margin-right: 5px;
 }
 
 .holland-realistic { background-color: #28a745; }

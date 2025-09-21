@@ -157,6 +157,7 @@ if (empty($students)) {
     echo "<thead class='table-dark'>";
     echo "<tr>";
     echo "<th>" . get_string('student', 'block_student_path') . "</th>";
+    echo "<th>" . get_string('holland_type', 'block_student_path') . "</th>";
     echo "<th>" . get_string('learning_style', 'block_student_path') . "</th>";
     echo "<th>" . get_string('personality_traits', 'block_student_path') . "</th>";
     echo "<th>" . get_string('completion_status', 'block_student_path') . "</th>";
@@ -185,21 +186,33 @@ if (empty($students)) {
         echo "</div>";
         echo "</td>";
         
-        // Estilo de aprendizaje (resumido)
+        // Tipo Holland
         echo "<td>";
-        if ($profile->learning_style) {
-            $style_summary = get_learning_style_summary_short($profile->learning_style_data);
-            echo "<div class='learning-style-summary-short'>" . $style_summary . "</div>";
+        if ($profile->holland_type) {
+            echo "<span class='holland-badge holland-" . strtolower($profile->holland_type) . "'>";
+            echo $profile->holland_type;
+            echo "</span>";
+            echo "<div class='small-text'>" . get_string('score', 'block_student_path') . ': ' . $profile->holland_score . "</div>";
         } else {
             echo "<span class='text-muted'>" . get_string('not_completed', 'block_student_path') . "</span>";
         }
         echo "</td>";
         
-        // Rasgos de personalidad (resumido)
+        // Estilo de aprendizaje
+        echo "<td>";
+        if ($profile->learning_style) {
+            $style_summary = get_learning_style_summary($profile->learning_style_data);
+            echo "<div class='learning-style-summary'>" . $style_summary . "</div>";
+        } else {
+            echo "<span class='text-muted'>" . get_string('not_completed', 'block_student_path') . "</span>";
+        }
+        echo "</td>";
+        
+        // Rasgos de personalidad
         echo "<td>";
         if ($profile->personality_traits) {
-            $personality_summary = get_personality_summary_short($profile->personality_data);
-            echo "<div class='personality-summary-short'>" . $personality_summary . "</div>";
+            $personality_summary = get_personality_summary($profile->personality_traits);
+            echo "<div class='personality-summary'>" . $personality_summary . "</div>";
         } else {
             echo "<span class='text-muted'>" . get_string('not_completed', 'block_student_path') . "</span>";
         }

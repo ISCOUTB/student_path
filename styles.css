@@ -440,3 +440,331 @@ textarea.form-control {
         padding: 15px;
     }
 }
+
+/* Estilos para el perfil integrado */
+.integrated-profile-container .learning-style-details {
+    background: #f8f9fa;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+.integrated-profile-container .learning-dimension {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.integrated-profile-container .learning-dimension:last-child {
+    border-bottom: none;
+}
+
+.integrated-profile-container .dimension-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.integrated-profile-container .dimension-value {
+    font-weight: 600;
+    color: #007bff;
+}
+
+/* Estilos para la personalidad */
+.integrated-profile-container .personality-details {
+    background: #f8f9fa;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+.integrated-profile-container .personality-trait {
+    margin-bottom: 1rem;
+}
+
+.integrated-profile-container .trait-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.integrated-profile-container .trait-label {
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.integrated-profile-container .trait-score {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 0.9rem;
+}
+
+.integrated-profile-container .trait-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.integrated-profile-container .trait-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745 0%, #20c997 50%, #17a2b8 100%);
+    transition: width 0.3s ease;
+}
+
+.integrated-profile-container .mbti-type {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.integrated-profile-container .mbti-badge {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.1rem;
+}
+
+/* Estilos para información adicional del estudiante */
+.integrated-profile-container .academic-info,
+.integrated-profile-container .personality-aspects,
+.integrated-profile-container .vocational-description,
+.integrated-profile-container .emotional-skills {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.integrated-profile-container .academic-info h6,
+.integrated-profile-container .personality-aspects h6,
+.integrated-profile-container .vocational-description h6,
+.integrated-profile-container .emotional-skills h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+}
+
+.integrated-profile-container .strengths,
+.integrated-profile-container .weaknesses {
+    margin-bottom: 0.75rem;
+}
+
+.integrated-profile-container .strengths strong {
+    color: #28a745;
+}
+
+.integrated-profile-container .weaknesses strong {
+    color: #dc3545;
+}
+
+/* Estilos para objetivos y plan de acción */
+.integrated-profile-container .goals-action-plan {
+    background: #fff;
+    border: 2px solid #007bff;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.integrated-profile-container .goals-action-plan h4 {
+    color: #007bff;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.integrated-profile-container .goals-section,
+.integrated-profile-container .actions-section {
+    background: #f8f9fa;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    height: 100%;
+}
+
+.integrated-profile-container .goals-section h6,
+.integrated-profile-container .actions-section h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+}
+
+.integrated-profile-container .goal-item,
+.integrated-profile-container .action-item {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 0.25rem;
+    border-left: 4px solid #007bff;
+}
+
+.integrated-profile-container .goal-item:last-child,
+.integrated-profile-container .action-item:last-child {
+    margin-bottom: 0;
+}
+
+.integrated-profile-container .goal-item strong,
+.integrated-profile-container .action-item strong {
+    color: #007bff;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+/* Estilos para visualización de estilo de aprendizaje */
+.learning-style-visualization {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.learning-style-visualization .dimension-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1rem;
+}
+
+.learning-style-visualization .dimension-title {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+}
+
+.learning-style-visualization .dimension-bar-group {
+    margin-bottom: 1rem;
+}
+
+.learning-style-visualization .bar-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+.learning-style-visualization .dominant-style {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+/* Estilos para visualización de personalidad */
+.personality-visualization {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.personality-visualization .personality-dimension {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1rem;
+}
+
+.personality-visualization .progress {
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.personality-visualization .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: width 0.3s ease;
+}
+
+.personality-visualization .mbti-summary {
+    background: white;
+    border: 2px solid #007bff;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.personality-visualization .mbti-summary h4 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsividad para móviles */
+@media (max-width: 768px) {
+    .learning-style-visualization,
+    .personality-visualization {
+        padding: 0.75rem;
+    }
+    
+    .learning-style-visualization .dimension-card,
+    .personality-visualization .personality-dimension {
+        padding: 0.75rem;
+    }
+    
+    .personality-visualization .mbti-summary {
+        padding: 1rem;
+    }
+    
+    .personality-visualization .mbti-summary h4 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Estilos para resúmenes cortos en la tabla */
+.learning-style-short {
+    background: #e8f4fd;
+    color: #0d6efd;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.mbti-badge-small {
+    background: #198754;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.05rem;
+    display: inline-block;
+}
+
+.learning-style-summary-short,
+.personality-summary-short {
+    font-size: 0.9rem;
+}
+
+/* Ajustes para tabla más compacta */
+.students-table-container .table td {
+    vertical-align: middle;
+    padding: 0.75rem 0.5rem;
+}
+
+.student-info {
+    min-width: 200px;
+}
+
+.student-email {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}

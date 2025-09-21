@@ -200,4 +200,98 @@ $string['medium_term'] = 'Mediano Plazo';
 $string['long_term'] = 'Largo Plazo';
 $string['actions_by_time'] = 'Acciones por Tiempo';
 
+// Nuevas cadenas para integración
+$string['integrated_dashboard'] = 'Panel de Control Integrado';
+$string['identity_map_title'] = 'Mapa de Identidades del Grupo';
+$string['complete_profiles'] = 'Perfiles Completos';
+$string['evaluation_breakdown'] = 'Desglose por Evaluación';
+$string['evaluation_summary'] = 'Resumen de Evaluaciones';
+$string['learning_style_test'] = 'Test de Estilos de Aprendizaje';
+$string['personality_test'] = 'Test de Personalidad';
+$string['completion_status'] = 'Estado de Finalización';
+$string['view_identity_map'] = 'Ver Mapa de Identidades';
+$string['complete_profiles_only'] = 'Solo perfiles completos';
+$string['partial_profiles_only'] = 'Solo perfiles parciales';
+$string['no_profiles_only'] = 'Sin perfiles';
+$string['integrated_students_list'] = 'Lista Integrada de Estudiantes';
+$string['integrated_student_profile'] = 'Perfil Integrado del Estudiante';
+$string['personality_traits'] = 'Rasgos de Personalidad';
+$string['complete'] = 'completo';
+$string['not_completed'] = 'No completado';
+$string['profile_completion'] = 'Finalización del Perfil';
+$string['vocational_identity'] = 'Identidad Vocacional';
+$string['personality_profile'] = 'Perfil de Personalidad';
+$string['dominant_score'] = 'Puntuación Dominante';
+$string['vocational_test_not_completed'] = 'La evaluación vocacional no ha sido completada.';
+$string['learning_style_test_not_completed'] = 'El test de estilos de aprendizaje no ha sido completado.';
+$string['personality_test_not_completed'] = 'El test de personalidad no ha sido completado.';
+$string['learning_dimensions'] = 'Dimensiones de Aprendizaje';
+$string['big_five_traits'] = 'Rasgos de los Cinco Grandes';
+$string['integrated_analysis'] = 'Análisis Integrado';
+$string['vocational_personality_match'] = 'Compatibilidad Vocacional-Personalidad';
+$string['learning_recommendations'] = 'Recomendaciones de Aprendizaje';
+$string['analysis_vocational_personality'] = 'Análisis de la compatibilidad entre la orientación vocacional y los rasgos de personalidad del estudiante.';
+$string['analysis_learning_recommendations'] = 'Recomendaciones pedagógicas basadas en el estilo de aprendizaje y perfil psicológico del estudiante.';
+$string['back_to_list'] = 'Volver a la Lista';
+$string['print_profile'] = 'Imprimir Perfil';
+
+// Rasgos de personalidad
+$string['openness'] = 'Apertura';
+$string['conscientiousness'] = 'Responsabilidad';
+$string['extraversion'] = 'Extroversión';
+$string['agreeableness'] = 'Amabilidad';
+$string['neuroticism'] = 'Neuroticismo';
+
+// Tipos Holland con descripciones completas
+$string['holland_type_realistic'] = 'Realista - Práctico y orientado a la acción';
+$string['holland_type_investigative'] = 'Investigativo - Analítico y científico';
+$string['holland_type_artistic'] = 'Artístico - Creativo y expresivo';
+$string['holland_type_social'] = 'Social - Colaborativo y empático';
+$string['holland_type_enterprising'] = 'Emprendedor - Persuasivo y líder';
+$string['holland_type_conventional'] = 'Convencional - Organizado y detallista';
+
+// Cadenas adicionales para funciones de resumen
+$string['no_data_available'] = 'Sin datos disponibles';
+$string['processing_data'] = 'Procesando datos...';
+$string['extraverted'] = 'Extrovertido';
+$string['introverted'] = 'Introvertido';
+$string['sensing'] = 'Sensorial';
+$string['intuitive'] = 'Intuitivo';
+$string['thinking'] = 'Pensativo';
+$string['feeling'] = 'Sentimental';
+$string['judging'] = 'Juicioso';
+$string['perceptive'] = 'Perceptivo';
+$string['student_path_test'] = 'Mapa de Identidad del Estudiante';
+
+// Cadenas básicas
+$string['student'] = 'Estudiante';
+$string['holland_type'] = 'Tipo Holland';
+$string['learning_style'] = 'Estilo de Aprendizaje';
+$string['score'] = 'Puntuación';
+
+// Variaciones de tipos Holland
+$string['holland_type_r'] = 'Realista';
+$string['holland_type_i'] = 'Investigativo';
+$string['holland_type_a'] = 'Artístico';
+$string['holland_type_s'] = 'Social';
+$string['holland_type_e'] = 'Emprendedor';
+$string['holland_type_c'] = 'Convencional';
+
+// Cadenas adicionales del perfil
+$string['academic_info'] = 'Información Académica';
+$string['program'] = 'Programa';
+$string['admission_year'] = 'Año de Ingreso';
+$string['code'] = 'Código';
+$string['personality_aspects'] = 'Aspectos de Personalidad';
+$string['strengths'] = 'Fortalezas';
+$string['areas_improvement'] = 'Áreas de Mejora';
+$string['vocational_description'] = 'Descripción Vocacional';
+$string['emotional_skills'] = 'Habilidades Emocionales';
+$string['goals_action_plan'] = 'Objetivos y Plan de Acción';
+$string['objectives'] = 'Objetivos';
+$string['action_plan'] = 'Plan de Acción';
+$string['short_term'] = 'Corto Plazo';
+$string['medium_term'] = 'Mediano Plazo';
+$string['long_term'] = 'Largo Plazo';
+
 ?>

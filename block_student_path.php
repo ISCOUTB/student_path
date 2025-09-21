@@ -97,34 +97,62 @@ class block_student_path extends block_base
             }
             $this->content->text .= '</div>';
         } else if (isset($COURSE_ROLED_AS_TEACHER->id) && $COURSE_ROLED_AS_TEACHER->id) {
-            // Vista para profesores - mostrar estadísticas y enlace a lista de estudiantes
-            $stats = get_student_path_stats($COURSE->id);
+            // Vista para profesores - mostrar estadísticas integradas y enlace a lista de estudiantes
+            $stats = get_integrated_course_stats($COURSE->id);
             $this->content->text .= '<div class="block_student_path_container">';
             $this->content->text .= '<div class="student-path-block teacher-view">';
-            $this->content->text .= '<h4>' . get_string('teacher_dashboard', 'block_student_path') . '</h4>';
+            $this->content->text .= '<h4>' . get_string('integrated_dashboard', 'block_student_path') . '</h4>';
             
             $this->content->text .= '<div class="stats-grid">';
+            
+            // Total de estudiantes
             $this->content->text .= '<div class="stat-item">';
-            $this->content->text .= '<span class="stat-number">' . $stats['total_students'] . '</span>';
+            $this->content->text .= '<span class="stat-number">' . $stats->total_students . '</span>';
             $this->content->text .= '<span class="stat-label">' . get_string('total_students', 'block_student_path') . '</span>';
             $this->content->text .= '</div>';
             
+            // Perfiles completos
             $this->content->text .= '<div class="stat-item">';
-            $this->content->text .= '<span class="stat-number">' . $stats['completed_profiles'] . '</span>';
-            $this->content->text .= '<span class="stat-label">' . get_string('completed_profiles', 'block_student_path') . '</span>';
+            $this->content->text .= '<span class="stat-number">' . $stats->complete_profiles . '</span>';
+            $this->content->text .= '<span class="stat-label">' . get_string('complete_profiles', 'block_student_path') . '</span>';
             $this->content->text .= '</div>';
             
+            // Porcentaje de finalización
             $this->content->text .= '<div class="stat-item">';
-            $this->content->text .= '<span class="stat-number">' . $stats['completion_rate'] . '%</span>';
+            $this->content->text .= '<span class="stat-number">' . $stats->complete_profiles_percentage . '%</span>';
             $this->content->text .= '<span class="stat-label">' . get_string('completion_rate', 'block_student_path') . '</span>';
             $this->content->text .= '</div>';
+            
             $this->content->text .= '</div>';
             
-            // Botón para ver lista completa
+            // Desglose por tipo de evaluación
+            $this->content->text .= '<div class="evaluation-breakdown">';
+            $this->content->text .= '<h5>' . get_string('evaluation_breakdown', 'block_student_path') . '</h5>';
+            $this->content->text .= '<div class="breakdown-items">';
+            
+            $this->content->text .= '<div class="breakdown-item">';
+            $this->content->text .= '<span class="breakdown-label">' . get_string('student_path_test', 'block_student_path') . ':</span>';
+            $this->content->text .= '<span class="breakdown-value">' . $stats->student_path_completed . '/' . $stats->total_students . ' (' . $stats->student_path_percentage . '%)</span>';
+            $this->content->text .= '</div>';
+            
+            $this->content->text .= '<div class="breakdown-item">';
+            $this->content->text .= '<span class="breakdown-label">' . get_string('learning_style_test', 'block_student_path') . ':</span>';
+            $this->content->text .= '<span class="breakdown-value">' . $stats->learning_style_completed . '/' . $stats->total_students . ' (' . $stats->learning_style_percentage . '%)</span>';
+            $this->content->text .= '</div>';
+            
+            $this->content->text .= '<div class="breakdown-item">';
+            $this->content->text .= '<span class="breakdown-label">' . get_string('personality_test', 'block_student_path') . ':</span>';
+            $this->content->text .= '<span class="breakdown-value">' . $stats->personality_test_completed . '/' . $stats->total_students . ' (' . $stats->personality_test_percentage . '%)</span>';
+            $this->content->text .= '</div>';
+            
+            $this->content->text .= '</div>';
+            $this->content->text .= '</div>';
+            
+            // Botón para ver mapa de identidades integrado
             $teacher_url = new moodle_url('/blocks/student_path/teacher_view.php', array('cid' => $COURSE->id));
             $this->content->text .= '<div class="teacher-actions">';
             $this->content->text .= '<a href="' . $teacher_url . '" class="btn btn-primary">' . 
-                                   get_string('view_students_list', 'block_student_path') . '</a>';
+                                   get_string('view_identity_map', 'block_student_path') . '</a>';
             $this->content->text .= '</div>';
             $this->content->text .= '</div>';
             $this->content->text .= '</div>';

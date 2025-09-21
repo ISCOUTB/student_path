@@ -320,3 +320,381 @@ function save_student_path_updated($course, $name, $program, $admission_year, $e
         return false;
     }
 }
+
+/**
+ * Obtiene datos integrados de student_path, learning_style y personality_test para un estudiante
+ */
+function get_integrated_student_profile($user_id, $course_id) {
+    global $DB;
+    
+    $profile = new stdClass();
+    
+    // Datos básicos de student_path
+    $student_path = $DB->get_record("student_path", array("user" => $user_id, "course" => $course_id));
+    $profile->student_path_data = $student_path ? json_encode($student_path) : null;
+    
+    // Extraer información específica de student_path para mejor presentación
+    if ($student_path) {
+        $profile->program = $student_path->program ?? '';
+        $profile->admission_year = $student_path->admission_year ?? '';
+        $profile->code = $student_path->code ?? '';
+        $profile->personality_strengths = $student_path->personality_strengths ?? '';
+        $profile->personality_weaknesses = $student_path->personality_weaknesses ?? '';
+        $profile->vocational_description = $student_path->vocational_description ?? '';
+        $profile->emotional_skills_level = $student_path->emotional_skills_level ?? '';
+        $profile->goals_short = $student_path->goal_short_term ?? '';
+        $profile->goals_medium = $student_path->goal_medium_term ?? '';
+        $profile->goals_long = $student_path->goal_long_term ?? '';
+        $profile->actions_short = $student_path->action_short_term ?? '';
+        $profile->actions_medium = $student_path->action_medium_term ?? '';
+        $profile->actions_long = $student_path->action_long_term ?? '';
+    }
+    
+    // Datos de learning_style
+    $learning_style = $DB->get_record("learning_style", array("user" => $user_id, "course" => $course_id));
+    $profile->learning_style = $learning_style ? 'completed' : null;
+    $profile->learning_style_data = $learning_style ? json_encode($learning_style) : null;
+    
+    // Datos de personality_test
+    $personality_test = $DB->get_record("personality_test", array("user" => $user_id, "course" => $course_id));
+    $profile->personality_traits = $personality_test ? 'completed' : null;
+    $profile->personality_data = $personality_test ? json_encode($personality_test) : null;
+    
+    // Extraer tipo Holland y puntuación de student_path
+    if ($student_path && isset($student_path->vocational_areas)) {
+        $profile->holland_type = $student_path->vocational_areas;
+        $profile->holland_score = 100; // Placeholder, ajustar según datos reales
+    } else {
+        $profile->holland_type = null;
+        $profile->holland_score = null;
+    }
+    
+    // Calcular porcentaje de finalización
+    $completed_tests = 0;
+    if ($student_path) $completed_tests++;
+    if ($learning_style) $completed_tests++;
+    if ($personality_test) $completed_tests++;
+    
+    $profile->completion_percentage = round(($completed_tests / 3) * 100);
+    
+    return $profile;
+}
+
+/**
+ * Obtiene estadísticas integradas del curso para los tres tipos de evaluaciones
+ */
+function get_integrated_course_stats($course_id) {
+    global $DB;
+    
+    // Total de estudiantes en el curso
+    $total_students = $DB->count_records_sql(
+        "SELECT COUNT(DISTINCT u.id) 
+         FROM {user} u
+         INNER JOIN {role_assignments} ra ON u.id = ra.userid
+         INNER JOIN {context} ctx ON ra.contextid = ctx.id
+         WHERE ctx.contextlevel = 50 AND ra.roleid IN (5) AND ctx.instanceid = :courseid",
+        ['courseid' => $course_id]
+    );
+    
+    // Estudiantes que completaron student_path
+    $student_path_completed = $DB->count_records("student_path", array("course" => $course_id));
+    
+    // Estudiantes que completaron learning_style
+    $learning_style_completed = $DB->count_records("learning_style", array("course" => $course_id));
+    
+    // Estudiantes que completaron personality_test
+    $personality_test_completed = $DB->count_records("personality_test", array("course" => $course_id));
+    
+    // Estudiantes con perfiles completos (3 evaluaciones)
+    $complete_profiles_sql = "
+        SELECT COUNT(DISTINCT sp.user) as complete_count
+        FROM {student_path} sp
+        INNER JOIN {learning_style} ls ON sp.user = ls.user AND sp.course = ls.course
+        INNER JOIN {personality_test} pt ON sp.user = pt.user AND sp.course = pt.course
+        WHERE sp.course = :courseid
+    ";
+    $complete_profiles = $DB->get_record_sql($complete_profiles_sql, ['courseid' => $course_id]);
+    $complete_profiles_count = $complete_profiles ? $complete_profiles->complete_count : 0;
+    
+    // Preparar objeto de respuesta
+    $stats = new stdClass();
+    $stats->total_students = $total_students;
+    $stats->complete_profiles = $complete_profiles_count;
+    $stats->complete_profiles_percentage = $total_students > 0 ? round(($complete_profiles_count / $total_students) * 100, 1) : 0;
+    
+    $stats->student_path_completed = $student_path_completed;
+    $stats->student_path_percentage = $total_students > 0 ? round(($student_path_completed / $total_students) * 100, 1) : 0;
+    
+    $stats->learning_style_completed = $learning_style_completed;
+    $stats->learning_style_percentage = $total_students > 0 ? round(($learning_style_completed / $total_students) * 100, 1) : 0;
+    
+    $stats->personality_test_completed = $personality_test_completed;
+    $stats->personality_test_percentage = $total_students > 0 ? round(($personality_test_completed / $total_students) * 100, 1) : 0;
+    
+    return $stats;
+}
+
+/**
+ * Genera un resumen legible del estilo de aprendizaje usando la misma visualización del bloque
+ */
+function get_learning_style_summary($learning_style_data) {
+    if (!$learning_style_data) {
+        return '<div class="alert alert-warning">' . get_string('no_data_available', 'block_student_path') . '</div>';
+    }
+    
+    $data = json_decode($learning_style_data, true);
+    if (!$data) {
+        return '<div class="alert alert-warning">' . get_string('no_data_available', 'block_student_path') . '</div>';
+    }
+    
+    $summary = '<div class="learning-style-visualization">';
+    
+    // Definir las dimensiones del estilo de aprendizaje
+    $dimensions = array(
+        array(
+            'name' => 'Procesamiento',
+            'active' => isset($data['ap_active']) ? intval($data['ap_active']) : 0,
+            'reflexive' => isset($data['ap_reflexivo']) ? intval($data['ap_reflexivo']) : 0,
+            'active_label' => 'Activo',
+            'reflexive_label' => 'Reflexivo',
+            'color_active' => '#e74c3c',
+            'color_reflexive' => '#3498db'
+        ),
+        array(
+            'name' => 'Percepción',
+            'active' => isset($data['ap_sensorial']) ? intval($data['ap_sensorial']) : 0,
+            'reflexive' => isset($data['ap_intuitivo']) ? intval($data['ap_intuitivo']) : 0,
+            'active_label' => 'Sensorial',
+            'reflexive_label' => 'Intuitivo',
+            'color_active' => '#27ae60',
+            'color_reflexive' => '#f39c12'
+        ),
+        array(
+            'name' => 'Entrada',
+            'active' => isset($data['ap_visual']) ? intval($data['ap_visual']) : 0,
+            'reflexive' => isset($data['ap_verbal']) ? intval($data['ap_verbal']) : 0,
+            'active_label' => 'Visual',
+            'reflexive_label' => 'Verbal',
+            'color_active' => '#9b59b6',
+            'color_reflexive' => '#e67e22'
+        ),
+        array(
+            'name' => 'Comprensión',
+            'active' => isset($data['ap_secuencial']) ? intval($data['ap_secuencial']) : 0,
+            'reflexive' => isset($data['ap_global']) ? intval($data['ap_global']) : 0,
+            'active_label' => 'Secuencial',
+            'reflexive_label' => 'Global',
+            'color_active' => '#1abc9c',
+            'color_reflexive' => '#34495e'
+        )
+    );
+    
+    foreach ($dimensions as $dimension) {
+        $total = $dimension['active'] + $dimension['reflexive'];
+        $active_percentage = $total > 0 ? round(($dimension['active'] / $total) * 100, 1) : 0;
+        $reflexive_percentage = $total > 0 ? round(($dimension['reflexive'] / $total) * 100, 1) : 0;
+        
+        $summary .= '<div class="dimension-card mb-3">';
+        $summary .= '<h6 class="dimension-title">' . $dimension['name'] . '</h6>';
+        
+        // Barra activa
+        $summary .= '<div class="dimension-bar-group">';
+        $summary .= '<div class="bar-label">' . $dimension['active_label'] . ': ' . $dimension['active'] . ' (' . $active_percentage . '%)</div>';
+        $summary .= '<div class="progress mb-2" style="height: 20px;">';
+        $summary .= '<div class="progress-bar" style="width: ' . $active_percentage . '%; background-color: ' . $dimension['color_active'] . ';"></div>';
+        $summary .= '</div>';
+        
+        // Barra reflexiva
+        $summary .= '<div class="bar-label">' . $dimension['reflexive_label'] . ': ' . $dimension['reflexive'] . ' (' . $reflexive_percentage . '%)</div>';
+        $summary .= '<div class="progress mb-2" style="height: 20px;">';
+        $summary .= '<div class="progress-bar" style="width: ' . $reflexive_percentage . '%; background-color: ' . $dimension['color_reflexive'] . ';"></div>';
+        $summary .= '</div>';
+        
+        // Estilo dominante
+        $dominant_style = $dimension['active'] > $dimension['reflexive'] ? 
+            $dimension['active_label'] : $dimension['reflexive_label'];
+        $dominant_percentage = max($active_percentage, $reflexive_percentage);
+        
+        $summary .= '<div class="dominant-style">';
+        $summary .= '<strong>Dominante: </strong>';
+        $summary .= '<span class="text-primary">' . $dominant_style . ' (' . $dominant_percentage . '%)</span>';
+        $summary .= '</div>';
+        $summary .= '</div>';
+        $summary .= '</div>';
+    }
+    
+    $summary .= '</div>';
+    
+    return $summary;
+}
+
+/**
+ * Genera un resumen legible del perfil de personalidad usando la misma visualización del bloque
+ */
+function get_personality_summary($personality_data) {
+    if (!$personality_data) {
+        return '<div class="alert alert-warning">' . get_string('no_data_available', 'block_student_path') . '</div>';
+    }
+    
+    $data = json_decode($personality_data, true);
+    if (!$data) {
+        return '<div class="alert alert-warning">' . get_string('no_data_available', 'block_student_path') . '</div>';
+    }
+    
+    $summary = '<div class="personality-visualization">';
+    
+    // Dimensiones de personalidad
+    $extraversion = isset($data['extraversion']) ? intval($data['extraversion']) : 0;
+    $introversion = isset($data['introversion']) ? intval($data['introversion']) : 0;
+    
+    $sensing = isset($data['sensing']) ? intval($data['sensing']) : 0;
+    $intuition = isset($data['intuition']) ? intval($data['intuition']) : 0;
+    
+    $thinking = isset($data['thinking']) ? intval($data['thinking']) : 0;
+    $feeling = isset($data['feeling']) ? intval($data['feeling']) : 0;
+    
+    $judging = isset($data['judging']) ? intval($data['judging']) : 0;
+    $perceptive = isset($data['perceptive']) ? intval($data['perceptive']) : 0;
+    
+    // Función para renderizar barras comparativas
+    $render_bar = function($label1, $value1, $label2, $value2) {
+        $total = $value1 + $value2;
+        $percent1 = $total > 0 ? ($value1 / $total) * 100 : 50;
+        $percent2 = $total > 0 ? ($value2 / $total) * 100 : 50;
+        
+        $output = '<div class="personality-dimension mb-3">';
+        $output .= '<div class="d-flex justify-content-between mb-2">';
+        $output .= '<span><strong>' . $label1 . '</strong> (' . $value1 . ')</span>';
+        $output .= '<span><strong>' . $label2 . '</strong> (' . $value2 . ')</span>';
+        $output .= '</div>';
+        $output .= '<div class="progress" style="height: 25px;">';
+        $output .= '<div class="progress-bar bg-info" style="width: ' . $percent1 . '%" aria-valuenow="' . $percent1 . '">';
+        $output .= round($percent1, 1) . '%';
+        $output .= '</div>';
+        $output .= '<div class="progress-bar bg-warning" style="width: ' . $percent2 . '%" aria-valuenow="' . $percent2 . '">';
+        $output .= round($percent2, 1) . '%';
+        $output .= '</div>';
+        $output .= '</div>';
+        $output .= '</div>';
+        
+        return $output;
+    };
+    
+    $summary .= $render_bar('Extraversión', $extraversion, 'Introversión', $introversion);
+    $summary .= $render_bar('Sensación', $sensing, 'Intuición', $intuition);
+    $summary .= $render_bar('Pensamiento', $thinking, 'Sentimiento', $feeling);
+    $summary .= $render_bar('Juicio', $judging, 'Percepción', $perceptive);
+    
+    // Calcular tipo MBTI
+    $mbti_type = '';
+    $mbti_type .= $extraversion >= $introversion ? 'E' : 'I';
+    $mbti_type .= $sensing >= $intuition ? 'S' : 'N';
+    $mbti_type .= $thinking >= $feeling ? 'T' : 'F';
+    $mbti_type .= $judging >= $perceptive ? 'J' : 'P';
+    
+    // Descripciones MBTI
+    $mbti_descriptions = [
+        "ISTJ" => "práctica y centrada en los hechos, cuya fiabilidad no puede ser cuestionada.",
+        "ISFJ" => "protectora muy dedicada y cálida, siempre lista para defender a sus seres queridos.",
+        "INFJ" => "tranquila y mística, pero muy inspiradora e incansable idealista.",
+        "INTJ" => "visionaria, pensadora estratégica y resolvente de problemas lógicos.",
+        "ISTP" => "experimentadora audaz y práctica, maestra de todo tipo de herramientas.",
+        "ISFP" => "artística flexible y encantadora, siempre dispuesta a explorar y experimentar algo nuevo.",
+        "INFP" => "poética, amable y altruista, siempre dispuesta por ayudar a una buena causa.",
+        "INTP" => "creativa e innovadora con una sed insaciable de conocimiento.",
+        "ESTP" => "inteligente, enérgica y muy perceptiva, que realmente disfruta viviendo al límite.",
+        "ESFP" => "espontánea, enérgica y entusiasta.",
+        "ENFP" => "de espíritu libre, entusiasta, creativa y sociable, que siempre pueden encontrar una razón para sonreír.",
+        "ENTP" => "pensadora, inteligente y curiosa, que no puede resistirse a un desafío intelectual.",
+        "ESTJ" => "práctica y centrada en los hechos, cuya fiabilidad no puede ser cuestionada.",
+        "ESFJ" => "extraordinariamente cariñosa, sociable y popular, siempre dispuesta a ayudar.",
+        "ENFJ" => "líder, carismática e inspiradora, capaz de cautivar a su audiencia.",
+        "ENTJ" => "líder, audaz, imaginativa y de voluntad fuerte, siempre encontrando una forma, o creándola."
+    ];
+    
+    // Mostrar tipo MBTI
+    $summary .= '<div class="mbti-summary text-center mt-3">';
+    $summary .= '<h4 class="text-primary">' . $mbti_type . '</h4>';
+    $summary .= '<p class="text-muted">' . ($mbti_descriptions[$mbti_type] ?? '') . '</p>';
+    $summary .= '</div>';
+    
+    $summary .= '</div>';
+    
+    return $summary;
+}
+
+/**
+ * Genera un resumen corto del estilo de aprendizaje para la tabla de estudiantes
+ */
+function get_learning_style_summary_short($learning_style_data) {
+    if (!$learning_style_data) {
+        return '<span class="text-muted">Sin datos</span>';
+    }
+    
+    $data = json_decode($learning_style_data, true);
+    if (!$data) {
+        return '<span class="text-muted">Sin datos</span>';
+    }
+    
+    $dominant_styles = [];
+    
+    // Determinar estilos dominantes
+    if (isset($data['ap_active']) && isset($data['ap_reflexivo'])) {
+        $dominant_styles[] = $data['ap_active'] > $data['ap_reflexivo'] ? 'Activo' : 'Reflexivo';
+    }
+    
+    if (isset($data['ap_sensorial']) && isset($data['ap_intuitivo'])) {
+        $dominant_styles[] = $data['ap_sensorial'] > $data['ap_intuitivo'] ? 'Sensorial' : 'Intuitivo';
+    }
+    
+    if (isset($data['ap_visual']) && isset($data['ap_verbal'])) {
+        $dominant_styles[] = $data['ap_visual'] > $data['ap_verbal'] ? 'Visual' : 'Verbal';
+    }
+    
+    if (isset($data['ap_secuencial']) && isset($data['ap_global'])) {
+        $dominant_styles[] = $data['ap_secuencial'] > $data['ap_global'] ? 'Secuencial' : 'Global';
+    }
+    
+    return !empty($dominant_styles) ? 
+        '<span class="learning-style-short">' . implode(', ', $dominant_styles) . '</span>' : 
+        '<span class="text-muted">Procesando...</span>';
+}
+
+/**
+ * Genera un resumen corto del perfil de personalidad para la tabla de estudiantes
+ */
+function get_personality_summary_short($personality_data) {
+    if (!$personality_data) {
+        return '<span class="text-muted">Sin datos</span>';
+    }
+    
+    $data = json_decode($personality_data, true);
+    if (!$data) {
+        return '<span class="text-muted">Sin datos</span>';
+    }
+    
+    // Calcular tipo MBTI simplificado
+    $mbti_type = '';
+    
+    if (isset($data['extraversion']) && isset($data['introversion'])) {
+        $mbti_type .= $data['extraversion'] >= $data['introversion'] ? 'E' : 'I';
+    }
+    
+    if (isset($data['sensing']) && isset($data['intuition'])) {
+        $mbti_type .= $data['sensing'] >= $data['intuition'] ? 'S' : 'N';
+    }
+    
+    if (isset($data['thinking']) && isset($data['feeling'])) {
+        $mbti_type .= $data['thinking'] >= $data['feeling'] ? 'T' : 'F';
+    }
+    
+    if (isset($data['judging']) && isset($data['perceptive'])) {
+        $mbti_type .= $data['judging'] >= $data['perceptive'] ? 'J' : 'P';
+    }
+    
+    if (strlen($mbti_type) == 4) {
+        return '<span class="mbti-badge-small">' . $mbti_type . '</span>';
+    }
+    
+    return '<span class="text-muted">Procesando...</span>';
+}

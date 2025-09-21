@@ -201,4 +201,98 @@ $string['medium_term'] = 'Medium Term';
 $string['long_term'] = 'Long Term';
 $string['actions_by_time'] = 'Actions by Time';
 
+// New strings for integration
+$string['integrated_dashboard'] = 'Integrated Dashboard';
+$string['identity_map_title'] = 'Group Identity Map';
+$string['complete_profiles'] = 'Complete Profiles';
+$string['evaluation_breakdown'] = 'Evaluation Breakdown';
+$string['evaluation_summary'] = 'Evaluation Summary';
+$string['learning_style_test'] = 'Learning Style Test';
+$string['personality_test'] = 'Personality Test';
+$string['completion_status'] = 'Completion Status';
+$string['view_identity_map'] = 'View Identity Map';
+$string['complete_profiles_only'] = 'Complete profiles only';
+$string['partial_profiles_only'] = 'Partial profiles only';
+$string['no_profiles_only'] = 'No profiles only';
+$string['integrated_students_list'] = 'Integrated Students List';
+$string['integrated_student_profile'] = 'Integrated Student Profile';
+$string['personality_traits'] = 'Personality Traits';
+$string['complete'] = 'complete';
+$string['not_completed'] = 'Not completed';
+$string['profile_completion'] = 'Profile Completion';
+$string['vocational_identity'] = 'Vocational Identity';
+$string['personality_profile'] = 'Personality Profile';
+$string['dominant_score'] = 'Dominant Score';
+$string['vocational_test_not_completed'] = 'The vocational assessment has not been completed.';
+$string['learning_style_test_not_completed'] = 'The learning style test has not been completed.';
+$string['personality_test_not_completed'] = 'The personality test has not been completed.';
+$string['learning_dimensions'] = 'Learning Dimensions';
+$string['big_five_traits'] = 'Big Five Traits';
+$string['integrated_analysis'] = 'Integrated Analysis';
+$string['vocational_personality_match'] = 'Vocational-Personality Match';
+$string['learning_recommendations'] = 'Learning Recommendations';
+$string['analysis_vocational_personality'] = 'Analysis of compatibility between vocational orientation and student personality traits.';
+$string['analysis_learning_recommendations'] = 'Pedagogical recommendations based on learning style and psychological profile of the student.';
+$string['back_to_list'] = 'Back to List';
+$string['print_profile'] = 'Print Profile';
+
+// Personality traits
+$string['openness'] = 'Openness';
+$string['conscientiousness'] = 'Conscientiousness';
+$string['extraversion'] = 'Extraversion';
+$string['agreeableness'] = 'Agreeableness';
+$string['neuroticism'] = 'Neuroticism';
+
+// Holland types with full descriptions
+$string['holland_type_realistic'] = 'Realistic - Practical and action-oriented';
+$string['holland_type_investigative'] = 'Investigative - Analytical and scientific';
+$string['holland_type_artistic'] = 'Artistic - Creative and expressive';
+$string['holland_type_social'] = 'Social - Collaborative and empathetic';
+$string['holland_type_enterprising'] = 'Enterprising - Persuasive and leader';
+$string['holland_type_conventional'] = 'Conventional - Organized and detail-oriented';
+
+// Additional strings for summary functions
+$string['no_data_available'] = 'No data available';
+$string['processing_data'] = 'Processing data...';
+$string['extraverted'] = 'Extraverted';
+$string['introverted'] = 'Introverted';
+$string['sensing'] = 'Sensing';
+$string['intuitive'] = 'Intuitive';
+$string['thinking'] = 'Thinking';
+$string['feeling'] = 'Feeling';
+$string['judging'] = 'Judging';
+$string['perceptive'] = 'Perceptive';
+$string['student_path_test'] = 'Student Path Test';
+
+// Basic strings
+$string['student'] = 'Student';
+$string['holland_type'] = 'Holland Type';
+$string['learning_style'] = 'Learning Style';
+$string['score'] = 'Score';
+
+// Holland type variations
+$string['holland_type_r'] = 'Realistic';
+$string['holland_type_i'] = 'Investigative';
+$string['holland_type_a'] = 'Artistic';
+$string['holland_type_s'] = 'Social';
+$string['holland_type_e'] = 'Enterprising';
+$string['holland_type_c'] = 'Conventional';
+
+// Additional profile strings
+$string['academic_info'] = 'Academic Information';
+$string['program'] = 'Program';
+$string['admission_year'] = 'Admission Year';
+$string['code'] = 'Code';
+$string['personality_aspects'] = 'Personality Aspects';
+$string['strengths'] = 'Strengths';
+$string['areas_improvement'] = 'Areas for Improvement';
+$string['vocational_description'] = 'Vocational Description';
+$string['emotional_skills'] = 'Emotional Skills';
+$string['goals_action_plan'] = 'Goals and Action Plan';
+$string['objectives'] = 'Objectives';
+$string['action_plan'] = 'Action Plan';
+$string['short_term'] = 'Short Term';
+$string['medium_term'] = 'Medium Term';
+$string['long_term'] = 'Long Term';
+
 ?>

@@ -145,6 +145,16 @@ class block_student_path extends block_base
             $this->content->text .= '<span class="breakdown-value">' . $stats->personality_test_completed . '/' . $stats->total_students . ' (' . $stats->personality_test_percentage . '%)</span>';
             $this->content->text .= '</div>';
             
+            $this->content->text .= '<div class="breakdown-item">';
+            $this->content->text .= '<span class="breakdown-label">' . get_string('tmms_24_test', 'block_student_path') . ':</span>';
+            $this->content->text .= '<span class="breakdown-value">' . $stats->tmms_24_completed . '/' . $stats->total_students . ' (' . $stats->tmms_24_percentage . '%)</span>';
+            $this->content->text .= '</div>';
+            
+            $this->content->text .= '<div class="breakdown-item">';
+            $this->content->text .= '<span class="breakdown-label">' . get_string('chaside_test', 'block_student_path') . ':</span>';
+            $this->content->text .= '<span class="breakdown-value">' . $stats->chaside_completed . '/' . $stats->total_students . ' (' . $stats->chaside_percentage . '%)</span>';
+            $this->content->text .= '</div>';
+            
             $this->content->text .= '</div>';
             $this->content->text .= '</div>';
             

@@ -87,6 +87,12 @@ echo '<div class="status-icon">EI</div>';
 echo '<div class="status-label">' . get_string('tmms_24_test', 'block_student_path') . '</div>';
 echo '</div>';
 
+// CHASIDE (Vocational Test)
+echo '<div class="status-item ' . ($profile->chaside_completed ? 'completed' : 'pending') . '">';
+echo '<div class="status-icon">CH</div>';
+echo '<div class="status-label">' . get_string('chaside_test', 'block_student_path') . '</div>';
+echo '</div>';
+
 echo '</div>';
 echo '</div>';
 
@@ -94,7 +100,7 @@ echo '</div>';
 echo '<div class="row mt-4">';
 
 // Primera columna: Identidad Vocacional (Student Path)
-echo '<div class="col-lg-3">';
+echo '<div class="col-xl-3 col-lg-6 col-md-6 mb-4">';
 echo '<div class="profile-section">';
 echo '<h4 class="section-title">';
 echo '<i class="icon fa fa-compass"></i>';
@@ -195,7 +201,7 @@ echo '</div>';
 echo '</div>';
 
 // Segunda columna: Estilo de Aprendizaje
-echo '<div class="col-lg-3">';
+echo '<div class="col-xl-3 col-lg-6 col-md-6 mb-4">';
 echo '<div class="profile-section">';
 echo '<h4 class="section-title">';
 echo '<i class="icon fa fa-graduation-cap"></i>';
@@ -204,13 +210,23 @@ echo '</h4>';
 
 if ($profile->learning_style) {
     echo '<div class="learning-style-result">';
-    $style_details = get_learning_style_summary($profile->learning_style_data);
-    echo '<div class="learning-style-summary">' . $style_details . '</div>';
+    echo '<div class="alert alert-primary mb-3">';
+    echo '<h6 class="alert-heading mb-2"><i class="fa fa-brain"></i> Estilo Identificado</h6>';
     
+    if ($profile->learning_style_data) {
+        $style_details = get_learning_style_summary($profile->learning_style_data);
+        echo '<div class="learning-style-summary">' . $style_details . '</div>';
+    } else {
+        echo '<span class="badge badge-primary">Test completado</span>';
+    }
+    echo '</div>';
     echo '</div>';
 } else {
     echo '<div class="no-data">';
-    echo '<p class="text-muted">' . get_string('learning_style_test_not_completed', 'block_student_path') . '</p>';
+    echo '<div class="alert alert-warning">';
+    echo '<i class="fa fa-exclamation-triangle"></i> ';
+    echo get_string('learning_style_test_not_completed', 'block_student_path');
+    echo '</div>';
     echo '</div>';
 }
 
@@ -218,7 +234,7 @@ echo '</div>';
 echo '</div>';
 
 // Tercera columna: Personalidad
-echo '<div class="col-lg-3">';
+echo '<div class="col-xl-3 col-lg-6 col-md-6 mb-4">';
 echo '<div class="profile-section">';
 echo '<h4 class="section-title">';
 echo '<i class="icon fa fa-user"></i>';
@@ -227,50 +243,193 @@ echo '</h4>';
 
 if ($profile->personality_traits) {
     echo '<div class="personality-result">';
-    $personality_details = get_personality_summary($profile->personality_data);
-    echo '<div class="personality-summary">' . $personality_details . '</div>';
+    echo '<div class="alert alert-purple mb-3" style="background-color: rgba(102, 16, 242, 0.1); border: 1px solid rgba(102, 16, 242, 0.3); color: #4c0c87;">';
+    echo '<h6 class="alert-heading mb-2"><i class="fa fa-user-circle"></i> Perfil Identificado</h6>';
     
+    if ($profile->personality_data) {
+        $personality_details = get_personality_summary($profile->personality_data);
+        echo '<div class="personality-summary">' . $personality_details . '</div>';
+    } else {
+        echo '<span class="badge badge-purple" style="background-color: #6610f2;">Test completado</span>';
+    }
+    echo '</div>';
     echo '</div>';
 } else {
     echo '<div class="no-data">';
-    echo '<p class="text-muted">' . get_string('personality_test_not_completed', 'block_student_path') . '</p>';
+    echo '<div class="alert alert-warning">';
+    echo '<i class="fa fa-exclamation-triangle"></i> ';
+    echo get_string('personality_test_not_completed', 'block_student_path');
+    echo '</div>';
     echo '</div>';
 }
 
 echo '</div>';
 echo '</div>';
 
-// Cuarta columna: Inteligencia Emocional (TMMS-24)
-echo '<div class="col-lg-3">';
+// Cuarta columna: Inteligencia Emocional (TMMS-24) y Test Vocacional (CHASIDE)
+echo '<div class="col-xl-3 col-lg-6 col-md-6 mb-4">';
 echo '<div class="profile-section">';
+
+// Sección de Inteligencia Emocional
 echo '<h4 class="section-title">';
 echo '<i class="icon fa fa-heart"></i>';
 echo get_string('emotional_intelligence', 'block_student_path');
 echo '</h4>';
 
-if ($profile->emotional_intelligence) {
-    echo '<div class="tmms24-result">';
-    $tmms24_details = get_tmms24_summary($profile->tmms_24_data);
-    echo '<div class="tmms24-summary">' . $tmms24_details . '</div>';
+if ($profile->emotional_intelligence && $profile->tmms_24_data) {
+    $data = json_decode($profile->tmms_24_data, true);
+    $responses = [];
+    for ($i = 1; $i <= 24; $i++) {
+        $responses[] = $data['item' . $i] ?? 0;
+    }
+    $scores = calculate_tmms24_scores($responses);
+    $gender = $data['gender'] ?? 'F';
+    echo '<div class="tmms24-visual-card">';
+    $icons = [
+        'percepcion' => 'fa-eye',
+        'comprension' => 'fa-brain',
+        'regulacion' => 'fa-adjust'
+    ];
+    $labels = [
+        'percepcion' => get_string('perception', 'block_student_path'),
+        'comprension' => get_string('comprehension', 'block_student_path'),
+        'regulacion' => get_string('regulation', 'block_student_path')
+    ];
+    foreach (['percepcion','comprension','regulacion'] as $dim) {
+        echo '<div class="card shadow-sm mb-3">';
+        echo '<div class="card-body">';
+        echo '<div class="d-flex align-items-center mb-2">';
+        echo '<i class="fa ' . $icons[$dim] . ' fa-2x text-primary me-2"></i>';
+        echo '<h6 class="mb-0">' . $labels[$dim] . '</h6>';
+        echo '</div>';
+        echo '<div class="score-value display-5 fw-bold text-primary">' . $scores[$dim] . '</div>';
+        echo '<div class="score-interpretation mb-2"><span class="badge badge-info">' . interpret_tmms24_score($dim, $scores[$dim], $gender) . '</span></div>';
+        echo '</div>';
+        echo '</div>';
+    }
+    if (isset($data['interpretation']) && !empty($data['interpretation'])) {
+        echo '<div class="alert alert-secondary mt-3">';
+        echo '<i class="fa fa-info-circle"></i> <strong>' . get_string('interpretation', 'block_student_path') . ':</strong> ';
+        echo '<span class="text-muted">' . htmlspecialchars(substr($data['interpretation'], 0, 200)) . '...</span>';
+        echo '</div>';
+    }
+    echo '</div>';
+} else if ($profile->emotional_intelligence) {
+    echo '<div class="alert alert-success">';
+    echo '<i class="fa fa-check-circle"></i> Test TMMS-24 completado';
+    echo '</div>';
+} else {
+    echo '<div class="no-data">';
+    echo '<div class="alert alert-warning">';
+    echo '<i class="fa fa-exclamation-triangle"></i> ';
+    echo get_string('tmms_24_test_not_completed', 'block_student_path');
+    echo '</div>';
+    echo '</div>';
+}
+
+// Separador visual
+echo '<hr class="my-4">';
+
+// Sección de CHASIDE en la misma columna
+echo '<h4 class="section-title">';
+echo '<i class="icon fa fa-briefcase"></i>';
+echo get_string('chaside_test', 'block_student_path');
+echo '</h4>';
+
+if ($profile->chaside_completed) {
+    echo '<div class="chaside-result">';
+    
+    // Si tenemos datos de CHASIDE, podemos mostrar más información
+    if ($profile->chaside_data) {
+        $chaside_info = json_decode($profile->chaside_data, true);
+        
+        echo '<div class="alert alert-success mb-3">';
+        echo '<h6 class="alert-heading mb-2"><i class="fa fa-graduation-cap"></i> Test Vocacional Completado</h6>';
+        
+        // Mostrar fecha de completación
+        if (isset($chaside_info['timemodified'])) {
+            echo '<div class="completion-date mb-2">';
+            echo '<strong>Completado:</strong><br>';
+            echo '<small class="text-muted">' . userdate($chaside_info['timemodified'], '%d de %B, %Y') . '</small>';
+            echo '</div>';
+        }
+        
+        // Mostrar áreas vocacionales si están disponibles
+        $vocational_areas = [];
+        $area_labels = [
+            'score_c' => 'Ciencias',
+            'score_i' => 'Ingeniería',
+            'score_a' => 'Artes',
+            'score_s' => 'Servicios',
+            'score_e' => 'Empresarial',
+            'score_o' => 'Oficina'
+        ];
+        
+        foreach ($area_labels as $score_key => $label) {
+            if (isset($chaside_info[$score_key]) && $chaside_info[$score_key] > 0) {
+                $vocational_areas[$label] = $chaside_info[$score_key];
+            }
+        }
+        
+        if (!empty($vocational_areas)) {
+            // Ordenar por puntuación descendente
+            arsort($vocational_areas);
+            
+            echo '<div class="vocational-areas mt-2">';
+            echo '<small class="text-muted"><strong>Áreas de interés (Top 3):</strong></small><br>';
+            echo '<div class="mt-1">';
+            $count = 0;
+            foreach ($vocational_areas as $area => $score) {
+                if ($count >= 3) break;
+                $badge_class = $count === 0 ? 'badge-success' : ($count === 1 ? 'badge-info' : 'badge-secondary');
+                echo '<span class="badge ' . $badge_class . ' mr-1 mb-1">' . $area . ' (' . $score . ')</span>';
+                $count++;
+            }
+            echo '</div>';
+            echo '</div>';
+        }
+        
+        echo '</div>';
+    } else {
+        echo '<div class="alert alert-success">';
+        echo '<i class="fa fa-check-circle"></i> ';
+        echo get_string('chaside_completed', 'block_student_path');
+        echo '</div>';
+    }
     
     echo '</div>';
 } else {
     echo '<div class="no-data">';
-    echo '<p class="text-muted">' . get_string('tmms_24_test_not_completed', 'block_student_path') . '</p>';
+    echo '<div class="alert alert-warning">';
+    echo '<i class="fa fa-exclamation-triangle"></i> ';
+    echo get_string('chaside_test_not_completed', 'block_student_path');
+    echo '</div>';
     echo '</div>';
 }
 
 echo '</div>';
 echo '</div>';
 
-echo '</div>';
+echo '</div>'; // Cerrar el row de las 4 columnas principales
 
-// Sección de objetivos y plan de acción (si hay datos de student_path)
-if (!empty($profile->goals_short) || !empty($profile->goals_medium) || !empty($profile->goals_long) || 
-    !empty($profile->actions_short) || !empty($profile->actions_medium) || !empty($profile->actions_long)) {
-    
-    echo '<div class="goals-action-plan mt-4">';
-    echo '<h4>Objetivos y Plan de Acción</h4>';
+// Sección de objetivos y plan de acción - Siempre mostrar con datos o mensaje informativo
+echo '<div class="goals-action-plan mt-5">'; // Contenedor de ancho completo
+echo '<div class="row">';
+echo '<div class="col-12">';
+echo '<div class="card border-0 shadow-sm">';
+echo '<div class="card-header bg-light">';
+echo '<h4 class="mb-0"><i class="fa fa-roadmap text-primary mr-2"></i>Objetivos y Plan de Acción</h4>';
+echo '</div>';
+echo '<div class="card-body p-4">';
+
+// Verificar si hay datos de objetivos y acciones
+$has_goals = !empty($profile->goals_short) || !empty($profile->goals_medium) || !empty($profile->goals_long);
+$has_actions = !empty($profile->actions_short) || !empty($profile->actions_medium) || !empty($profile->actions_long);
+
+// Agregar debug temporal (remover después)
+echo '<!-- DEBUG: has_goals=' . ($has_goals ? 'true' : 'false') . ', has_actions=' . ($has_actions ? 'true' : 'false') . ' -->';
+
+if ($has_goals || $has_actions) {
     echo '<div class="row">';
     
     // Columna de objetivos
@@ -335,9 +494,21 @@ if (!empty($profile->goals_short) || !empty($profile->goals_medium) || !empty($p
         echo '</div>';
     }
     
-    echo '</div>';
+    echo '</div>'; // Cerrar row interno
+} else {
+    // Mostrar mensaje cuando no hay datos
+    echo '<div class="alert alert-info text-center">';
+    echo '<i class="fa fa-info-circle fa-2x mb-3 text-muted"></i>';
+    echo '<h6>No hay objetivos y plan de acción registrados</h6>';
+    echo '<p class="text-muted mb-0">El estudiante aún no ha completado esta sección de su mapa de identidad.</p>';
     echo '</div>';
 }
+
+echo '</div>'; // Cerrar card-body
+echo '</div>'; // Cerrar card
+echo '</div>'; // Cerrar col-12
+echo '</div>'; // Cerrar row externo
+echo '</div>'; // Cerrar goals-action-plan
 
 // Botones de acción
 echo '<div class="action-buttons mt-4">';

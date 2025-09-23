@@ -1,4 +1,43 @@
 <?php
+/**
+ * Genera un resumen corto del test CHASIDE para la tabla de estudiantes
+ */
+function get_chaside_summary_short($chaside_data) {
+    if (!$chaside_data) {
+        return '<span class="text-muted">Sin datos</span>';
+    }
+    $data = json_decode($chaside_data, true);
+    if (!$data) {
+        return '<span class="text-muted">Sin datos</span>';
+    }
+    // Áreas vocacionales principales
+    $area_labels = [
+        'score_c' => 'Ciencias',
+        'score_i' => 'Ingeniería',
+        'score_a' => 'Artes',
+        'score_s' => 'Servicios',
+        'score_e' => 'Empresarial',
+        'score_o' => 'Oficina'
+    ];
+    $vocational_areas = [];
+    foreach ($area_labels as $score_key => $label) {
+        if (isset($data[$score_key]) && $data[$score_key] > 0) {
+            $vocational_areas[$label] = $data[$score_key];
+        }
+    }
+    if (!empty($vocational_areas)) {
+        arsort($vocational_areas);
+        $summary = [];
+        $count = 0;
+        foreach ($vocational_areas as $area => $score) {
+            if ($count >= 3) break;
+            $summary[] = $area . ' (' . $score . ')';
+            $count++;
+        }
+        return '<span class="chaside-short">' . implode(' | ', $summary) . '</span>';
+    }
+    return '<span class="text-muted">Sin áreas destacadas</span>';
+}
 
 /**
  * Guarda o actualiza la información del student_path
@@ -322,7 +361,7 @@ function save_student_path_updated($course, $name, $program, $admission_year, $e
 }
 
 /**
- * Obtiene datos integrados de student_path, learning_style, personality_test y tmms_24 para un estudiante
+ * Obtiene datos integrados de student_path, learning_style, personality_test, tmms_24 y chaside para un estudiante
  */
 function get_integrated_student_profile($user_id, $course_id) {
     global $DB;
@@ -365,6 +404,11 @@ function get_integrated_student_profile($user_id, $course_id) {
     $profile->emotional_intelligence = $tmms_24 ? 'completed' : null;
     $profile->tmms_24_data = $tmms_24 ? json_encode($tmms_24) : null;
     
+    // Datos de CHASIDE (Test Vocacional)
+    $chaside = $DB->get_record("block_chaside_responses", array("userid" => $user_id, "courseid" => $course_id, "is_completed" => 1));
+    $profile->chaside_completed = $chaside ? true : false;
+    $profile->chaside_data = $chaside ? json_encode($chaside) : null;
+    
     // Extraer tipo Holland y puntuación de student_path
     if ($student_path && isset($student_path->vocational_areas)) {
         $profile->holland_type = $student_path->vocational_areas;
@@ -374,20 +418,21 @@ function get_integrated_student_profile($user_id, $course_id) {
         $profile->holland_score = null;
     }
     
-    // Calcular porcentaje de finalización (ahora incluye 4 tests)
+    // Calcular porcentaje de finalización (ahora incluye 5 tests)
     $completed_tests = 0;
     if ($student_path) $completed_tests++;
     if ($learning_style) $completed_tests++;
     if ($personality_test) $completed_tests++;
     if ($tmms_24) $completed_tests++;
+    if ($chaside) $completed_tests++;
     
-    $profile->completion_percentage = round(($completed_tests / 4) * 100);
+    $profile->completion_percentage = round(($completed_tests / 5) * 100);
     
     return $profile;
 }
 
 /**
- * Obtiene estadísticas integradas del curso para los cuatro tipos de evaluaciones
+ * Obtiene estadísticas integradas del curso para los cinco tipos de evaluaciones
  */
 function get_integrated_course_stats($course_id) {
     global $DB;
@@ -414,14 +459,21 @@ function get_integrated_course_stats($course_id) {
     // Estudiantes que completaron tmms_24
     $tmms_24_completed = $DB->count_records("tmms_24", array("course" => $course_id));
     
-    // Estudiantes con perfiles completos (4 evaluaciones)
+    // Estudiantes que completaron chaside
+    $chaside_completed = $DB->count_records_sql(
+        "SELECT COUNT(DISTINCT userid) FROM {block_chaside_responses} WHERE courseid = :courseid AND is_completed = 1",
+        ['courseid' => $course_id]
+    );
+    
+    // Estudiantes con perfiles completos (5 evaluaciones: student_path, learning_style, personality_test, tmms_24, chaside)
     $complete_profiles_sql = "
         SELECT COUNT(DISTINCT sp.user) as complete_count
         FROM {student_path} sp
         INNER JOIN {learning_style} ls ON sp.user = ls.user AND sp.course = ls.course
         INNER JOIN {personality_test} pt ON sp.user = pt.user AND sp.course = pt.course
         INNER JOIN {tmms_24} tm ON sp.user = tm.user AND sp.course = tm.course
-        WHERE sp.course = :courseid
+        INNER JOIN {block_chaside_responses} cr ON sp.user = cr.userid AND sp.course = cr.courseid
+        WHERE sp.course = :courseid AND cr.is_completed = 1
     ";
     $complete_profiles = $DB->get_record_sql($complete_profiles_sql, ['courseid' => $course_id]);
     $complete_profiles_count = $complete_profiles ? $complete_profiles->complete_count : 0;
@@ -443,6 +495,9 @@ function get_integrated_course_stats($course_id) {
     
     $stats->tmms_24_completed = $tmms_24_completed;
     $stats->tmms_24_percentage = $total_students > 0 ? round(($tmms_24_completed / $total_students) * 100, 1) : 0;
+    
+    $stats->chaside_completed = $chaside_completed;
+    $stats->chaside_percentage = $total_students > 0 ? round(($chaside_completed / $total_students) * 100, 1) : 0;
     
     return $stats;
 }
@@ -859,11 +914,11 @@ function get_tmms24_summary_short($tmms_24_data) {
     $comprehension_level = interpret_tmms24_score('comprension', $scores['comprension'], $gender);
     $regulation_level = interpret_tmms24_score('regulacion', $scores['regulacion'], $gender);
     
-    // Mostrar de forma compacta
+    // Mostrar de forma compacta con interpretación
     $summary_parts = [];
-    $summary_parts[] = 'P:' . $scores['percepcion'];
-    $summary_parts[] = 'C:' . $scores['comprension'];
-    $summary_parts[] = 'R:' . $scores['regulacion'];
+    $summary_parts[] = 'P:' . $scores['percepcion'] . ' <span class="tmms24-level">(' . $perception_level . ')</span>';
+    $summary_parts[] = 'C:' . $scores['comprension'] . ' <span class="tmms24-level">(' . $comprehension_level . ')</span>';
+    $summary_parts[] = 'R:' . $scores['regulacion'] . ' <span class="tmms24-level">(' . $regulation_level . ')</span>';
     
     return '<span class="tmms24-short">' . implode(' | ', $summary_parts) . '</span>';
 }

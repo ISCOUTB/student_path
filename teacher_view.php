@@ -127,6 +127,19 @@ echo "</div>";
 echo "</div>";
 echo "</div>";
 
+echo "</div>";
+
+// Segunda fila para CHASIDE
+echo "<div class='row mt-3'>";
+echo "<div class='col-md-3'>";
+echo "<div class='breakdown-card'>";
+echo "<div class='breakdown-title'>" . get_string('chaside_test', 'block_student_path') . "</div>";
+echo "<div class='breakdown-stats'>";
+echo "<span class='breakdown-number'>" . $stats->chaside_completed . "/" . $stats->total_students . "</span>";
+echo "<span class='breakdown-percentage'>(" . $stats->chaside_percentage . "%)</span>";
+echo "</div>";
+echo "</div>";
+echo "</div>";
 echo "</div";
 
 // Obtener lista de estudiantes con perfiles integrados
@@ -169,6 +182,7 @@ if (empty($students)) {
     echo "<th>" . get_string('learning_style', 'block_student_path') . "</th>";
     echo "<th>" . get_string('personality_traits', 'block_student_path') . "</th>";
     echo "<th>" . get_string('emotional_intelligence', 'block_student_path') . "</th>";
+    echo "<th>" . get_string('chaside_test', 'block_student_path') . "</th>";
     echo "<th>" . get_string('completion_status', 'block_student_path') . "</th>";
     echo "<th>" . get_string('actions', 'block_student_path') . "</th>";
     echo "</tr>";
@@ -218,10 +232,20 @@ if (empty($students)) {
         // Inteligencia emocional (TMMS-24)
         echo "<td>";
         if ($profile->emotional_intelligence) {
-            $tmms24_summary = get_tmms24_summary_short($profile->tmms_24_data);
-            echo "<div class='tmms24-summary-short'>" . $tmms24_summary . "</div>";
+            $tmms24_full = get_tmms24_summary($profile->tmms_24_data);
+            echo "<div class='tmms24-summary-full'>" . $tmms24_full . "</div>";
         } else {
             echo "<span class='text-muted'>" . get_string('not_completed', 'block_student_path') . "</span>";
+        }
+        echo "</td>";
+        
+        // Test vocacional CHASIDE
+        echo "<td>";
+        if ($profile->chaside_completed) {
+            $chaside_summary = get_chaside_summary_short($profile->chaside_data);
+            echo "<div class='chaside-summary-short'>" . $chaside_summary . "</div>";
+        } else {
+            echo "<span class='text-muted'>" . get_string('chaside_test_not_completed', 'block_student_path') . "</span>";
         }
         echo "</td>";
         
@@ -232,6 +256,7 @@ if (empty($students)) {
         echo "<span class='indicator " . ($profile->learning_style ? 'completed' : 'pending') . "' title='" . get_string('learning_style_test', 'block_student_path') . "'>LS</span>";
         echo "<span class='indicator " . ($profile->personality_traits ? 'completed' : 'pending') . "' title='" . get_string('personality_test', 'block_student_path') . "'>PT</span>";
         echo "<span class='indicator " . ($profile->emotional_intelligence ? 'completed' : 'pending') . "' title='" . get_string('tmms_24_test', 'block_student_path') . "'>EI</span>";
+        echo "<span class='indicator " . ($profile->chaside_completed ? 'completed' : 'pending') . "' title='" . get_string('chaside_test', 'block_student_path') . "'>CH</span>";
         echo "</div>";
         echo "<div class='completion-percentage'>" . $profile->completion_percentage . "% " . get_string('complete', 'block_student_path') . "</div>";
         echo "</td>";

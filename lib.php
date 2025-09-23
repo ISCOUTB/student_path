@@ -322,7 +322,7 @@ function save_student_path_updated($course, $name, $program, $admission_year, $e
 }
 
 /**
- * Obtiene datos integrados de student_path, learning_style y personality_test para un estudiante
+ * Obtiene datos integrados de student_path, learning_style, personality_test y tmms_24 para un estudiante
  */
 function get_integrated_student_profile($user_id, $course_id) {
     global $DB;
@@ -360,6 +360,11 @@ function get_integrated_student_profile($user_id, $course_id) {
     $profile->personality_traits = $personality_test ? 'completed' : null;
     $profile->personality_data = $personality_test ? json_encode($personality_test) : null;
     
+    // Datos de tmms_24 (Inteligencia Emocional)
+    $tmms_24 = $DB->get_record("tmms_24", array("user" => $user_id, "course" => $course_id));
+    $profile->emotional_intelligence = $tmms_24 ? 'completed' : null;
+    $profile->tmms_24_data = $tmms_24 ? json_encode($tmms_24) : null;
+    
     // Extraer tipo Holland y puntuación de student_path
     if ($student_path && isset($student_path->vocational_areas)) {
         $profile->holland_type = $student_path->vocational_areas;
@@ -369,19 +374,20 @@ function get_integrated_student_profile($user_id, $course_id) {
         $profile->holland_score = null;
     }
     
-    // Calcular porcentaje de finalización
+    // Calcular porcentaje de finalización (ahora incluye 4 tests)
     $completed_tests = 0;
     if ($student_path) $completed_tests++;
     if ($learning_style) $completed_tests++;
     if ($personality_test) $completed_tests++;
+    if ($tmms_24) $completed_tests++;
     
-    $profile->completion_percentage = round(($completed_tests / 3) * 100);
+    $profile->completion_percentage = round(($completed_tests / 4) * 100);
     
     return $profile;
 }
 
 /**
- * Obtiene estadísticas integradas del curso para los tres tipos de evaluaciones
+ * Obtiene estadísticas integradas del curso para los cuatro tipos de evaluaciones
  */
 function get_integrated_course_stats($course_id) {
     global $DB;
@@ -405,12 +411,16 @@ function get_integrated_course_stats($course_id) {
     // Estudiantes que completaron personality_test
     $personality_test_completed = $DB->count_records("personality_test", array("course" => $course_id));
     
-    // Estudiantes con perfiles completos (3 evaluaciones)
+    // Estudiantes que completaron tmms_24
+    $tmms_24_completed = $DB->count_records("tmms_24", array("course" => $course_id));
+    
+    // Estudiantes con perfiles completos (4 evaluaciones)
     $complete_profiles_sql = "
         SELECT COUNT(DISTINCT sp.user) as complete_count
         FROM {student_path} sp
         INNER JOIN {learning_style} ls ON sp.user = ls.user AND sp.course = ls.course
         INNER JOIN {personality_test} pt ON sp.user = pt.user AND sp.course = pt.course
+        INNER JOIN {tmms_24} tm ON sp.user = tm.user AND sp.course = tm.course
         WHERE sp.course = :courseid
     ";
     $complete_profiles = $DB->get_record_sql($complete_profiles_sql, ['courseid' => $course_id]);
@@ -430,6 +440,9 @@ function get_integrated_course_stats($course_id) {
     
     $stats->personality_test_completed = $personality_test_completed;
     $stats->personality_test_percentage = $total_students > 0 ? round(($personality_test_completed / $total_students) * 100, 1) : 0;
+    
+    $stats->tmms_24_completed = $tmms_24_completed;
+    $stats->tmms_24_percentage = $total_students > 0 ? round(($tmms_24_completed / $total_students) * 100, 1) : 0;
     
     return $stats;
 }
@@ -697,4 +710,160 @@ function get_personality_summary_short($personality_data) {
     }
     
     return '<span class="text-muted">Procesando...</span>';
+}
+
+/**
+ * Calcula los puntajes del TMMS-24 desde las respuestas individuales
+ */
+function calculate_tmms24_scores($responses) {
+    $percepcion = array_sum(array_slice($responses, 0, 8));
+    $comprension = array_sum(array_slice($responses, 8, 8));
+    $regulacion = array_sum(array_slice($responses, 16, 8));
+    
+    return [
+        'percepcion' => $percepcion,
+        'comprension' => $comprension,
+        'regulacion' => $regulacion
+    ];
+}
+
+/**
+ * Interpreta un puntaje del TMMS-24 según la dimensión y el género
+ */
+function interpret_tmms24_score($dimension, $score, $gender) {
+    switch ($dimension) {
+        case 'percepcion':
+            if ($gender === 'M') {
+                if ($score < 21) return get_string('needs_improvement', 'block_student_path');
+                if ($score >= 22 && $score <= 32) return get_string('adequate', 'block_student_path');
+                return get_string('needs_improvement', 'block_student_path');
+            } else { // Mujer
+                if ($score < 24) return get_string('needs_improvement', 'block_student_path');
+                if ($score >= 25 && $score <= 35) return get_string('adequate', 'block_student_path');
+                return get_string('needs_improvement', 'block_student_path');
+            }
+            break;
+            
+        case 'comprension':
+            if ($gender === 'M') {
+                if ($score < 25) return get_string('needs_improvement', 'block_student_path');
+                if ($score >= 26 && $score <= 35) return get_string('adequate', 'block_student_path');
+                return get_string('excellent', 'block_student_path');
+            } else { // Mujer
+                if ($score < 23) return get_string('needs_improvement', 'block_student_path');
+                if ($score >= 24 && $score <= 34) return get_string('adequate', 'block_student_path');
+                return get_string('excellent', 'block_student_path');
+            }
+            break;
+            
+        case 'regulacion':
+            if ($gender === 'M') {
+                if ($score < 23) return get_string('needs_improvement', 'block_student_path');
+                if ($score >= 24 && $score <= 35) return get_string('adequate', 'block_student_path');
+                return get_string('excellent', 'block_student_path');
+            } else { // Mujer
+                if ($score < 23) return get_string('needs_improvement', 'block_student_path');
+                if ($score >= 24 && $score <= 34) return get_string('adequate', 'block_student_path');
+                return get_string('excellent', 'block_student_path');
+            }
+            break;
+    }
+    return get_string('not_determined', 'block_student_path');
+}
+
+/**
+ * Genera un resumen legible completo del TMMS-24
+ */
+function get_tmms24_summary($tmms_24_data) {
+    if (!$tmms_24_data) {
+        return '<div class="alert alert-warning">' . get_string('no_data_available', 'block_student_path') . '</div>';
+    }
+    
+    $data = json_decode($tmms_24_data, true);
+    if (!$data) {
+        return '<div class="alert alert-warning">' . get_string('no_data_available', 'block_student_path') . '</div>';
+    }
+    
+    // Calcular puntajes desde las respuestas individuales
+    $responses = [];
+    for ($i = 1; $i <= 24; $i++) {
+        $responses[] = $data['item' . $i] ?? 0;
+    }
+    $scores = calculate_tmms24_scores($responses);
+    
+    $gender = $data['gender'] ?? 'F';
+    
+    // Generar visualización completa
+    $html = '<div class="tmms24-summary">';
+    $html .= '<div class="emotional-intelligence-dimensions">';
+    
+    // Percepción
+    $html .= '<div class="ei-dimension">';
+    $html .= '<h6>' . get_string('perception', 'block_student_path') . '</h6>';
+    $html .= '<div class="score-container">';
+    $html .= '<span class="score-value">' . $scores['percepcion'] . '</span>';
+    $html .= '<span class="score-interpretation">' . interpret_tmms24_score('percepcion', $scores['percepcion'], $gender) . '</span>';
+    $html .= '</div>';
+    $html .= '</div>';
+    
+    // Comprensión
+    $html .= '<div class="ei-dimension">';
+    $html .= '<h6>' . get_string('comprehension', 'block_student_path') . '</h6>';
+    $html .= '<div class="score-container">';
+    $html .= '<span class="score-value">' . $scores['comprension'] . '</span>';
+    $html .= '<span class="score-interpretation">' . interpret_tmms24_score('comprension', $scores['comprension'], $gender) . '</span>';
+    $html .= '</div>';
+    $html .= '</div>';
+    
+    // Regulación
+    $html .= '<div class="ei-dimension">';
+    $html .= '<h6>' . get_string('regulation', 'block_student_path') . '</h6>';
+    $html .= '<div class="score-container">';
+    $html .= '<span class="score-value">' . $scores['regulacion'] . '</span>';
+    $html .= '<span class="score-interpretation">' . interpret_tmms24_score('regulacion', $scores['regulacion'], $gender) . '</span>';
+    $html .= '</div>';
+    $html .= '</div>';
+    
+    $html .= '</div>';
+    $html .= '</div>';
+    
+    return $html;
+}
+
+/**
+ * Genera un resumen corto del TMMS-24 para la tabla de estudiantes
+ */
+function get_tmms24_summary_short($tmms_24_data) {
+    if (!$tmms_24_data) {
+        return '<span class="text-muted">Sin datos</span>';
+    }
+    
+    $data = json_decode($tmms_24_data, true);
+    if (!$data) {
+        return '<span class="text-muted">Sin datos</span>';
+    }
+    
+    // Calcular puntajes desde las respuestas individuales
+    $responses = [];
+    for ($i = 1; $i <= 24; $i++) {
+        $responses[] = $data['item' . $i] ?? 0;
+    }
+    $scores = calculate_tmms24_scores($responses);
+    
+    $gender = $data['gender'] ?? 'F';
+    
+    // Determinar las mejores dimensiones
+    $dimensions = [];
+    
+    $perception_level = interpret_tmms24_score('percepcion', $scores['percepcion'], $gender);
+    $comprehension_level = interpret_tmms24_score('comprension', $scores['comprension'], $gender);
+    $regulation_level = interpret_tmms24_score('regulacion', $scores['regulacion'], $gender);
+    
+    // Mostrar de forma compacta
+    $summary_parts = [];
+    $summary_parts[] = 'P:' . $scores['percepcion'];
+    $summary_parts[] = 'C:' . $scores['comprension'];
+    $summary_parts[] = 'R:' . $scores['regulacion'];
+    
+    return '<span class="tmms24-short">' . implode(' | ', $summary_parts) . '</span>';
 }

@@ -295,4 +295,16 @@ $string['short_term'] = 'Short Term';
 $string['medium_term'] = 'Medium Term';
 $string['long_term'] = 'Long Term';
 
+// TMMS-24 Integration strings
+$string['emotional_intelligence'] = 'Emotional Intelligence';
+$string['tmms_24_test'] = 'TMMS-24 Test';
+$string['tmms_24_test_not_completed'] = 'Emotional intelligence test not completed';
+$string['perception'] = 'Perception';
+$string['comprehension'] = 'Comprehension';
+$string['regulation'] = 'Regulation';
+$string['needs_improvement'] = 'Needs improvement';
+$string['adequate'] = 'Adequate';
+$string['excellent'] = 'Excellent';
+$string['not_determined'] = 'Not determined';
+
 ?>

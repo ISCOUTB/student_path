@@ -81,14 +81,20 @@ echo '<div class="status-icon">PT</div>';
 echo '<div class="status-label">' . get_string('personality_test', 'block_student_path') . '</div>';
 echo '</div>';
 
+// TMMS-24 (Emotional Intelligence)
+echo '<div class="status-item ' . ($profile->emotional_intelligence ? 'completed' : 'pending') . '">';
+echo '<div class="status-icon">EI</div>';
+echo '<div class="status-label">' . get_string('tmms_24_test', 'block_student_path') . '</div>';
+echo '</div>';
+
 echo '</div>';
 echo '</div>';
 
-// Contenido principal en tres columnas
+// Contenido principal en cuatro columnas
 echo '<div class="row mt-4">';
 
 // Primera columna: Identidad Vocacional (Student Path)
-echo '<div class="col-lg-4">';
+echo '<div class="col-lg-3">';
 echo '<div class="profile-section">';
 echo '<h4 class="section-title">';
 echo '<i class="icon fa fa-compass"></i>';
@@ -189,7 +195,7 @@ echo '</div>';
 echo '</div>';
 
 // Segunda columna: Estilo de Aprendizaje
-echo '<div class="col-lg-4">';
+echo '<div class="col-lg-3">';
 echo '<div class="profile-section">';
 echo '<h4 class="section-title">';
 echo '<i class="icon fa fa-graduation-cap"></i>';
@@ -212,7 +218,7 @@ echo '</div>';
 echo '</div>';
 
 // Tercera columna: Personalidad
-echo '<div class="col-lg-4">';
+echo '<div class="col-lg-3">';
 echo '<div class="profile-section">';
 echo '<h4 class="section-title">';
 echo '<i class="icon fa fa-user"></i>';
@@ -228,6 +234,29 @@ if ($profile->personality_traits) {
 } else {
     echo '<div class="no-data">';
     echo '<p class="text-muted">' . get_string('personality_test_not_completed', 'block_student_path') . '</p>';
+    echo '</div>';
+}
+
+echo '</div>';
+echo '</div>';
+
+// Cuarta columna: Inteligencia Emocional (TMMS-24)
+echo '<div class="col-lg-3">';
+echo '<div class="profile-section">';
+echo '<h4 class="section-title">';
+echo '<i class="icon fa fa-heart"></i>';
+echo get_string('emotional_intelligence', 'block_student_path');
+echo '</h4>';
+
+if ($profile->emotional_intelligence) {
+    echo '<div class="tmms24-result">';
+    $tmms24_details = get_tmms24_summary($profile->tmms_24_data);
+    echo '<div class="tmms24-summary">' . $tmms24_details . '</div>';
+    
+    echo '</div>';
+} else {
+    echo '<div class="no-data">';
+    echo '<p class="text-muted">' . get_string('tmms_24_test_not_completed', 'block_student_path') . '</p>';
     echo '</div>';
 }
 

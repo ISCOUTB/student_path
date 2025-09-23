@@ -87,7 +87,7 @@ echo "<div class='evaluation-breakdown'>";
 echo "<h3>" . get_string('evaluation_summary', 'block_student_path') . "</h3>";
 echo "<div class='row'>";
 
-echo "<div class='col-md-4'>";
+echo "<div class='col-md-3'>";
 echo "<div class='breakdown-card'>";
 echo "<div class='breakdown-title'>" . get_string('student_path_test', 'block_student_path') . "</div>";
 echo "<div class='breakdown-stats'>";
@@ -97,7 +97,7 @@ echo "</div>";
 echo "</div>";
 echo "</div>";
 
-echo "<div class='col-md-4'>";
+echo "<div class='col-md-3'>";
 echo "<div class='breakdown-card'>";
 echo "<div class='breakdown-title'>" . get_string('learning_style_test', 'block_student_path') . "</div>";
 echo "<div class='breakdown-stats'>";
@@ -107,7 +107,7 @@ echo "</div>";
 echo "</div>";
 echo "</div>";
 
-echo "<div class='col-md-4'>";
+echo "<div class='col-md-3'>";
 echo "<div class='breakdown-card'>";
 echo "<div class='breakdown-title'>" . get_string('personality_test', 'block_student_path') . "</div>";
 echo "<div class='breakdown-stats'>";
@@ -117,8 +117,17 @@ echo "</div>";
 echo "</div>";
 echo "</div>";
 
+echo "<div class='col-md-3'>";
+echo "<div class='breakdown-card'>";
+echo "<div class='breakdown-title'>" . get_string('tmms_24_test', 'block_student_path') . "</div>";
+echo "<div class='breakdown-stats'>";
+echo "<span class='breakdown-number'>" . $stats->tmms_24_completed . "/" . $stats->total_students . "</span>";
+echo "<span class='breakdown-percentage'>(" . $stats->tmms_24_percentage . "%)</span>";
 echo "</div>";
 echo "</div>";
+echo "</div>";
+
+echo "</div";
 
 // Obtener lista de estudiantes con perfiles integrados
 $students = enrol_get_course_users($course->id, true);
@@ -159,6 +168,7 @@ if (empty($students)) {
     echo "<th>" . get_string('student', 'block_student_path') . "</th>";
     echo "<th>" . get_string('learning_style', 'block_student_path') . "</th>";
     echo "<th>" . get_string('personality_traits', 'block_student_path') . "</th>";
+    echo "<th>" . get_string('emotional_intelligence', 'block_student_path') . "</th>";
     echo "<th>" . get_string('completion_status', 'block_student_path') . "</th>";
     echo "<th>" . get_string('actions', 'block_student_path') . "</th>";
     echo "</tr>";
@@ -205,12 +215,23 @@ if (empty($students)) {
         }
         echo "</td>";
         
+        // Inteligencia emocional (TMMS-24)
+        echo "<td>";
+        if ($profile->emotional_intelligence) {
+            $tmms24_summary = get_tmms24_summary_short($profile->tmms_24_data);
+            echo "<div class='tmms24-summary-short'>" . $tmms24_summary . "</div>";
+        } else {
+            echo "<span class='text-muted'>" . get_string('not_completed', 'block_student_path') . "</span>";
+        }
+        echo "</td>";
+        
         // Estado de finalización
         echo "<td>";
         echo "<div class='completion-indicators'>";
         echo "<span class='indicator " . ($profile->holland_type ? 'completed' : 'pending') . "' title='" . get_string('student_path_test', 'block_student_path') . "'>SP</span>";
         echo "<span class='indicator " . ($profile->learning_style ? 'completed' : 'pending') . "' title='" . get_string('learning_style_test', 'block_student_path') . "'>LS</span>";
         echo "<span class='indicator " . ($profile->personality_traits ? 'completed' : 'pending') . "' title='" . get_string('personality_test', 'block_student_path') . "'>PT</span>";
+        echo "<span class='indicator " . ($profile->emotional_intelligence ? 'completed' : 'pending') . "' title='" . get_string('tmms_24_test', 'block_student_path') . "'>EI</span>";
         echo "</div>";
         echo "<div class='completion-percentage'>" . $profile->completion_percentage . "% " . get_string('complete', 'block_student_path') . "</div>";
         echo "</td>";

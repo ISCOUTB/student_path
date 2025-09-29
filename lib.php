@@ -1,42 +1,274 @@
 <?php
 /**
- * Genera un resumen corto del test CHASIDE para la tabla de estudiantes
+ * Genera un resumen corto del test CHASIDE para la tabla de estudiantes usando formato oficial
  */
 function get_chaside_summary_short($chaside_data) {
     if (!$chaside_data) {
         return '<span class="text-muted">Sin datos</span>';
     }
+    
     $data = json_decode($chaside_data, true);
     if (!$data) {
         return '<span class="text-muted">Sin datos</span>';
     }
-    // Áreas vocacionales principales
-    $area_labels = [
-        'score_c' => 'Ciencias',
-        'score_i' => 'Ingeniería',
-        'score_a' => 'Artes',
-        'score_s' => 'Servicios',
-        'score_e' => 'Empresarial',
-        'score_o' => 'Oficina'
-    ];
-    $vocational_areas = [];
-    foreach ($area_labels as $score_key => $label) {
-        if (isset($data[$score_key]) && $data[$score_key] > 0) {
-            $vocational_areas[$label] = $data[$score_key];
-        }
+    
+    // Procesar datos directamente sin dependencias externas
+    $results = calculate_chaside_results_simple($data);
+    
+    if (!$results || !isset($results['areas'])) {
+        return '<span class="text-muted">Error al procesar datos</span>';
     }
-    if (!empty($vocational_areas)) {
-        arsort($vocational_areas);
-        $summary = [];
-        $count = 0;
-        foreach ($vocational_areas as $area => $score) {
-            if ($count >= 3) break;
-            $summary[] = $area . ' (' . $score . ')';
-            $count++;
-        }
-        return '<span class="chaside-short">' . implode(' | ', $summary) . '</span>';
+    
+    // Obtener las dos áreas principales
+    $areas_sorted = $results['areas'];
+    arsort($areas_sorted);
+    $top_areas = array_slice($areas_sorted, 0, 2, true);
+    
+    $summary_parts = [];
+    foreach ($top_areas as $area => $percentage) {
+        $level_class = get_level_css_class($percentage);
+        $area_name = get_chaside_area_name($area);
+        $summary_parts[] = '<span class="chaside-area ' . $level_class . '">' . 
+                          $area_name . ': ' . $percentage . '%</span>';
     }
+    
+    // Detectar brechas simples
+    $gap_alerts = '';
+    $min_percentage = min($areas_sorted);
+    $max_percentage = max($areas_sorted);
+    if (($max_percentage - $min_percentage) > 30) {
+        $gap_alerts = '<br><small class="text-warning">⚠️ Brecha detectada</small>';
+    }
+    
+    if (!empty($summary_parts)) {
+        return '<div class="chaside-summary-short">' . 
+               implode('<br>', $summary_parts) . 
+               $gap_alerts . 
+               '</div>';
+    }
+    
     return '<span class="text-muted">Sin áreas destacadas</span>';
+}
+
+/**
+ * Calcula los resultados de CHASIDE de forma simplificada
+ */
+function calculate_chaside_results_simple($data) {
+    // Mapeo oficial de preguntas CHASIDE a áreas (EXACTO como en el bloque CHASIDE)
+    
+    // Interest questions (70 total) - MAPEO OFICIAL CORRECTO
+    $interest_questions = [
+        'C' => [1, 12, 20, 53, 64, 71, 78, 85, 91, 98],
+        'H' => [9, 25, 34, 41, 56, 67, 74, 80, 89, 95],
+        'A' => [3, 11, 21, 28, 36, 45, 50, 57, 81, 96],
+        'S' => [8, 16, 23, 33, 44, 52, 62, 70, 87, 92],
+        'I' => [6, 19, 27, 38, 47, 54, 60, 75, 83, 97],
+        'D' => [5, 14, 24, 31, 37, 48, 58, 65, 73, 84],
+        'E' => [17, 32, 35, 42, 49, 61, 68, 77, 88, 93]
+    ];
+    
+    // Aptitude questions (28 total) - MAPEO OFICIAL CORRECTO  
+    $aptitude_questions = [
+        'C' => [2, 15, 46, 51],
+        'H' => [30, 63, 72, 86],
+        'A' => [22, 39, 76, 82],
+        'S' => [4, 29, 40, 69],
+        'I' => [10, 26, 59, 90],
+        'D' => [13, 18, 43, 66],
+        'E' => [7, 55, 79, 94]
+    ];
+    
+    // Inicializar puntuaciones
+    $scores = [];
+    foreach (['C', 'H', 'A', 'S', 'I', 'D', 'E'] as $area) {
+        $scores[$area] = [
+            'interes_score' => 0,
+            'aptitud_score' => 0
+        ];
+    }
+    
+    // Calcular puntuaciones de intereses
+    foreach ($interest_questions as $area => $questions) {
+        foreach ($questions as $q_num) {
+            $field_name = 'q' . $q_num;
+            if (isset($data[$field_name]) && $data[$field_name] == 1) {
+                $scores[$area]['interes_score']++;
+            }
+        }
+    }
+    
+    // Calcular puntuaciones de aptitudes
+    foreach ($aptitude_questions as $area => $questions) {
+        foreach ($questions as $q_num) {
+            $field_name = 'q' . $q_num;
+            if (isset($data[$field_name]) && $data[$field_name] == 1) {
+                $scores[$area]['aptitud_score']++;
+            }
+        }
+    }
+    
+    // Calcular porcentajes EXACTAMENTE como en el bloque CHASIDE
+    $percentages = [];
+    foreach ($scores as $area => $area_scores) {
+        $total_score = $area_scores['interes_score'] + $area_scores['aptitud_score'];
+        
+        $percentages[$area] = round(100 * $total_score / 14, 1); // Max 14 total per area
+    }
+    
+    return ['areas' => $percentages, 'detailed_scores' => $scores];
+}
+
+/**
+ * Obtiene el nombre completo del área CHASIDE
+ */
+function get_chaside_area_name($area_code) {
+    // Nombres exactos como aparecen en el bloque CHASIDE (basados en las cadenas de idioma más recientes)
+    $area_names = [
+        'C' => 'Científico',
+        'H' => 'Humanístico', 
+        'A' => 'Artístico',
+        'S' => 'Social',
+        'I' => 'Iniciativa Empresarial',
+        'D' => 'Aire Libre', 
+        'E' => 'Ejecutivo Persuasivo'
+    ];
+    
+    return isset($area_names[$area_code]) ? $area_names[$area_code] : $area_code;
+}
+
+/**
+ * Obtiene la clase CSS según el nivel de porcentaje
+ */
+function get_level_css_class($percentage) {
+    if ($percentage >= 80.0) {
+        return 'level-alto'; // Verde
+    } elseif ($percentage >= 60.0) {
+        return 'level-medio'; // Azul
+    } elseif ($percentage >= 40.0) {
+        return 'level-emergente'; // Amarillo
+    } else {
+        return 'level-bajo'; // Gris
+    }
+}
+
+/**
+ * Genera un resumen completo del test CHASIDE para vista detallada
+ */
+function get_chaside_summary_complete($chaside_data) {
+    if (!$chaside_data) {
+        return '<div class="alert alert-warning">Sin datos de CHASIDE disponibles</div>';
+    }
+    
+    $data = json_decode($chaside_data, true);
+    if (!$data) {
+        return '<div class="alert alert-danger">Error al procesar datos de CHASIDE</div>';
+    }
+    
+    // Procesar datos directamente
+    $results = calculate_chaside_results_simple($data);
+    
+    if (!$results || !isset($results['areas'])) {
+        return '<div class="alert alert-danger">Error al procesar resultados de CHASIDE</div>';
+    }
+    
+    $areas = $results['areas'];
+    arsort($areas); // Ordenar por porcentaje descendente
+    
+    $html = '<div class="chaside-complete-summary">';
+    
+    // Resumen ejecutivo
+    $html .= '<div class="chaside-executive-summary mb-3">';
+    $html .= '<h5>🎯 Resumen Ejecutivo CHASIDE</h5>';
+    
+    $top_areas = array_slice($areas, 0, 2, true);
+    $count = 1;
+    foreach ($top_areas as $area_code => $percentage) {
+        $area_name = get_chaside_area_name($area_code);
+        $level_class = get_level_css_class($percentage);
+        
+        $position = $count == 1 ? '🥇 Área Principal' : '🥈 Segunda Área';
+        
+        $html .= '<div class="top-area-card ' . $level_class . '">';
+        $html .= '<strong>' . $position . ':</strong> ' . $area_name . '<br>';
+        $html .= '<span class="score-detail">Puntuación: ' . $percentage . '%</span>';
+        $html .= '</div>';
+        
+        $count++;
+    }
+    
+    $html .= '</div>';
+    
+    // Detectar y mostrar brechas simples
+    $min_percentage = min($areas);
+    $max_percentage = max($areas);
+    if (($max_percentage - $min_percentage) > 30) {
+        $html .= '<div class="gap-alerts-summary mb-3">';
+        $html .= '<h6>⚠️ Alertas de Desarrollo</h6>';
+        $html .= '<span class="badge badge-warning">Brecha significativa detectada (' . 
+                round($max_percentage - $min_percentage, 1) . '% diferencia)</span>';
+        $html .= '</div>';
+    }
+    
+    // Tabla resumen de todas las áreas
+    $html .= '<div class="areas-summary-table">';
+    $html .= '<h6>📊 Resumen por Áreas</h6>';
+    $html .= '<div class="table-responsive">';
+    $html .= '<table class="table table-sm table-striped">';
+    $html .= '<thead><tr>';
+    $html .= '<th>Área</th><th>Puntuación</th><th>Nivel</th>';
+    $html .= '</tr></thead><tbody>';
+    
+    foreach ($areas as $area_code => $percentage) {
+        $area_name = get_chaside_area_name($area_code);
+        $level_class = get_level_css_class($percentage);
+        $level_text = get_level_text($percentage);
+        
+        // Convertir clases level- a badge- para los badges
+        $badge_class = str_replace('level-', 'badge-', $level_class);
+        if ($badge_class == 'badge-alto') $badge_class = 'badge-success';
+        if ($badge_class == 'badge-medio') $badge_class = 'badge-primary';
+        if ($badge_class == 'badge-emergente') $badge_class = 'badge-warning';
+        if ($badge_class == 'badge-bajo') $badge_class = 'badge-secondary';
+        
+        $html .= '<tr>';
+        $html .= '<td><strong>' . $area_name . '</strong></td>';
+        $html .= '<td>' . $percentage . '%</td>';
+        $html .= '<td><span class="badge ' . $badge_class . '">' . $level_text . '</span></td>';
+        $html .= '</tr>';
+    }
+    
+    $html .= '</tbody></table>';
+    $html .= '</div>';
+    $html .= '</div>';
+    
+    // Recomendaciones básicas
+    $html .= '<div class="chaside-recommendations">';
+    $html .= '<h6>💡 Recomendaciones</h6>';
+    $html .= '<ul class="small">';
+    $html .= '<li>Explora carreras relacionadas con tus áreas principales</li>';
+    $html .= '<li>Considera actividades extracurriculares en áreas de menor puntuación</li>';
+    $html .= '<li>Habla con profesionales de las áreas de tu interés</li>';
+    $html .= '</ul>';
+    $html .= '</div>';
+    
+    $html .= '</div>';
+    
+    return $html;
+}
+
+/**
+ * Obtiene el texto del nivel según el porcentaje
+ */
+function get_level_text($percentage) {
+    if ($percentage >= 80.0) {
+        return 'Alto';
+    } elseif ($percentage >= 60.0) {
+        return 'Medio';
+    } elseif ($percentage >= 40.0) {
+        return 'Emergente';
+    } else {
+        return 'Bajo';
+    }
 }
 
 /**

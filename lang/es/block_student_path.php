@@ -301,6 +301,24 @@ $string['tmms_24_test_not_completed'] = 'Test de inteligencia emocional no compl
 $string['chaside_test'] = 'Test CHASIDE';
 $string['chaside_test_not_completed'] = 'Test vocacional CHASIDE no completado';
 $string['chaside_completed'] = 'Test CHASIDE completado';
+
+// Nuevos strings para formato oficial CHASIDE
+$string['chaside_executive_summary'] = 'Resumen Ejecutivo CHASIDE';
+$string['chaside_top_areas'] = 'Áreas Principales';
+$string['chaside_gap_alerts'] = 'Alertas de Brecha';
+$string['chaside_detailed_view'] = 'Vista Detallada CHASIDE';
+$string['chaside_interests_aptitudes'] = 'Intereses y Aptitudes';
+$string['chaside_level_alto'] = 'Alto';
+$string['chaside_level_medio'] = 'Medio';
+$string['chaside_level_emergente'] = 'Emergente';
+$string['chaside_level_bajo'] = 'Bajo';
+$string['chaside_gap_balanced'] = 'Balanceado';
+$string['chaside_gap_interest_higher'] = 'Interés > Aptitud';
+$string['chaside_gap_aptitude_higher'] = 'Aptitud > Interés';
+$string['chaside_recommendations'] = 'Recomendaciones CHASIDE';
+$string['chaside_areas_breakdown'] = 'Desglose por Áreas';
+
+// TMMS-24 strings
 $string['perception'] = 'Percepción';
 $string['comprehension'] = 'Comprensión';
 $string['regulation'] = 'Regulación';

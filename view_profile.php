@@ -339,57 +339,25 @@ echo '</h4>';
 if ($profile->chaside_completed) {
     echo '<div class="chaside-result">';
     
-    // Si tenemos datos de CHASIDE, podemos mostrar más información
+    // Si tenemos datos de CHASIDE, mostrar formato oficial
     if ($profile->chaside_data) {
-        $chaside_info = json_decode($profile->chaside_data, true);
-        
         echo '<div class="alert alert-success mb-3">';
-        echo '<h6 class="alert-heading mb-2"><i class="fa fa-graduation-cap"></i> Test Vocacional Completado</h6>';
+        echo '<h6 class="alert-heading mb-2"><i class="fa fa-graduation-cap"></i> Test Vocacional CHASIDE Completado</h6>';
         
         // Mostrar fecha de completación
+        $chaside_info = json_decode($profile->chaside_data, true);
         if (isset($chaside_info['timemodified'])) {
             echo '<div class="completion-date mb-2">';
             echo '<strong>Completado:</strong><br>';
             echo '<small class="text-muted">' . userdate($chaside_info['timemodified'], '%d de %B, %Y') . '</small>';
             echo '</div>';
         }
-        
-        // Mostrar áreas vocacionales si están disponibles
-        $vocational_areas = [];
-        $area_labels = [
-            'score_c' => 'Ciencias',
-            'score_i' => 'Ingeniería',
-            'score_a' => 'Artes',
-            'score_s' => 'Servicios',
-            'score_e' => 'Empresarial',
-            'score_o' => 'Oficina'
-        ];
-        
-        foreach ($area_labels as $score_key => $label) {
-            if (isset($chaside_info[$score_key]) && $chaside_info[$score_key] > 0) {
-                $vocational_areas[$label] = $chaside_info[$score_key];
-            }
-        }
-        
-        if (!empty($vocational_areas)) {
-            // Ordenar por puntuación descendente
-            arsort($vocational_areas);
-            
-            echo '<div class="vocational-areas mt-2">';
-            echo '<small class="text-muted"><strong>Áreas de interés (Top 3):</strong></small><br>';
-            echo '<div class="mt-1">';
-            $count = 0;
-            foreach ($vocational_areas as $area => $score) {
-                if ($count >= 3) break;
-                $badge_class = $count === 0 ? 'badge-success' : ($count === 1 ? 'badge-info' : 'badge-secondary');
-                echo '<span class="badge ' . $badge_class . ' mr-1 mb-1">' . $area . ' (' . $score . ')</span>';
-                $count++;
-            }
-            echo '</div>';
-            echo '</div>';
-        }
-        
         echo '</div>';
+        
+        // Mostrar resumen completo oficial CHASIDE
+        $chaside_complete_summary = get_chaside_summary_complete($profile->chaside_data);
+        echo $chaside_complete_summary;
+        
     } else {
         echo '<div class="alert alert-success">';
         echo '<i class="fa fa-check-circle"></i> ';

@@ -984,3 +984,154 @@ textarea.form-control {
 .badge-secondary {
     background: linear-gradient(135deg, #6c757d, #545b62);
 }
+
+/* ====== ESTILOS PARA FORMATO OFICIAL CHASIDE ====== */
+
+/* Resumen CHASIDE oficial */
+.block_student_path_container .chaside-summary-official {
+    padding: 8px;
+    border-radius: 6px;
+    background: #f8f9fa;
+    border-left: 3px solid #007bff;
+}
+
+.block_student_path_container .chaside-area {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+/* Niveles de CHASIDE */
+.block_student_path_container .level-alto {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.block_student_path_container .level-medio {
+    background-color: #cce7ff;
+    color: #004085;
+    border: 1px solid #99d6ff;
+}
+
+.block_student_path_container .level-emergente {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.block_student_path_container .level-bajo {
+    background-color: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #ced4da;
+}
+
+/* Resumen completo CHASIDE */
+.block_student_path_container .chaside-complete-summary {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.block_student_path_container .chaside-executive-summary {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 6px;
+    padding: 15px;
+    border-left: 4px solid #007bff;
+}
+
+.block_student_path_container .top-area-card {
+    background: white;
+    border-radius: 6px;
+    padding: 12px;
+    margin: 8px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.block_student_path_container .top-area-card.top1 {
+    border-left: 4px solid #28a745;
+}
+
+.block_student_path_container .top-area-card.top2 {
+    border-left: 4px solid #6c757d;
+}
+
+.block_student_path_container .score-detail {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.block_student_path_container .breakdown {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.block_student_path_container .gap-alerts-summary {
+    background: #fff3cd;
+    border-radius: 6px;
+    padding: 12px;
+    border-left: 4px solid #ffc107;
+}
+
+.block_student_path_container .areas-summary-table {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.block_student_path_container .areas-summary-table .table {
+    margin-bottom: 0;
+    font-size: 0.9em;
+}
+
+.block_student_path_container .chaside-recommendations {
+    background: #d1ecf1;
+    border-radius: 6px;
+    padding: 12px;
+    border-left: 4px solid #17a2b8;
+}
+
+.block_student_path_container .chaside-recommendations ul {
+    margin-bottom: 0;
+}
+
+.block_student_path_container .chaside-recommendations li {
+    margin-bottom: 5px;
+}
+
+/* Badges específicos para CHASIDE */
+.block_student_path_container .badge-success {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+}
+
+.block_student_path_container .badge-warning {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #212529;
+}
+
+.block_student_path_container .badge-light {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    color: #495057;
+}
+
+/* Responsive adjustments for CHASIDE */
+@media (max-width: 768px) {
+    .block_student_path_container .chaside-area {
+        display: block;
+        margin-bottom: 2px;
+    }
+    
+    .block_student_path_container .top-area-card {
+        margin: 5px 0;
+        padding: 10px;
+    }
+    
+    .block_student_path_container .areas-summary-table .table {
+        font-size: 0.8em;
+    }
+}

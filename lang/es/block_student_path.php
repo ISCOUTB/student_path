@@ -201,7 +201,7 @@ $string['long_term'] = 'Largo Plazo';
 $string['actions_by_time'] = 'Acciones por Tiempo';
 
 // Nuevas cadenas para integración
-$string['integrated_dashboard'] = 'Panel de Control Integrado';
+$string['integrated_dashboard'] = 'Informe de Progreso';
 $string['identity_map_title'] = 'Mapa de Identidades del Grupo';
 $string['complete_profiles'] = 'Perfiles Completos';
 $string['evaluation_breakdown'] = 'Desglose por Evaluación';

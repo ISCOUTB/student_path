@@ -892,30 +892,15 @@ function get_personality_summary($personality_data) {
     $mbti_type .= $thinking >= $feeling ? 'T' : 'F';
     $mbti_type .= $judging >= $perceptive ? 'J' : 'P';
     
-    // Descripciones MBTI
-    $mbti_descriptions = [
-        "ISTJ" => "práctica y centrada en los hechos, cuya fiabilidad no puede ser cuestionada.",
-        "ISFJ" => "protectora muy dedicada y cálida, siempre lista para defender a sus seres queridos.",
-        "INFJ" => "tranquila y mística, pero muy inspiradora e incansable idealista.",
-        "INTJ" => "visionaria, pensadora estratégica y resolvente de problemas lógicos.",
-        "ISTP" => "experimentadora audaz y práctica, maestra de todo tipo de herramientas.",
-        "ISFP" => "artística flexible y encantadora, siempre dispuesta a explorar y experimentar algo nuevo.",
-        "INFP" => "poética, amable y altruista, siempre dispuesta por ayudar a una buena causa.",
-        "INTP" => "creativa e innovadora con una sed insaciable de conocimiento.",
-        "ESTP" => "inteligente, enérgica y muy perceptiva, que realmente disfruta viviendo al límite.",
-        "ESFP" => "espontánea, enérgica y entusiasta.",
-        "ENFP" => "de espíritu libre, entusiasta, creativa y sociable, que siempre pueden encontrar una razón para sonreír.",
-        "ENTP" => "pensadora, inteligente y curiosa, que no puede resistirse a un desafío intelectual.",
-        "ESTJ" => "práctica y centrada en los hechos, cuya fiabilidad no puede ser cuestionada.",
-        "ESFJ" => "extraordinariamente cariñosa, sociable y popular, siempre dispuesta a ayudar.",
-        "ENFJ" => "líder, carismática e inspiradora, capaz de cautivar a su audiencia.",
-        "ENTJ" => "líder, audaz, imaginativa y de voluntad fuerte, siempre encontrando una forma, o creándola."
-    ];
+    // Usar cadenas de idioma para las descripciones MBTI
+    $mbti_key = 'mbti_' . strtolower($mbti_type);
+    $mbti_dimensions_key = 'mbti_dimensions_' . strtolower($mbti_type);
     
     // Mostrar tipo MBTI
     $summary .= '<div class="mbti-summary text-center mt-3">';
-    $summary .= '<h4 class="text-primary">' . $mbti_type . '</h4>';
-    $summary .= '<p class="text-muted">' . ($mbti_descriptions[$mbti_type] ?? '') . '</p>';
+    $summary .= '<h4 class="text-primary mb-1">' . $mbti_type . '</h4>';
+    $summary .= '<p class="text-muted" style="font-size: 0.85em; margin-bottom: 0.5rem;">(' . get_string($mbti_dimensions_key, 'block_personality_test') . ')</p>';
+    $summary .= '<p class="text-muted" style="text-align: justify;">' . get_string($mbti_key, 'block_personality_test') . '</p>';
     $summary .= '</div>';
     
     $summary .= '</div>';

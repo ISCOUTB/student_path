@@ -124,13 +124,13 @@ function calculate_chaside_results_simple($data) {
 function get_chaside_area_name($area_code) {
     // Nombres exactos como aparecen en el bloque CHASIDE (basados en las cadenas de idioma más recientes)
     $area_names = [
-        'C' => 'Científico',
-        'H' => 'Humanístico', 
-        'A' => 'Artístico',
-        'S' => 'Social',
-        'I' => 'Iniciativa Empresarial',
-        'D' => 'Aire Libre', 
-        'E' => 'Ejecutivo Persuasivo'
+        'C' => 'Administrativa',
+        'H' => 'Humanidades/Sociales/Jurídicas', 
+        'A' => 'Artística',
+        'S' => 'Ciencias de la Salud',
+        'I' => 'Enseñanzas Técnicas',
+        'D' => 'Defensa y Seguridad', 
+        'E' => 'Ciencias Experimentales'
     ];
     
     return isset($area_names[$area_code]) ? $area_names[$area_code] : $area_code;

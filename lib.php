@@ -124,13 +124,13 @@ function calculate_chaside_results_simple($data) {
 function get_chaside_area_name($area_code) {
     // Nombres exactos como aparecen en el bloque CHASIDE (basados en las cadenas de idioma más recientes)
     $area_names = [
-        'C' => 'Científico',
-        'H' => 'Humanístico', 
-        'A' => 'Artístico',
-        'S' => 'Social',
-        'I' => 'Iniciativa Empresarial',
-        'D' => 'Aire Libre', 
-        'E' => 'Ejecutivo Persuasivo'
+        'C' => 'Administrativa',
+        'H' => 'Humanidades/Sociales/Jurídicas', 
+        'A' => 'Artística',
+        'S' => 'Ciencias de la Salud',
+        'I' => 'Enseñanzas Técnicas',
+        'D' => 'Defensa y Seguridad', 
+        'E' => 'Ciencias Experimentales'
     ];
     
     return isset($area_names[$area_code]) ? $area_names[$area_code] : $area_code;
@@ -204,8 +204,12 @@ function get_chaside_summary_complete($chaside_data) {
     if (($max_percentage - $min_percentage) > 30) {
         $html .= '<div class="gap-alerts-summary mb-3">';
         $html .= '<h6>⚠️ Alertas de Desarrollo</h6>';
-        $html .= '<span class="badge badge-warning">Brecha significativa detectada (' . 
-                round($max_percentage - $min_percentage, 1) . '% diferencia)</span>';
+        $html .= '<div style="text-align: center;">';
+        $html .= '<span class="badge badge-warning" style="display: inline-block; white-space: normal; max-width: 100%; text-align: center;">';
+        $html .= 'Brecha significativa detectada ';
+        $html .= '<span style="white-space: nowrap;">(' . round($max_percentage - $min_percentage, 1) . '% diferencia)</span>';
+        $html .= '</span>';
+        $html .= '</div>';
         $html .= '</div>';
     }
     

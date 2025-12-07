@@ -66,13 +66,13 @@ $string['smart_example'] = '<strong>Ejemplo:</strong> Aumentar la participación
 $string['vocational_areas_instruction'] = 'Selecciona el área vocacional que más te represente:';
 $string['vocational_areas_secondary'] = '2.3.2 Áreas Vocacionales Secundarias (Opcional)';
 $string['vocational_areas_secondary_instruction'] = 'Puedes seleccionar áreas adicionales que también te interesen (opcional):';
-$string['vocational_area_c'] = 'C (Ciencias Exactas, Administrativas y Contables)';
-$string['vocational_area_h'] = 'H (Humanística y Ciencias Sociales)';
+$string['vocational_area_c'] = 'C (Administrativa)';
+$string['vocational_area_h'] = 'H (Humanidades/Sociales/Jurídicas)';
 $string['vocational_area_a'] = 'A (Artísticas)';
-$string['vocational_area_s'] = 'S (Ciencias de la Salud y Medicina)';
-$string['vocational_area_i'] = 'I (Ingenierías y Computación)';
+$string['vocational_area_s'] = 'S (Ciencias de la Salud)';
+$string['vocational_area_i'] = 'I (Enseñanzas Técnicas)';
 $string['vocational_area_d'] = 'D (Defensa y Seguridad)';
-$string['vocational_area_e'] = 'E (Ciencias Agrarias y Naturales)';
+$string['vocational_area_e'] = 'E (Ciencias Experimentales)';
 $string['none_selected'] = 'Ninguna';
 
 // Action plan template

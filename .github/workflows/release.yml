@@ -1,108 +1,151 @@
-name: Create Release Package
+name: Automated Release
 
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'version.php'
   workflow_dispatch:
     inputs:
-      create_github_release:
-        description: 'Create GitHub Release'
-        required: true
-        default: true
+      force_release:
+        description: 'Force release even if version exists'
+        required: false
         type: boolean
+        default: false
 
 jobs:
-  create-release:
+  check-version:
     runs-on: ubuntu-latest
-    
+    outputs:
+      should-release: ${{ steps.version-check.outputs.should-release }}
+      version: ${{ steps.version-check.outputs.version }}
+      release-name: ${{ steps.version-check.outputs.release-name }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Get version from version.php
-      id: get_version
-      run: |
-        # Extract version from version.php
-        VERSION=$(grep -o "version = [0-9]*" version.php | grep -o "[0-9]*")
-        RELEASE=$(grep -o "release.*=.*'[^']*'" version.php | grep -o "'[^']*'" | tr -d "'")
-        COMMIT_SHORT=$(echo ${{ github.sha }} | cut -c1-7)
-        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "release=$RELEASE" >> $GITHUB_OUTPUT
-        echo "commit_short=$COMMIT_SHORT" >> $GITHUB_OUTPUT
-        echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
-        echo "tag=v$RELEASE" >> $GITHUB_OUTPUT
-        echo "auto_tag=v$RELEASE-auto-$COMMIT_SHORT" >> $GITHUB_OUTPUT
-        
-    - name: Create release directory
-      run: |
-        mkdir -p release/block_student_path
-        
-    - name: Copy files to release directory
-      run: |
-        # Copy all files except .git and .github
-        rsync -av --exclude='.git' --exclude='.github' --exclude='release' --exclude='build' . release/block_student_path/
-        
-    - name: Create ZIP package
-      run: |
-        cd release
-        zip -r "block_student_path_v${{ steps.get_version.outputs.release }}.zip" block_student_path/
-        
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: block_student_path_v${{ steps.get_version.outputs.release }}
-        path: release/block_student_path_v${{ steps.get_version.outputs.release }}.zip
-        
-    - name: Check if tag exists
-      id: check_tag
-      run: |
-        if git rev-parse "refs/tags/${{ steps.get_version.outputs.tag }}" >/dev/null 2>&1; then
-          echo "tag_exists=true" >> $GITHUB_OUTPUT
-        else
-          echo "tag_exists=false" >> $GITHUB_OUTPUT
-        fi
-        
-    - name: Create tag if not exists
-      if: steps.check_tag.outputs.tag_exists == 'false'
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git tag ${{ steps.get_version.outputs.tag }}
-        git push origin ${{ steps.get_version.outputs.tag }}
-        
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ steps.get_version.outputs.tag }}
-        name: Student Path Block v${{ steps.get_version.outputs.release }}
-        body: |
-          ## Student Path Block Release v${{ steps.get_version.outputs.release }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if version changed
+        id: version-check
+        run: |
+          # Extraer versión actual del archivo version.php
+          CURRENT_VERSION=$(grep -oP "(?<=\\\$plugin->release = ')[^']*" version.php)
+          echo "Current version: $CURRENT_VERSION"
           
-          ### 📦 Installation
-          1. Download the ZIP file below
-          2. Extract it to your Moodle `blocks/` directory
-          3. Visit your Moodle admin page to complete the installation
+          # Verificar si ya existe un tag para esta versión (a menos que sea forzado)
+          if [ "${{ github.event.inputs.force_release }}" = "true" ]; then
+            echo "Force release enabled, proceeding..."
+            echo "should-release=true" >> $GITHUB_OUTPUT
+          elif git tag --list | grep -q "^v$CURRENT_VERSION$"; then
+            echo "Tag v$CURRENT_VERSION already exists, skipping release"
+            echo "should-release=false" >> $GITHUB_OUTPUT
+          else
+            echo "New version detected: $CURRENT_VERSION"
+            echo "should-release=true" >> $GITHUB_OUTPUT
+          fi
           
-          ### 📋 Version Details
-          - **Plugin Version**: ${{ steps.get_version.outputs.version }}
-          - **Release Version**: ${{ steps.get_version.outputs.release }}
-          - **Commit**: ${{ github.sha }}
-          - **Build Date**: ${{ steps.get_version.outputs.timestamp }}
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "release-name=Student Path Block v$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+  create-release:
+    needs: check-version
+    if: needs.check-version.outputs.should-release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1
+        with:
+          php-version: '8.1'
+
+      - name: Validate PHP syntax
+        run: |
+          echo "Validating PHP syntax..."
+          find . -name "*.php" -exec php -l {} \; || exit 1
+
+      - name: Create release archive
+        run: |
+          # Crear directorio temporal para el release
+          mkdir -p release-temp/student_path
           
-          ### 🚀 What's Included
-          - Complete Student Path block for Moodle
-          - Multi-language support (English/Spanish)
-          - Teacher and student views
-          - AJAX functionality
-          - Database installation scripts
+          # Copiar archivos del plugin (excluyendo .git y archivos de desarrollo)
+          rsync -av \
+            --exclude='.git*' \
+            --exclude='release-temp' \
+            --exclude='*.log' \
+            --exclude='node_modules' \
+            --exclude='.DS_Store' \
+            ./ release-temp/student_path/
           
-          ### 📝 Changelog
-          See commit history for detailed changes since last release.
-        files: |
-          release/block_student_path_v${{ steps.get_version.outputs.release }}.zip
-        draft: false
-        prerelease: false
-        make_latest: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Crear archivo ZIP
+          cd release-temp
+          zip -r ../student_path-v${{ needs.check-version.outputs.version }}.zip student_path/
+          cd ..
+          
+          # Verificar que el archivo se creó
+          ls -la student_path-v${{ needs.check-version.outputs.version }}.zip
+          
+          # Limpiar directorio temporal
+          rm -rf release-temp
+
+      - name: Extract changelog for version
+        id: changelog
+        run: |
+          # Extraer changelog para la versión actual
+          if [ -f "CHANGELOG.md" ]; then
+            # Buscar la sección de la versión actual
+            awk '/## \['"${{ needs.check-version.outputs.version }}"'\]/{flag=1; next} /## \[/{flag=0} flag' CHANGELOG.md > current_changelog.md
+            
+            if [ -s current_changelog.md ]; then
+              echo "Found changelog entry for version ${{ needs.check-version.outputs.version }}"
+              echo "Changelog content:"
+              cat current_changelog.md
+            else
+              echo "No specific changelog entry found, using default message"
+              echo "### Cambios en esta versión" > current_changelog.md
+              echo "- Consultar CHANGELOG.md para detalles completos" >> current_changelog.md
+              echo "- Version: ${{ needs.check-version.outputs.version }}" >> current_changelog.md
+            fi
+          else
+            echo "### Cambios en esta versión" > current_changelog.md
+            echo "- Nueva versión del bloque Student Path" >> current_changelog.md
+            echo "- Version: ${{ needs.check-version.outputs.version }}" >> current_changelog.md
+          fi
+
+      - name: Create Git tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "v${{ needs.check-version.outputs.version }}" -m "Release v${{ needs.check-version.outputs.version }}"
+          git push origin "v${{ needs.check-version.outputs.version }}"
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.check-version.outputs.version }}
+          release_name: ${{ needs.check-version.outputs.release-name }}
+          body_path: current_changelog.md
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./student_path-v${{ needs.check-version.outputs.version }}.zip
+          asset_name: student_path-v${{ needs.check-version.outputs.version }}.zip
+          asset_content_type: application/zip
+
+      - name: Success notification
+        run: |
+          echo "✅ Release v${{ needs.check-version.outputs.version }} created successfully!"
+          echo "📦 Asset: student_path-v${{ needs.check-version.outputs.version }}.zip"
+          echo "🔗 Release URL: https://github.com/${{ github.repository }}/releases/tag/v${{ needs.check-version.outputs.version }}"

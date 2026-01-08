@@ -1,60 +1,58 @@
-<?php
-
-defined('MOODLE_INTERNAL') || die();
-
-function xmldb_block_student_path_install() {
-    global $DB;
-    
-    $dbman = $DB->get_manager();
-    
-    // Define table student_path
-    $table = new xmldb_table('student_path');
-    
-    // Adding fields to table student_path
-    $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-    $table->add_field('user', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-    $table->add_field('course', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-    $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
-    $table->add_field('program', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
-    $table->add_field('admission_year', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null);
-    $table->add_field('email', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
-    $table->add_field('code', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, null);
-    
-    // Nuevos campos estructurados
-    $table->add_field('personality_strengths', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('personality_weaknesses', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('vocational_areas', XMLDB_TYPE_CHAR, '50', null, null, null, null);
-    $table->add_field('vocational_areas_secondary', XMLDB_TYPE_CHAR, '50', null, null, null, null);
-    $table->add_field('vocational_description', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('emotional_skills_level', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    
-    $table->add_field('goal_short_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('goal_medium_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('goal_long_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    
-    $table->add_field('action_short_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('action_medium_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('action_long_term', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    
-    // Campos legados (mantener compatibilidad)
-    $table->add_field('personality_aspects', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('professional_interests', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('emotional_skills', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('goals_aspirations', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('action_plan', XMLDB_TYPE_TEXT, null, null, null, null, null);
-    $table->add_field('created_at', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-    $table->add_field('updated_at', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-    
-    // Adding keys to table student_path
-    $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-    $table->add_key('user', XMLDB_KEY_FOREIGN, array('user'), 'user', array('id'));
-    $table->add_key('course', XMLDB_KEY_FOREIGN, array('course'), 'course', array('id'));
-    
-    // Adding indexes to table student_path
-    $table->add_index('user_course', XMLDB_INDEX_UNIQUE, array('user', 'course'));
-    
-    // Create table for student_path
-    if (!$dbman->table_exists($table)) {
-        $dbman->create_table($table);
-    }
-}
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/student_path/db" VERSION="20220419" COMMENT="XMLDB file for block student_path"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="block_student_path" COMMENT="Stores student path data">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="user" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="program" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="admission_year" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="admission_semester" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="email" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="code" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="personality_strengths" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="personality_weaknesses" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="vocational_areas" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="vocational_areas_secondary" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="vocational_description" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="emotional_skills_level" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="goal_short_term" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="goal_medium_term" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="goal_long_term" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="action_short_term" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="action_medium_term" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="action_long_term" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="is_completed" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="created_at" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="updated_at" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="user" TYPE="foreign" FIELDS="user" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="user_idx" UNIQUE="true" FIELDS="user"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="block_student_path_history" COMMENT="Stores snapshots of student path by semester">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="period" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="e.g. 2025-1, 2025-2"/>
+        <FIELD NAME="content" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="JSON encoded content of the map"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="userid_period_idx" UNIQUE="true" FIELDS="userid, period"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

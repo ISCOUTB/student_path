@@ -571,6 +571,12 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Update initialData to reflect saved state
+                for (const [key, value] of formData.entries()) {
+                    if (initialData.hasOwnProperty(key)) {
+                        initialData[key] = value;
+                    }
+                }
                 
                 if (data.history_created && data.history_data) {
                     // Show buttons
@@ -686,8 +692,10 @@ function loadHistory(historyId, element) {
     
     const isCurrentMode = !document.querySelector('.sp-input').disabled;
     if (isCurrentMode && historyId !== 'current') {
-        updateInitialDataFromForm();
-        saveDat();
+        if (hasFormChanged()) {
+            updateInitialDataFromForm();
+            saveDat();
+        }
     }
 
     // Update active state
@@ -771,6 +779,30 @@ function updateInitialDataFromForm() {
             initialData[key] = value;
         }
     }
+}
+
+function hasFormChanged() {
+    const form = document.getElementById('student-path-form');
+    const formData = new FormData(form);
+    const ignoredKeys = ['courseid', 'sesskey'];
+    
+    for (const [key, value] of formData.entries()) {
+        if (ignoredKeys.includes(key)) continue;
+        
+        if (initialData.hasOwnProperty(key)) {
+            let initialVal = initialData[key];
+            if (initialVal === null || initialVal === undefined) initialVal = '';
+            
+            // Normalize newlines for textareas
+            let sInit = String(initialVal).replace(/\r\n/g, '\n');
+            let sVal = String(value).replace(/\r\n/g, '\n');
+
+            if (sInit !== sVal) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 function populateForm(data) {

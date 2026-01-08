@@ -1,0 +1,52 @@
+<div class="learning-style-visualization">
+    <div class="predominant-styles mb-4 text-center">
+        <h6 class="font-weight-bold text-uppercase text-muted mb-3" style="letter-spacing: 1px;">{{predominant_title}}</h6>
+        <div class="d-flex flex-wrap justify-content-center">
+            {{#predominant_styles}}
+            <span class="badge badge-pill mr-2 mb-2 px-3 py-2 shadow-sm" style="background-color: #eef2f7; color: #0054ce; font-size: 0.9rem; border: 1px solid #dce4ec;">{{.}}</span>
+            {{/predominant_styles}}
+        </div>
+    </div>
+
+    {{#dimensions}}
+    <div class="dimension-card mb-4 ls-dimension-container">
+        <div class="text-center mb-2">
+            <span class="text-uppercase font-weight-bold text-muted" style="font-size: 0.75rem; letter-spacing: 1px;">{{name}}</span>
+        </div>
+        <div class="ls-dimension-grid" style="font-size: 0.9rem;">
+            <div class="ls-area-left">
+                <div class="font-weight-bold" style="color: #0054ce; line-height: 1.2;">{{active_label}}</div>
+                <div class="small text-muted">{{active}} ({{active_percentage}}%)</div>
+            </div>
+            <div class="ls-area-bar">
+                <div class="position-relative" style="height: 12px; background-color: #f0f0f0; border-radius: 6px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);">
+                    <div class="d-flex w-100 h-100">
+                        <div style="width: {{active_percentage}}%; background-color: {{color_left}};"></div>
+                        <div style="width: {{reflexive_percentage}}%; background-color: {{color_right}};"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="ls-area-right">
+                <div class="font-weight-bold" style="color: #66a3ff; line-height: 1.2;">{{reflexive_label}}</div>
+                <div class="small text-muted">{{reflexive}} ({{reflexive_percentage}}%)</div>
+            </div>
+        </div>
+    </div>
+    {{/dimensions}}
+
+    <div class="mt-4 pt-4 border-top">
+        <h6 class="font-weight-bold text-primary mb-3 text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">
+            <i class="fa fa-lightbulb-o mr-2"></i>{{translates_to_title}}:
+        </h6>
+        <div class="profile-descriptions">
+            {{#profile_descriptions}}
+            <div class="d-flex align-items-start mb-3">
+                <div class="mr-3"><i class="fa fa-check-circle" style="font-size: 1.1rem; color: #0054ce;"></i></div>
+                <div>
+                    <div class="text-muted" style="font-size: 0.9rem; line-height: 1.5;">{{.}}</div>
+                </div>
+            </div>
+            {{/profile_descriptions}}
+        </div>
+    </div>
+</div>

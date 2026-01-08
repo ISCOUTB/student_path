@@ -90,8 +90,8 @@ El sistema detecta el cambio de semestre. Si el estudiante ingresa en un nuevo p
 Tanto en escritorio como en móvil, el estudiante puede consultar sus mapas de semestres anteriores, permitiéndole ver cómo han evolucionado sus metas y autopercepción a lo largo de la carrera.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/f1f63e91-c01f-4cdc-b808-7820afad1408" alt="Historial PC" height="500">
-  <img src="https://github.com/user-attachments/assets/1d49c0c1-f00f-48b1-83d3-087d555a93f6" alt="Historial Móvil" height="500">
+  <img src="https://github.com/user-attachments/assets/f1f63e91-c01f-4cdc-b808-7820afad1408" alt="Historial PC" height="350">
+  <img src="https://github.com/user-attachments/assets/1d49c0c1-f00f-48b1-83d3-087d555a93f6" alt="Historial Móvil" height="350">
 </p>
 
 ### 2. Experiencia del Profesor / Administrador

@@ -1,6 +1,5 @@
 /* Block Student Path Admin View - Estilos específicos con !important */
 .block_student_path_admin_container {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     line-height: 1.6 !important;
     max-width: 1500px !important;
     margin: 0 auto !important;
@@ -367,7 +366,6 @@
 
 .block_student_path_admin_container .search-box::before {
     content: "\f002" !important;
-    font-family: 'FontAwesome' !important;
     position: absolute !important;
     left: 12px !important;
     top: 50% !important;
@@ -1681,7 +1679,6 @@
     max-width: 1200px !important;
     margin: 0 auto !important;
     padding: 20px !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     background: #f8f9fa !important;
 }
 
@@ -2669,7 +2666,6 @@
    Block View Styles (Student & Teacher Block)
    ========================================== */
 .block_student_path {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     color: #333 !important;
 }
 
@@ -2744,6 +2740,8 @@
     background: none !important;
     padding: 0 !important;
     border: none !important;
+    min-height: 0px !important;
+
 }
 
 .block_student_path .student-path-card .card-title::before,

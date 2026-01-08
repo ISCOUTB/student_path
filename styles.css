@@ -2144,17 +2144,12 @@
     cursor: pointer !important;
     z-index: 1000 !important;
     transition: all 0.3s ease !important;
+    display: flex;
 }
 
 @media (min-width: 768px) {
     .sp-history-fab {
         display: none !important;
-    }
-}
-
-@media (max-width: 767.98px) {
-    .sp-history-fab {
-        display: flex !important;
     }
 }
 
@@ -2299,11 +2294,6 @@
 @media (max-width: 767.98px) {
     .sp-history-btn-desktop {
         display: none !important;
-    }
-}
-@media (min-width: 768px) {
-    .sp-history-btn-desktop {
-        display: flex !important;
     }
 }
 

@@ -1,0 +1,43 @@
+{{! Admin Dashboard Template }}
+<div id="card-backdrop" class="card-backdrop"></div>
+
+<div class="block_student_path_admin_container">
+    <!-- Header -->
+    <h1 class='mb-4'>
+        <img src='{{iconurl}}' alt='Student Path Icon' />
+        {{title}}
+    </h1>
+    
+    <!-- Description Banner -->
+    <div class="alert alert-info">
+        {{{subtitle}}}
+    </div>
+
+    <!-- Stats Overview V4 -->
+    {{> block_student_path/stats_overview }}
+
+    <!-- Test Progress Section -->
+    <div class="section-header">
+        <h2><i class="fa fa-bar-chart" aria-hidden="true"></i> {{str_progress_by_test}}</h2>
+    </div>
+
+    <div class="test-progress-grid">
+        {{#test_cards}}
+            {{> block_student_path/test_progress_card }}
+        {{/test_cards}}
+    </div>
+
+    <!-- Users Section -->
+    <div class="section-header">
+        <h2><i class="fa fa-users" aria-hidden="true"></i> {{str_users_list}}</h2>
+    </div>
+
+    {{> block_student_path/users_table_section }}
+
+    <!-- Footer Button -->
+    <div class="d-flex justify-content-center mt-4 mb-5">
+        <a href="{{course_url}}" class="btn btn-secondary">
+            <i class="fa fa-arrow-left"></i> {{str_back_to_course}}
+        </a>
+    </div>
+</div>

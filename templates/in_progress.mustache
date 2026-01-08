@@ -1,0 +1,18 @@
+<div class='in-progress-container p-4'>
+    <h4 class='text-center mb-4' style='color: #4a5568;'>{{title}}</h4>
+    <div class='extraordinary-progress-bar {{color_class}} mb-3'>
+        <div class='progress-track'>
+            <div class='progress-fill' style='--final-width: {{percent}}%; width: {{percent}}%'>
+                <span class='progress-percentage {{text_class}}'>{{percent}}%</span>
+                <div class='progress-glow'></div>
+            </div>
+        </div>
+    </div>
+    <div class='progress-details text-center text-muted'>{{details}}</div>
+    {{#show_warning}}
+    <div class='alert alert-warning mt-3 text-center'>
+        <i class='fa fa-exclamation-triangle mr-2'></i>
+        {{warning_msg}}
+    </div>
+    {{/show_warning}}
+</div>

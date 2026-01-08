@@ -1,0 +1,48 @@
+<table class="data-table" id="usersTable">
+    <thead>
+        <tr>
+            <th>{{str_user_name}}</th>
+            <th>{{str_test_progress}}</th>
+            <th>{{str_tests_completed}}</th>
+            <th>{{str_completion_percentage}}</th>
+            <th>{{str_last_activity}}</th>
+            <th>{{str_actions}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{^users}}
+            <tr><td colspan="6" style="text-align: center; padding: 20px;">{{str_no_users_found}}</td></tr>
+        {{/users}}
+        {{#users}}
+            <tr data-status="{{status_class}}">
+                <td>
+                    <div class="user-name">{{fullname}}</div>
+                    <span class="user-email">{{email}}</span>
+                </td>
+                <td>
+                    <div class="test-indicators">
+                        {{#indicators}}
+                        <div class="test-indicator {{status}}" 
+                                data-userid="{{userid}}" data-test="{{test}}"
+                                data-tooltip="{{tooltip}}">{{label}}</div>
+                        {{/indicators}}
+                    </div>
+                </td>
+                <td><strong>{{total_completed}}</strong> / 5</td>
+                <td>
+                    <div class="progress-bar-wrapper" style="height: 8px;">
+                        <div class="progress-bar-fill" style="width: {{completion_percentage}}%; height: 100%;"></div>
+                    </div>
+                    <div class="progress-text" style="margin-top: 4px;">{{completion_percentage_rounded}}%</div>
+                </td>
+                <td>{{last_activity_str}}</td>
+                <td>
+                    <a href="{{view_profile_url}}" 
+                        class="btn btn-secondary btn-sm">
+                        {{str_view_details}}
+                    </a>
+                </td>
+            </tr>
+        {{/users}}
+    </tbody>
+</table>

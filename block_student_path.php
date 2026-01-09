@@ -1,4 +1,12 @@
 <?php
+/**
+ * Student Path Block
+ *
+ * @package    block_student_path
+ * @copyright  2026 SAVIO - Sistema de Aprendizaje Virtual Interactivo (UTB)
+ * @author     SAVIO Development Team
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(__DIR__ . '/lib.php');
 
@@ -20,7 +28,7 @@ class block_student_path extends block_base
         global $OUTPUT, $CFG, $DB, $USER, $COURSE;
 
         if ($COURSE->id == SITEID) {
-            return;
+            return $this->content;
         }
 
         if ($this->content !== NULL) {
@@ -36,148 +44,191 @@ class block_student_path extends block_base
         }
 
         if (!isloggedin()) {
-            return;
+            return $this->content;
         }
 
-        // Verificar si el usuario es estudiante en el curso
-        $COURSE_ROLED_AS_STUDENT = $DB->get_record_sql("
-            SELECT m.id
-            FROM {user} m 
-            LEFT JOIN {role_assignments} m2 ON m.id = m2.userid 
-            LEFT JOIN {context} m3 ON m2.contextid = m3.id 
-            LEFT JOIN {course} m4 ON m3.instanceid = m4.id 
-            WHERE (m3.contextlevel = 50 AND m2.roleid IN (5) AND m.id IN ( {$USER->id} )) 
-            AND m4.id = {$COURSE->id} 
-        ");
+        // Load new styles
+        $this->page->requires->css('/blocks/student_path/styles.css');
 
-        // Verificar si el usuario es profesor en el curso
-        $COURSE_ROLED_AS_TEACHER = $DB->get_record_sql("
-            SELECT m.id
-            FROM {user} m 
-            LEFT JOIN {role_assignments} m2 ON m.id = m2.userid 
-            LEFT JOIN {context} m3 ON m2.contextid = m3.id 
-            LEFT JOIN {course} m4 ON m3.instanceid = m4.id 
-            WHERE (m3.contextlevel = 50 AND m2.roleid IN (3, 4) AND m.id IN ( {$USER->id} )) 
-            AND m4.id = {$COURSE->id} 
-        ");
+        // Check permissions
+        $context = context_course::instance($COURSE->id);
+        
+        // Check if user is student (using capability)
+        $is_student = has_capability('block/student_path:makemap', $context);
 
-        // Verificar si es estudiante
-        if (isset($COURSE_ROLED_AS_STUDENT->id) && $COURSE_ROLED_AS_STUDENT->id) {
-            // Verificar si ya tiene información guardada
-            $entry = $DB->get_record('student_path', array('user' => $USER->id, 'course' => $COURSE->id));
+        // Check if user is teacher (using capability)
+        $is_teacher = has_capability('block/student_path:viewreports', $context);
 
-            $this->content->text .= '<div class="block_student_path_container">';
-            if (!$entry) {
-                // Si no tiene información, redirigir a la vista para llenar el formulario
-                $this->content->text .= '<div class="student-path-block">';
-                $this->content->text .= '<p>' . get_string('student_path_intro', 'block_student_path') . '</p>';
-                $redirect_url = new moodle_url('/blocks/student_path/view.php', array('cid' => $COURSE->id));
-                $this->content->text .= '<a href="' . $redirect_url . '" class="btn btn-primary">' . 
-                                       get_string('complete_profile', 'block_student_path') . '</a>';
-                $this->content->text .= '</div>';
-            } else {
-                // Si ya tiene información, mostrar resumen y opción de editar
-                $this->content->text .= '<div class="student-path-block">';
-                $this->content->text .= '<h4>' . get_string('student_path_summary', 'block_student_path') . '</h4>';
-                
-                // Mostrar información básica
-                $this->content->text .= '<div class="student-info">';
-                $this->content->text .= '<strong>' . get_string('name', 'block_student_path') . ':</strong> ' . $USER->firstname . ' ' . $USER->lastname . '<br>';
-                $this->content->text .= '<strong>' . get_string('program', 'block_student_path') . ':</strong> ' . $entry->program . '<br>';
-                $this->content->text .= '<strong>' . get_string('admission_year', 'block_student_path') . ':</strong> ' . $entry->admission_year . '<br>';
-                $this->content->text .= '</div>';
-                
-                // Botón para ver/editar información completa
-                $edit_url = new moodle_url('/blocks/student_path/view.php', array('cid' => $COURSE->id, 'edit' => 1));
-                $this->content->text .= '<div class="student-path-actions">';
-                $this->content->text .= '<a href="' . $edit_url . '" class="btn btn-secondary">' . 
-                                       get_string('edit_profile', 'block_student_path') . '</a>';
-                $this->content->text .= '</div>';
-                $this->content->text .= '</div>';
-            }
-            $this->content->text .= '</div>';
-        } else if (isset($COURSE_ROLED_AS_TEACHER->id) && $COURSE_ROLED_AS_TEACHER->id) {
-            // Vista para profesores - mostrar estadísticas integradas y enlace a lista de estudiantes
-            $stats = get_integrated_course_stats($COURSE->id);
-            $this->content->text .= '<div class="block_student_path_container">';
-            $this->content->text .= '<div class="student-path-block teacher-view">';
-            $this->content->text .= '<h4>' . get_string('integrated_dashboard', 'block_student_path') . '</h4>';
-            
-            $this->content->text .= '<div class="stats-grid">';
-            
-            // Total de estudiantes
-            $this->content->text .= '<div class="stat-item">';
-            $this->content->text .= '<span class="stat-number">' . $stats->total_students . '</span>';
-            $this->content->text .= '<span class="stat-label">' . get_string('total_students', 'block_student_path') . '</span>';
-            $this->content->text .= '</div>';
-            
-            // Perfiles completos
-            $this->content->text .= '<div class="stat-item">';
-            $this->content->text .= '<span class="stat-number">' . $stats->complete_profiles . '</span>';
-            $this->content->text .= '<span class="stat-label">' . get_string('complete_profiles', 'block_student_path') . '</span>';
-            $this->content->text .= '</div>';
-            
-            // Porcentaje de finalización
-            $this->content->text .= '<div class="stat-item">';
-            $this->content->text .= '<span class="stat-number">' . $stats->complete_profiles_percentage . '%</span>';
-            $this->content->text .= '<span class="stat-label">' . get_string('completion_rate', 'block_student_path') . '</span>';
-            $this->content->text .= '</div>';
-            
-            $this->content->text .= '</div>';
-            
-            // Desglose por tipo de evaluación
-            $this->content->text .= '<div class="evaluation-breakdown">';
-            $this->content->text .= '<h5>' . get_string('evaluation_breakdown', 'block_student_path') . '</h5>';
-            $this->content->text .= '<div class="breakdown-items">';
-            
-            $this->content->text .= '<div class="breakdown-item">';
-            $this->content->text .= '<span class="breakdown-label">' . get_string('student_path_test', 'block_student_path') . ':</span>';
-            $this->content->text .= '<span class="breakdown-value">' . $stats->student_path_completed . '/' . $stats->total_students . ' (' . $stats->student_path_percentage . '%)</span>';
-            $this->content->text .= '</div>';
-            
-            $this->content->text .= '<div class="breakdown-item">';
-            $this->content->text .= '<span class="breakdown-label">' . get_string('learning_style_test', 'block_student_path') . ':</span>';
-            $this->content->text .= '<span class="breakdown-value">' . $stats->learning_style_completed . '/' . $stats->total_students . ' (' . $stats->learning_style_percentage . '%)</span>';
-            $this->content->text .= '</div>';
-            
-            $this->content->text .= '<div class="breakdown-item">';
-            $this->content->text .= '<span class="breakdown-label">' . get_string('personality_test', 'block_student_path') . ':</span>';
-            $this->content->text .= '<span class="breakdown-value">' . $stats->personality_test_completed . '/' . $stats->total_students . ' (' . $stats->personality_test_percentage . '%)</span>';
-            $this->content->text .= '</div>';
-            
-            $this->content->text .= '<div class="breakdown-item">';
-            $this->content->text .= '<span class="breakdown-label">' . get_string('tmms_24_test', 'block_student_path') . ':</span>';
-            $this->content->text .= '<span class="breakdown-value">' . $stats->tmms_24_completed . '/' . $stats->total_students . ' (' . $stats->tmms_24_percentage . '%)</span>';
-            $this->content->text .= '</div>';
-            
-            $this->content->text .= '<div class="breakdown-item">';
-            $this->content->text .= '<span class="breakdown-label">' . get_string('chaside_test', 'block_student_path') . ':</span>';
-            $this->content->text .= '<span class="breakdown-value">' . $stats->chaside_completed . '/' . $stats->total_students . ' (' . $stats->chaside_percentage . '%)</span>';
-            $this->content->text .= '</div>';
-            
-            $this->content->text .= '</div>';
-            $this->content->text .= '</div>';
-            
-            // Botón para ver mapa de identidades integrado
-            $teacher_url = new moodle_url('/blocks/student_path/teacher_view.php', array('cid' => $COURSE->id));
-            $this->content->text .= '<div class="teacher-actions">';
-            $this->content->text .= '<a href="' . $teacher_url . '" class="btn btn-primary">' . 
-                                   get_string('view_identity_map', 'block_student_path') . '</a>';
-            $this->content->text .= '</div>';
-            $this->content->text .= '</div>';
-            $this->content->text .= '</div>';
+        $this->content->text .= '<div class="block_student_path">';
+
+        if ($is_teacher) {
+            $this->content->text .= $this->get_teacher_content($COURSE);
+        } else if ($is_student) {
+            $this->content->text .= $this->get_student_content($DB, $USER, $COURSE);
         } else {
-            // Si no es estudiante ni profesor, mostrar mensaje genérico
-            $this->content->text .= '<div class="block_student_path_container">';
-            $this->content->text .= '<div class="student-path-block">';
-            $this->content->text .= '<p>' . get_string('no_access', 'block_student_path') . '</p>';
-            $this->content->text .= '</div>';
-            $this->content->text .= '</div>';
+            // Fallback or empty
+             $this->content->text .= '<div class="alert alert-info-custom">' . get_string('no_access', 'block_student_path') . '</div>';
         }
 
-        // Agregar estilos CSS
-        $this->content->text .= '<link rel="stylesheet" href="' . $CFG->wwwroot . '/blocks/student_path/styles.css">';
+        $this->content->text .= '</div>';
 
         return $this->content;
+    }
+
+    /**
+     * Generates the content for the student view
+     */
+    private function get_student_content($DB, $USER, $COURSE) {
+        global $OUTPUT;
+        
+        // Use the centralized function to get progress
+        $progress = get_student_path_progress($USER->id);
+        $status = $progress['status'];
+        $filled_count = $progress['filled'];
+        $total_fields = $progress['total'];
+        
+        $is_completed = ($status === 'completed');
+        $in_progress = ($status === 'in-progress');
+        
+        // Check if entry exists for other data
+        $entry = $DB->get_record('block_student_path', array('user' => $USER->id));
+        
+        $data = [
+            'is_completed' => $is_completed,
+            'in_progress' => $in_progress,
+            'icon_url' => $this->get_icon_url(),
+            'str_profile_completed' => get_string('profile_completed', 'block_student_path'),
+            'str_profile_completed_small' => get_string('profile_completed_small', 'block_student_path'),
+            'str_pluginname' => get_string('pluginname', 'block_student_path'),
+            'str_discover_path' => get_string('discover_path', 'block_student_path'),
+            'str_student_path_intro' => get_string('student_path_intro', 'block_student_path'),
+            'str_in_progress' => get_string('in_progress', 'block_student_path'),
+            'filled_count' => $filled_count,
+            'total_fields' => $total_fields,
+            'percentage' => ($filled_count / $total_fields) * 100,
+            'percentage_formatted' => number_format(($filled_count / $total_fields) * 100, 1),
+            'str_completed' => get_string('completed', 'block_student_path'),
+            'str_for_what_map' => get_string('for_what_map', 'block_student_path'),
+            'str_for_what_map_one' => get_string('for_what_map_one', 'block_student_path'),
+            'str_for_what_map_two' => get_string('for_what_map_two', 'block_student_path'),
+            'str_for_what_map_three' => get_string('for_what_map_three', 'block_student_path'),
+            'str_student_path_title' => get_string('student_path_title', 'block_student_path'),
+            'str_name' => get_string('name', 'block_student_path'),
+            'user_fullname' => s($USER->firstname . ' ' . $USER->lastname),
+            'str_program' => get_string('program', 'block_student_path'),
+            'str_admission_year' => get_string('admission_year', 'block_student_path'),
+        ];
+
+        // Program display logic
+        $program_display = '-';
+        if (isset($entry->program) && !empty($entry->program)) {
+            if (strpos($entry->program, 'prog_') === 0 && get_string_manager()->string_exists($entry->program, 'block_student_path')) {
+                $program_display = get_string($entry->program, 'block_student_path');
+            } else {
+                $program_display = s($entry->program);
+            }
+        }
+        $data['program_display'] = $program_display;
+        $data['admission_year'] = isset($entry->admission_year) ? s($entry->admission_year) : '-';
+
+        // Button logic
+        $url = new moodle_url('/blocks/student_path/view.php', array('cid' => $COURSE->id));
+        if ($is_completed) {
+             $url->param('edit', 1);
+        }
+        $data['action_url'] = $url->out();
+
+        if (!$entry) {
+            // Not Started
+            $data['btn_text'] = get_string('start_map', 'block_student_path');
+            $data['btn_class'] = 'btn-primary-custom';
+            $data['btn_icon'] = 'fa-play';
+        } elseif ($in_progress) {
+            // In Progress
+            $data['btn_text'] = get_string('complete_profile', 'block_student_path');
+            $data['btn_class'] = 'btn-primary-custom';
+            $data['btn_icon'] = 'fa-pencil';
+        } else {
+            // Completed
+            $data['btn_text'] = get_string('view_edit_map', 'block_student_path');
+            $data['btn_class'] = 'btn-primary-custom'; 
+            $data['btn_icon'] = 'fa-eye';
+        }
+        
+        return $OUTPUT->render_from_template('block_student_path/student_view', $data);
+    }
+
+    /**
+     * Generates the content for the teacher view
+     */
+    private function get_teacher_content($COURSE) {
+        global $OUTPUT;
+        
+        // Get stats
+        $stats = get_integrated_course_stats($COURSE->id);
+        
+        $data = [
+            'icon_url' => $this->get_icon_url(),
+            'str_integrated_dashboard' => get_string('integrated_dashboard', 'block_student_path'),
+            'str_course_overview' => get_string('course_overview', 'block_student_path'),
+            'total_students' => (int)$stats->total_students,
+            'str_total_students' => get_string('total_students', 'block_student_path'),
+            'complete_profiles' => (int)$stats->complete_profiles,
+            'str_complete_profiles' => get_string('complete_profiles', 'block_student_path'),
+            'completion_rate_formatted' => number_format($stats->complete_profiles_percentage, 1),
+            'str_completion_rate' => get_string('completion_rate', 'block_student_path'),
+            'str_evaluation_breakdown' => get_string('evaluation_breakdown', 'block_student_path'),
+            'str_view_identity_map' => get_string('view_identity_map', 'block_student_path'),
+        ];
+
+        $data['progress_bars'] = [
+            [
+                'label' => get_string('learning_style_test', 'block_student_path'),
+                'completed' => (int)$stats->learning_style_completed,
+                'total' => (int)$stats->total_students,
+                'percentage' => number_format($stats->learning_style_percentage, 1),
+                'color_class' => 'bg-learning-style'
+            ],
+            [
+                'label' => get_string('personality_test', 'block_student_path'),
+                'completed' => (int)$stats->personality_completed,
+                'total' => (int)$stats->total_students,
+                'percentage' => number_format($stats->personality_percentage, 1),
+                'color_class' => 'bg-personality'
+            ],
+            [
+                'label' => get_string('chaside_test', 'block_student_path'),
+                'completed' => (int)$stats->chaside_completed,
+                'total' => (int)$stats->total_students,
+                'percentage' => number_format($stats->chaside_percentage, 1),
+                'color_class' => 'bg-chaside'
+            ],
+            [
+                'label' => get_string('tmms_24_test', 'block_student_path'),
+                'completed' => (int)$stats->tmms24_completed,
+                'total' => (int)$stats->total_students,
+                'percentage' => number_format($stats->tmms24_percentage, 1),
+                'color_class' => 'bg-tmms-24'
+            ],
+            [
+                'label' => get_string('student_profile', 'block_student_path'),
+                'completed' => (int)$stats->student_path_completed,
+                'total' => (int)$stats->total_students,
+                'percentage' => number_format($stats->student_path_percentage, 1),
+                'color_class' => 'bg-student-path'
+            ]
+        ];
+        
+        $url = new moodle_url('/blocks/student_path/admin_view.php', array('cid' => $COURSE->id));
+        $data['action_url'] = $url->out();
+        
+        return $OUTPUT->render_from_template('block_student_path/teacher_view', $data);
+    }
+
+    /**
+     * Helper to get the icon URL
+     */
+    private function get_icon_url() {
+        return new moodle_url('/blocks/student_path/pix/icon.svg');
     }
 }

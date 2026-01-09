@@ -1,0 +1,847 @@
+<!-- Student Path Edit Form Template -->
+<div class="student-path-container">
+    
+    <!-- Header Section -->
+    <div class="sp-header">
+        <div class="sp-header-content">
+            <h1>{{#str}}student_path_title, block_student_path{{/str}}</h1>
+            
+            <!-- Mobile Logo -->
+            <div class="sp-header-icon-mobile d-md-none my-3 text-center">
+                <img src="{{icon_url}}" alt="icon" style="max-width: 80px;">
+            </div>
+
+            <p>{{#str}}student_path_intro_elegant, block_student_path{{/str}}</p>
+            
+            <div class="alert alert-success mt-2 mb-0" style="background-color: #d1e7dd; border-color: #badbcc; color: #0f5132;">
+                <i class="fa fa-check-circle"></i> {{#str}}auto_save_notice, block_student_path{{/str}}
+            </div>
+        </div>
+        <!-- Desktop Logo -->
+        <div class="sp-header-icon d-none d-md-block">
+            <img src="{{icon_url}}" alt="icon">
+        </div>
+
+        <!-- Desktop History Button -->
+        <div id="sp-history-btn-desktop" class="sp-history-btn-desktop d-none d-md-flex" title="{{#str}}view_history, block_student_path{{/str}}" style="{{^has_history}}display: none !important;{{/has_history}}">
+            <span class="sp-history-label">{{#str}}history_versions, block_student_path{{/str}}</span>
+            <i class="fa fa-history"></i>
+        </div>
+    </div>
+
+    <!-- History FAB (Mobile) & Menu -->
+    <div id="sp-history-fab" class="sp-history-fab d-md-none" title="{{#str}}view_history, block_student_path{{/str}}" style="{{^has_history}}display: none !important;{{/has_history}}">
+        <i class="fa fa-history"></i>
+    </div>
+    
+    <div id="sp-history-menu" class="sp-history-menu">
+        <h5 class="mb-3 border-bottom pb-2">{{#str}}history_versions, block_student_path{{/str}}</h5>
+        <div class="sp-history-item active" onclick="loadHistory('current', this)">
+            <i class="fa fa-check"></i> {{#str}}current_version, block_student_path{{/str}}
+        </div>
+        <div id="sp-history-list">
+            {{#history_items}}
+            <div class="sp-history-item" onclick="loadHistory('{{id}}', this)">
+                <i class="fa fa-clock-o"></i> {{period_formatted}}
+                <br><small class="text-muted">{{date_formatted}}</small>
+            </div>
+            {{/history_items}}
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="sp-notification" class="sp-notification-toast">
+        <!-- Content injected by JS if needed -->
+    </div>
+
+    <!-- Navigation Tabs (Desktop) -->
+    <div class="sp-tabs d-none d-md-flex">
+        {{#tabs}}
+        <button class="sp-tab {{active}}" data-target="{{target}}" style="--tab-color: {{color}};">
+            <i class="fa {{icon}}"></i> {{label}}
+        </button>
+        {{/tabs}}
+    </div>
+
+    <!-- History Warning Banner -->
+    <div id="sp-history-warning" class="sp-history-warning">
+        <i class="fa fa-exclamation-triangle"></i>
+        <div>
+            <strong>{{#str}}history_view_mode, block_student_path{{/str}}</strong><br>
+            {{#str}}history_view_msg, block_student_path{{/str}}
+        </div>
+    </div>
+
+    <!-- Content Sections -->
+    <form id="student-path-form" class="sp-form">
+        <input type="hidden" name="courseid" value="{{courseid}}">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        
+        <!-- Section: Personal Info -->
+        <div class="sp-mobile-tab d-md-none active" data-target="section-personal" style="--tab-color: {{color_personal}};">
+            <span><i class="fa fa-user"></i> {{#str}}personal_info, block_student_path{{/str}}</span>
+            <i class="fa fa-chevron-down arrow"></i>
+        </div>
+        <div id="section-personal" class="sp-section active" style="--section-color: {{color_personal}};">
+            <div class="sp-section-header mb-4">
+                <h2>{{#str}}personal_info, block_student_path{{/str}}</h2>
+                <p class="text-muted fst-italic mt-2 mb-0">{{#str}}tab_personal_msg, block_student_path{{/str}}</p>
+            </div>
+            <div class="sp-section-content">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{#str}}name, block_student_path{{/str}}</label>
+                        <input type="text" id="sp-name-display" class="form-control" value="{{user_fullname}}" disabled>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{#str}}email, block_student_path{{/str}}</label>
+                        <input type="text" id="sp-email-display" class="form-control" value="{{user_email}}" disabled>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{#str}}code, block_student_path{{/str}}</label>
+                        <input type="text" id="sp-code-display" class="form-control" value="{{user_idnumber}}" disabled>
+                        <input type="hidden" name="code" value="{{user_idnumber}}">
+                    </div>
+                    
+                    <!-- Program Selector -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{#str}}program, block_student_path{{/str}}</label>
+                        <select name="program_select" id="program_select" class="form-control sp-input">
+                            <option value="">{{#str}}choose{{/str}}...</option>
+                            {{#program_groups}}
+                            <optgroup label="{{label}}">
+                                {{#options}}
+                                <option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                                {{/options}}
+                            </optgroup>
+                            {{/program_groups}}
+                            <option value="other" {{#is_other_program}}selected{{/is_other_program}}>{{#str}}program_other, block_student_path{{/str}}</option>
+                        </select>
+                        <input type="hidden" name="program" id="program_real" value="{{program_value}}">
+                        
+                        <div id="program_other_container" class="mt-2" style="display: {{#is_other_program}}block{{/is_other_program}}{{^is_other_program}}none{{/is_other_program}};">
+                            <input type="text" id="program_other_input" class="form-control sp-input" 
+                                   placeholder="{{#str}}program_other, block_student_path{{/str}}"
+                                   value="{{other_program_value}}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{#str}}admission_year, block_student_path{{/str}}</label>
+                        <input type="number" name="admission_year" id="admission_year" class="form-control sp-input" 
+                               value="{{admission_year}}" placeholder="{{current_year}}" min="2022" max="{{current_year}}">
+                        <div class="invalid-feedback" id="year-error"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{#str}}admission_semester, block_student_path{{/str}}</label>
+                        <select name="admission_semester" id="admission_semester" class="form-control sp-input">
+                            <option value="">{{#str}}choose{{/str}}...</option>
+                            <option value="1" {{#sem_1_selected}}selected{{/sem_1_selected}}>{{#str}}semester_1, block_student_path{{/str}}</option>
+                            <option value="2" {{#sem_2_selected}}selected{{/sem_2_selected}}>{{#str}}semester_2, block_student_path{{/str}}</option>
+                        </select>
+                        <div class="invalid-feedback" id="semester-error"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Self Discovery -->
+        <div class="sp-mobile-tab d-md-none" data-target="section-discovery" style="--tab-color: {{color_discovery}};">
+            <span><i class="fa fa-lightbulb"></i> {{#str}}self_discovery, block_student_path{{/str}}</span>
+            <i class="fa fa-chevron-down arrow"></i>
+        </div>
+        <div id="section-discovery" class="sp-section" style="--section-color: {{color_discovery}};">
+            <div class="sp-section-header mb-4">
+                <h2>{{#str}}self_discovery, block_student_path{{/str}}</h2>
+                <p class="text-muted fst-italic mt-2 mb-0">{{#str}}tab_discovery_msg, block_student_path{{/str}}</p>
+            </div>
+            <div class="sp-section-content">
+                <div class="mb-4">
+                    <label class="form-label">{{#str}}personality_strengths, block_student_path{{/str}}</label>
+                    <textarea name="personality_strengths" class="form-control sp-input" rows="4" placeholder="{{#str}}personality_strengths_placeholder, block_student_path{{/str}}">{{personality_strengths}}</textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">{{#str}}personality_weaknesses, block_student_path{{/str}}</label>
+                    <textarea name="personality_weaknesses" class="form-control sp-input" rows="4" placeholder="{{#str}}personality_weaknesses_placeholder, block_student_path{{/str}}">{{personality_weaknesses}}</textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">{{#str}}vocational_areas, block_student_path{{/str}}</label>
+                        <select name="vocational_areas" class="form-control sp-input">
+                            <option value="">{{#str}}choose{{/str}}...</option>
+                            {{#vocational_options}}
+                            <option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                            {{/vocational_options}}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">{{#str}}vocational_areas_secondary, block_student_path{{/str}}</label>
+                        <select name="vocational_areas_secondary" class="form-control sp-input">
+                            <option value="">{{#str}}choose{{/str}}...</option>
+                            <option value="none" {{#sec_none_selected}}selected{{/sec_none_selected}}>{{#str}}vocational_area_none, block_student_path{{/str}}</option>
+                            {{#vocational_options_secondary}}
+                            <option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                            {{/vocational_options_secondary}}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">{{#str}}vocational_description, block_student_path{{/str}}</label>
+                    <textarea name="vocational_description" class="form-control sp-input" rows="4" placeholder="{{#str}}vocational_description_placeholder, block_student_path{{/str}}">{{vocational_description}}</textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">{{#str}}emotional_skills_level, block_student_path{{/str}}</label>
+                    <textarea name="emotional_skills_level" class="form-control sp-input" rows="4" placeholder="{{#str}}emotional_skills_placeholder, block_student_path{{/str}}">{{emotional_skills_level}}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Goals -->
+        <div class="sp-mobile-tab d-md-none" data-target="section-goals" style="--tab-color: {{color_goals}};">
+            <span><i class="fa fa-bullseye"></i> {{#str}}goals_aspirations, block_student_path{{/str}}</span>
+            <i class="fa fa-chevron-down arrow"></i>
+        </div>
+        <div id="section-goals" class="sp-section" style="--section-color: {{color_goals}};">
+            <div class="sp-section-header mb-4">
+                <h2>{{#str}}goals_aspirations, block_student_path{{/str}}</h2>
+                <p class="text-muted fst-italic mt-2 mb-0">{{#str}}tab_goals_msg, block_student_path{{/str}}</p>
+            </div>
+            <div class="sp-section-content">
+                <!-- SMART Goals Cards -->
+                <div class="smart-goals-container mb-5">
+                    <h5 class="mb-3"><i class="fa fa-info-circle"></i> {{#str}}smart_goals_intro, block_student_path{{/str}}</h5>
+                    <div class="smart-cards-grid">
+                        {{#smart_goals}}
+                        <div class="smart-card" style="--card-color: {{color}};">
+                            <div class="smart-card-icon">
+                                <i class="fa {{icon}}"></i>
+                            </div>
+                            <div class="smart-card-letter">{{letter}}</div>
+                            <div class="smart-card-content">
+                                <div class="smart-card-title">{{meaning}}</div>
+                                <div class="smart-card-question">{{question}}</div>
+                            </div>
+                        </div>
+                        {{/smart_goals}}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">{{#str}}goal_short_term, block_student_path{{/str}}</label>
+                        <textarea name="goal_short_term" class="form-control sp-input" rows="6" placeholder="{{#str}}goal_short_term_placeholder, block_student_path{{/str}}">{{goal_short_term}}</textarea>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">{{#str}}goal_medium_term, block_student_path{{/str}}</label>
+                        <textarea name="goal_medium_term" class="form-control sp-input" rows="6" placeholder="{{#str}}goal_medium_term_placeholder, block_student_path{{/str}}">{{goal_medium_term}}</textarea>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">{{#str}}goal_long_term, block_student_path{{/str}}</label>
+                        <textarea name="goal_long_term" class="form-control sp-input" rows="6" placeholder="{{#str}}goal_long_term_placeholder, block_student_path{{/str}}">{{goal_long_term}}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Action Plan -->
+        <div class="sp-mobile-tab d-md-none" data-target="section-action" style="--tab-color: {{color_action}};">
+            <span><i class="fa fa-tasks"></i> {{#str}}action_plan, block_student_path{{/str}}</span>
+            <i class="fa fa-chevron-down arrow"></i>
+        </div>
+        <div id="section-action" class="sp-section" style="--section-color: {{color_action}};">
+            <div class="sp-section-header mb-4">
+                <h2>{{#str}}action_plan, block_student_path{{/str}}</h2>
+                <p class="text-muted fst-italic mt-2 mb-0">{{#str}}tab_action_msg, block_student_path{{/str}}</p>
+            </div>
+            <div class="sp-section-content">
+                <!-- Action Plan Template Formula -->
+                <div class="action-plan-formula-container mb-5">
+                    <h5 class="mb-3"><i class="fa fa-pencil-alt"></i> {{#str}}action_plan_template, block_student_path{{/str}}</h5>
+                    <div class="action-formula">
+                        {{#formula_parts}}
+                            <div class="formula-step">
+                                <div class="step-content">{{text}}</div>
+                            </div>
+                            {{#has_next}}
+                            <div class="formula-arrow"><i class="fa fa-arrow-right"></i></div>
+                            {{/has_next}}
+                        {{/formula_parts}}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">{{#str}}action_short_term, block_student_path{{/str}}</label>
+                        <textarea name="action_short_term" class="form-control sp-input" rows="6" placeholder="{{#str}}action_short_term_placeholder, block_student_path{{/str}}">{{action_short_term}}</textarea>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">{{#str}}action_medium_term, block_student_path{{/str}}</label>
+                        <textarea name="action_medium_term" class="form-control sp-input" rows="6" placeholder="{{#str}}action_medium_term_placeholder, block_student_path{{/str}}">{{action_medium_term}}</textarea>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">{{#str}}action_long_term, block_student_path{{/str}}</label>
+                        <textarea name="action_long_term" class="form-control sp-input" rows="6" placeholder="{{#str}}action_long_term_placeholder, block_student_path{{/str}}">{{action_long_term}}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+    
+    <!-- Save Status Indicator -->
+    <div id="save-status" class="save-status">
+        <span class="status-text"></span>
+    </div>
+
+</div>
+
+<script>
+// Store initial data for "Current Version" restoration
+let initialData = {{{json_entry}}};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Desktop Tab Navigation
+    const tabs = document.querySelectorAll('.sp-tab');
+    const sections = document.querySelectorAll('.sp-section');
+    const mobileTabs = document.querySelectorAll('.sp-mobile-tab');
+
+    function activateSection(targetId) {
+        // Deactivate all
+        tabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        mobileTabs.forEach(mt => mt.classList.remove('active'));
+
+        // Activate target
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) targetSection.classList.add('active');
+
+        // Activate corresponding desktop tab
+        const desktopTab = document.querySelector(`.sp-tab[data-target="${targetId}"]`);
+        if (desktopTab) desktopTab.classList.add('active');
+
+        // Activate corresponding mobile tab
+        const mobileTab = document.querySelector(`.sp-mobile-tab[data-target="${targetId}"]`);
+        if (mobileTab) mobileTab.classList.add('active');
+    }
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            activateSection(tab.getAttribute('data-target'));
+        });
+    });
+
+    mobileTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetId = tab.getAttribute('data-target');
+            
+            if (tab.classList.contains('active')) {
+                // Toggle off (close)
+                tab.classList.remove('active');
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) targetSection.classList.remove('active');
+                
+                // Sync desktop tab
+                const desktopTab = document.querySelector(`.sp-tab[data-target="${targetId}"]`);
+                if (desktopTab) desktopTab.classList.remove('active');
+            } else {
+                activateSection(targetId);
+            }
+        });
+    });
+
+    // Program Selector Logic
+    const programSelect = document.getElementById('program_select');
+    const programOtherContainer = document.getElementById('program_other_container');
+    const programOtherInput = document.getElementById('program_other_input');
+    const programReal = document.getElementById('program_real');
+
+    function updateProgramValue() {
+        if (programSelect.value === 'other') {
+            programOtherContainer.style.display = 'block';
+            programReal.value = programOtherInput.value;
+        } else {
+            programOtherContainer.style.display = 'none';
+            programReal.value = programSelect.value;
+        }
+        // Trigger auto-save
+        triggerAutoSave();
+    }
+
+    if (programSelect) programSelect.addEventListener('change', updateProgramValue);
+    if (programOtherInput) programOtherInput.addEventListener('input', updateProgramValue);
+
+    // Validation Logic
+    const yearInput = document.getElementById('admission_year');
+    const semesterInput = document.getElementById('admission_semester');
+    const yearError = document.getElementById('year-error');
+    const semesterError = document.getElementById('semester-error');
+
+    function validateDates() {
+        if (!yearInput) return true;
+        const year = parseInt(yearInput.value);
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1; // 1-12
+        let valid = true;
+
+        // Year Validation
+        if (year < 2022) {
+            yearInput.classList.add('is-invalid');
+            yearError.textContent = '{{#str}}error_year_min, block_student_path{{/str}}';
+            valid = false;
+        } else if (year > currentYear) {
+            yearInput.classList.add('is-invalid');
+            yearError.textContent = '{{#str}}error_year_max, block_student_path{{/str}}';
+            valid = false;
+        } else {
+            yearInput.classList.remove('is-invalid');
+            yearError.textContent = '';
+        }
+
+        // Semester Validation
+        if (year === currentYear) {
+            const semester = parseInt(semesterInput.value);
+            // If current month is before June (6), Semester 2 hasn't started
+            // Actually, let's say Sem 2 starts in July (7).
+            if (currentMonth < 7 && semester === 2) {
+                semesterInput.classList.add('is-invalid');
+                semesterError.textContent = '{{#str}}error_semester_future, block_student_path{{/str}}';
+                valid = false;
+            } else {
+                semesterInput.classList.remove('is-invalid');
+                semesterError.textContent = '';
+            }
+        } else {
+            semesterInput.classList.remove('is-invalid');
+            semesterError.textContent = '';
+        }
+
+        return valid;
+    }
+
+    if (yearInput) {
+        yearInput.addEventListener('input', () => {
+            validateDates();
+            triggerAutoSave();
+        });
+    }
+    if (semesterInput) {
+        semesterInput.addEventListener('change', () => {
+            validateDates();
+            triggerAutoSave();
+        });
+    }
+
+    // Vocational Areas Exclusion Logic
+    const vocArea1 = document.querySelector('select[name="vocational_areas"]');
+    const vocArea2 = document.querySelector('select[name="vocational_areas_secondary"]');
+
+    function updateVocationalOptions() {
+        const val1 = vocArea1.value;
+        const val2 = vocArea2.value;
+
+        // Reset options in 2
+        Array.from(vocArea2.options).forEach(opt => {
+            opt.disabled = (opt.value !== '' && opt.value !== 'none' && opt.value === val1);
+        });
+
+        // Reset options in 1
+        Array.from(vocArea1.options).forEach(opt => {
+            opt.disabled = (opt.value !== '' && opt.value === val2);
+        });
+    }
+
+    if (vocArea1 && vocArea2) {
+        vocArea1.addEventListener('change', () => {
+            updateVocationalOptions();
+            triggerAutoSave();
+        });
+        vocArea2.addEventListener('change', () => {
+            updateVocationalOptions();
+            triggerAutoSave();
+        });
+        // Initial run
+        updateVocationalOptions();
+    }
+    
+    // Expose for History Loader
+    window.updateVocationalOptions = updateVocationalOptions;
+
+    // Auto-save Logic
+    const inputs = document.querySelectorAll('.sp-input');
+    let timeoutId;
+    const statusEl = document.getElementById('save-status');
+    const statusText = statusEl.querySelector('.status-text');
+    let hasShownHistoryTip = false;
+
+    // Check for notification (Welcome back)
+    {{#show_notification}}
+    setTimeout(() => { 
+        const notif = document.getElementById('sp-notification');
+        // Update content
+        notif.innerHTML = '<strong>{{notification_title}}</strong><br>' + 
+                          '{{notification_msg}}' + 
+                          '<button type="button" class="sp-close-btn" onclick="this.parentElement.classList.remove(\'show\')"><i class="fa fa-times"></i></button>';
+        
+        notif.classList.add('show'); 
+        setTimeout(() => { notif.classList.remove('show'); }, 8000);
+    }, 1000);
+    {{/show_notification}}
+
+    // Check for history_new param (New History Created)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('history_new') === '1') {
+        setTimeout(() => {
+            // Clean URL
+            const url = new URL(window.location.href);
+            url.searchParams.delete('history_new');
+            window.history.replaceState({}, '', url);
+        }, 1000);
+    }
+
+    // History FAB Logic
+    const fab = document.getElementById('sp-history-fab');
+    const btnDesktop = document.getElementById('sp-history-btn-desktop');
+    const menu = document.getElementById('sp-history-menu');
+    
+    function toggleMenu() {
+        menu.classList.toggle('show');
+    }
+
+    if (fab) fab.addEventListener('click', toggleMenu);
+    if (btnDesktop) btnDesktop.addEventListener('click', toggleMenu);
+        
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (menu && menu.classList.contains('show')) {
+            const clickedFab = fab && fab.contains(e.target);
+            const clickedBtn = btnDesktop && btnDesktop.contains(e.target);
+            const clickedMenu = menu.contains(e.target);
+            
+            if (!clickedFab && !clickedBtn && !clickedMenu) {
+                menu.classList.remove('show');
+            }
+        }
+    });
+
+    function showStatus(msg, type) {
+        statusText.textContent = msg;
+        
+        // Check if history FAB is visible to adjust position
+        const fab = document.getElementById('sp-history-fab');
+        const hasHistory = fab && window.getComputedStyle(fab).display !== 'none';
+        
+        let className = 'save-status show ' + type;
+        if (hasHistory) {
+            className += ' with-history';
+        }
+        
+        statusEl.className = className;
+        setTimeout(() => {
+            if (type === 'success') {
+                statusEl.classList.remove('show');
+            }
+        }, 2000);
+    }
+
+    function triggerAutoSave() {
+        // Disable editing if viewing history
+        // Check if we are in history mode (simple check: if inputs are disabled)
+        const inputs = document.querySelector('.sp-input');
+        if (inputs && inputs.disabled) return;
+
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(saveDat, 1000);
+    }
+
+    function saveDat() {
+        if (!validateDates()) return;
+
+        showStatus('{{#str}}saving, block_student_path{{/str}}...', 'saving');
+        
+        const formData = new FormData(document.getElementById('student-path-form'));
+        
+        fetch('save_auto.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update initialData to reflect saved state
+                for (const [key, value] of formData.entries()) {
+                    if (initialData.hasOwnProperty(key)) {
+                        initialData[key] = value;
+                    }
+                }
+                
+                if (data.history_created && data.history_data) {
+                    // Show buttons
+                    const fab = document.getElementById('sp-history-fab');
+                    const btnDesktop = document.getElementById('sp-history-btn-desktop');
+                    if (fab) fab.style.setProperty('display', 'flex', 'important');
+                    if (btnDesktop) btnDesktop.style.setProperty('display', 'flex', 'important');
+
+                    // Update list
+                    const listContainer = document.getElementById('sp-history-list');
+                    if (listContainer) {
+                        let html = '';
+                        data.history_data.forEach(h => {
+                            html += `<div class="sp-history-item" onclick="loadHistory('${h.id}', this)">
+                                <i class="fa fa-clock-o"></i> ${h.period}
+                                <br><small class="text-muted">${h.date_formatted}</small>
+                            </div>`;
+                        });
+                        listContainer.innerHTML = html;
+                    }
+                }
+
+                showStatus('{{#str}}saved, block_student_path{{/str}}', 'success');
+            } else {
+                showStatus('{{#str}}error, block_student_path{{/str}}', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showStatus('{{#str}}error, block_student_path{{/str}}', 'error');
+        });
+    }
+
+    inputs.forEach(input => {
+        if (input.id !== 'program_other_input' && input.id !== 'admission_year') { // Handled separately
+            input.addEventListener('input', triggerAutoSave);
+        }
+    });
+
+    // Expose functions to global scope for History Loader
+    window.saveDat = saveDat;
+    window.triggerAutoSave = triggerAutoSave;
+
+    // Resume Feature: Auto-focus on first empty field
+    setTimeout(() => {
+        // Only run if we are in "edit" mode (inputs are enabled)
+        const firstInput = document.querySelector('.sp-input');
+        if (firstInput && firstInput.disabled) return;
+
+        const inputs = document.querySelectorAll('.sp-input, select.sp-input, textarea.sp-input');
+        let firstEmpty = null;
+
+        for (let i = 0; i < inputs.length; i++) {
+            const input = inputs[i];
+            
+            // Special handling for "Other Program" input which might be hidden
+            if (input.id === 'program_other_input') {
+                const container = document.getElementById('program_other_container');
+                // If container is hidden (display: none), skip this input
+                if (container && container.style.display === 'none') continue;
+            }
+            
+            // Check value
+            if (input.value.trim() === '') {
+                firstEmpty = input;
+                break;
+            }
+        }
+
+        if (firstEmpty) {
+            // Find the section
+            const section = firstEmpty.closest('.sp-section');
+            if (section) {
+                const sectionId = section.id;
+                
+                // Activate tab if needed
+                if (!section.classList.contains('active')) {
+                    const tab = document.querySelector(`.sp-tab[data-target="${sectionId}"]`);
+                    if (tab) {
+                        tab.click();
+                    } else {
+                        // Try mobile tab
+                         const mobileTab = document.querySelector(`.sp-mobile-tab[data-target="${sectionId}"]`);
+                         if (mobileTab) mobileTab.click();
+                    }
+                }
+                
+                // Scroll and highlight
+                setTimeout(() => {
+                    firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstEmpty.classList.add('sp-input-highlight');
+                    
+                    // Remove highlight on interaction
+                    const removeHighlight = () => {
+                        firstEmpty.classList.remove('sp-input-highlight');
+                        firstEmpty.removeEventListener('input', removeHighlight);
+                        firstEmpty.removeEventListener('change', removeHighlight);
+                    };
+                    
+                    firstEmpty.addEventListener('input', removeHighlight);
+                    firstEmpty.addEventListener('change', removeHighlight);
+                }, 300); // Delay to allow tab switch
+            }
+        }
+    }, 500); // Delay for initial render
+});
+
+// History Loader
+function loadHistory(historyId, element) {
+    const form = document.getElementById('student-path-form');
+    const inputs = form.querySelectorAll('input, textarea, select');
+    const warning = document.getElementById('sp-history-warning');
+    
+    const isCurrentMode = !document.querySelector('.sp-input').disabled;
+    if (isCurrentMode && historyId !== 'current') {
+        if (hasFormChanged()) {
+            updateInitialDataFromForm();
+            saveDat();
+        }
+    }
+
+    // Update active state
+    if (element) {
+        document.querySelectorAll('.sp-history-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    if (historyId === 'current') {
+        // Restore Current Version
+        if (warning) warning.style.removeProperty('display');
+        const header = document.querySelector('.sp-header');
+        if (header) header.style.borderLeft = 'none';
+
+        // Enable inputs
+        inputs.forEach(input => {
+            input.style.opacity = '1';
+            if (input.classList.contains('sp-input') || input.type === 'hidden') {
+                input.disabled = false;
+            }
+        });
+
+        // Restore data
+        populateForm(initialData);
+        if (window.updateVocationalOptions) window.updateVocationalOptions();
+        return;
+    }
+
+    // Show warning
+    if (warning) warning.style.setProperty('display', 'flex', 'important');
+
+    // Disable and clear inputs
+    inputs.forEach(input => {
+        input.disabled = true;
+        input.style.opacity = '0.7';
+        input.classList.remove('is-invalid');
+        if (input.type !== 'hidden') {
+            input.value = '';
+            // Handle checkboxes/radios if any (none currently used for main data)
+        }
+    });
+    
+    document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+    
+    const otherContainer = document.getElementById('program_other_container');
+    if (otherContainer) otherContainer.style.display = 'none';
+
+    const courseIdInput = form.querySelector('input[name="courseid"]');
+    const courseId = courseIdInput ? courseIdInput.value : 0;
+
+    fetch('get_history.php?id=' + historyId + '&courseid=' + courseId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const content = JSON.parse(data.content);
+            populateForm(content);
+            if (window.updateVocationalOptions) window.updateVocationalOptions();
+            
+            const header = document.querySelector('.sp-header');
+            if (header) header.style.borderLeft = '5px solid #f6ad55';
+        } else {
+            console.error('Failed to load history:', data.message);
+            alert('{{#str}}error, block_student_path{{/str}}: ' + (data.message || 'Unknown error'));
+            const currentItem = document.querySelector('.sp-history-item[onclick*="current"]');
+            if (currentItem) loadHistory('current', currentItem);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('{{#str}}error, block_student_path{{/str}}');
+        const currentItem = document.querySelector('.sp-history-item[onclick*="current"]');
+        if (currentItem) loadHistory('current', currentItem);
+    });
+}
+
+function updateInitialDataFromForm() {
+    const form = document.getElementById('student-path-form');
+    const formData = new FormData(form);
+    for (const [key, value] of formData.entries()) {
+        if (initialData.hasOwnProperty(key)) {
+            initialData[key] = value;
+        }
+    }
+}
+
+function hasFormChanged() {
+    const form = document.getElementById('student-path-form');
+    const formData = new FormData(form);
+    const ignoredKeys = ['courseid', 'sesskey'];
+    
+    for (const [key, value] of formData.entries()) {
+        if (ignoredKeys.includes(key)) continue;
+        
+        if (initialData.hasOwnProperty(key)) {
+            let initialVal = initialData[key];
+            if (initialVal === null || initialVal === undefined) initialVal = '';
+            
+            // Normalize newlines for textareas
+            let sInit = String(initialVal).replace(/\r\n/g, '\n');
+            let sVal = String(value).replace(/\r\n/g, '\n');
+
+            if (sInit !== sVal) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function populateForm(data) {
+    const form = document.getElementById('student-path-form');
+    if (!form) return;
+    
+    for (const [key, value] of Object.entries(data)) {
+        const input = form.querySelector(`[name="${key}"]`);
+        if (input) {
+            input.value = value;
+        }
+        if (key === 'program') {
+            const select = document.getElementById('program_select');
+            const options = Array.from(select.options).map(o => o.value);
+            if (options.includes(value)) {
+                select.value = value;
+                const otherContainer = document.getElementById('program_other_container');
+                if (otherContainer) otherContainer.style.display = 'none';
+            } else {
+                select.value = 'other';
+                const otherContainer = document.getElementById('program_other_container');
+                if (otherContainer) otherContainer.style.display = 'block';
+                const otherInput = document.getElementById('program_other_input');
+                if (otherInput) otherInput.value = value;
+            }
+        }
+    }
+    
+    if (data.name) {
+        const nameDisplay = document.getElementById('sp-name-display');
+        if (nameDisplay) nameDisplay.value = data.name;
+    }
+    if (data.email) {
+        const emailDisplay = document.getElementById('sp-email-display');
+        if (emailDisplay) emailDisplay.value = data.email;
+    }
+    if (data.code) {
+        const codeDisplay = document.getElementById('sp-code-display');
+        if (codeDisplay) codeDisplay.value = data.code;
+    }
+}
+</script>

@@ -1,0 +1,66 @@
+<div class="chaside-complete-summary">
+    <div class="areas-summary-grid">
+        <div class="chaside-grid-container-responsive" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;">
+            {{#areas}}
+            <div class="chaside-card-item mb-3 shadow-sm bg-white rounded overflow-hidden" style="border-top: 4px solid {{card_border_top}} !important;">
+                <div class="p-3 d-flex flex-column h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box rounded-circle d-flex align-items-center justify-content-center mr-3 position-relative flex-shrink-0" style="width: 45px; height: 45px; background-color: {{icon_bg}}; color: {{icon_color}};">
+                            <i class="fa {{icon}} fa-lg"></i>
+                            {{#is_first}}
+                            <div class="position-absolute" style="top: -5px; right: -5px; background: #fff; border-radius: 50%; padding: 2px;">
+                                <i class="fa fa-trophy text-warning" style="font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.1);"></i>
+                            </div>
+                            {{/is_first}}
+                            {{#is_second}}
+                            <div class="position-absolute" style="top: -5px; right: -5px; background: #fff; border-radius: 50%; padding: 2px;">
+                                <i class="fa fa-trophy" style="color: #5f6a71ff; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.1);"></i>
+                            </div>
+                            {{/is_second}}
+                        </div>
+                        <div class="chaside-header-info d-flex align-items-center justify-content-between flex-grow-1 min-width-0">
+                            <div class="mr-2" style="min-width: 0;">
+                                <h6 class="font-weight-bold mb-0" style="line-height: 1.2; word-break: break-word; hyphens: auto;">{{area_name}}</h6>
+                                <small class="text-muted">{{level_text}}</small>
+                            </div>
+                            <div class="font-weight-bold h5 mb-0 chaside-percentage" style="color: {{pct_color}};">{{percentage}}%</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="text-muted" style="font-size: 0.75rem;">{{str_interests}}</small>
+                            <small class="font-weight-bold" style="font-size: 0.75rem;">{{interes_score}}/10</small>
+                        </div>
+                        <div class="progress mb-2" style="height: 6px; background-color: #fff8e1;">
+                            <div class="progress-bar" role="progressbar" style="width: {{int_pct}}%; background-color: {{bar_color_int}};"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="text-muted" style="font-size: 0.75rem;">{{str_aptitudes}}</small>
+                            <small class="font-weight-bold" style="font-size: 0.75rem;">{{aptitud_score}}/4</small>
+                        </div>
+                        <div class="progress" style="height: 6px; background-color: #fff8e1;">
+                            <div class="progress-bar" role="progressbar" style="width: {{apt_pct}}%; background-color: {{bar_color_apt}};"></div>
+                        </div>
+
+                        {{#show_gap}}
+                        <div class="mt-2 pt-2 border-top border-light d-flex align-items-center justify-content-end">
+                            <small class="text-muted mr-2" style="font-size: 0.7rem;">{{str_gap}}: {{gap_abs}}%</small>
+                            <span class="badge badge-light border" style="color: {{gap_color}}; font-size: 0.7rem;">
+                                <i class="fa {{gap_icon}} mr-1"></i>{{gap_text}}
+                            </span>
+                        </div>
+                        {{/show_gap}}
+                        {{#is_balanced}}
+                        <div class="mt-2 pt-2 border-top border-light d-flex align-items-center justify-content-end" style="opacity: 0.6;">
+                            <small class="text-muted" style="font-size: 0.7rem;"><i class="fa fa-check-circle mr-1"></i> {{str_balanced}}</small>
+                        </div>
+                        {{/is_balanced}}
+                    </div>
+                </div>
+            </div>
+            {{/areas}}
+        </div>
+    </div>
+</div>

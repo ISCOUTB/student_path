@@ -1,0 +1,144 @@
+{{#no_data}}
+<div class="alert alert-info shadow-sm border-0 rounded-lg">{{str_no_path_data}}</div>
+{{/no_data}}
+
+{{^no_data}}
+    {{#is_history_view}}
+    <div class="alert alert-warning shadow-sm border-0 rounded-lg mb-4"><i class="fa fa-history"></i> {{str_history_view_msg}}</div>
+    {{/is_history_view}}
+
+    <!-- 1. General Info Card -->
+    <div class="sp-profile-card mb-4 bg-white shadow-sm rounded-lg overflow-hidden" style="border-left: 5px solid #764ba2;">
+        <div class="p-3">
+            <div class="d-flex align-items-center mb-3">
+                <div class="rounded-circle d-flex align-items-center justify-content-center mr-3" style="width: 40px; height: 40px; background-color: #f8f9fa; color: #764ba2;">
+                    <i class="fa fa-id-card-o fa-lg"></i>
+                </div>
+                <h5 class="m-0 font-weight-bold" style="color: #2d3748;">{{str_general_info}}</h5>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                {{#general_fields}}
+                <div class="d-flex flex-column">
+                    <label class="text-uppercase font-weight-bold text-muted mb-0" style="font-size: 0.7rem; letter-spacing: 0.5px;">{{label}}</label>
+                    <div class="font-weight-bold text-dark" style="font-size: 0.9rem; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; -ms-hyphens: auto;" title="{{value}}">
+                        {{value}}
+                    </div>
+                </div>
+                {{/general_fields}}
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Self Discovery Section -->
+    <div class="d-flex align-items-center mb-3 mt-5">
+        <div class="mr-3" style="width: 4px; height: 24px; background: linear-gradient(to bottom, #ffb600, #ff6600); border-radius: 2px;"></div>
+        <h4 class="m-0 font-weight-bold" style="color: #2d3748;">{{str_self_discovery}}</h4>
+    </div>
+    
+    <div class="row">
+        <!-- Strengths -->
+        <div class="col-md-6 mb-4">
+            <div class="h-100 bg-white shadow-sm rounded-lg p-4 border-left" style="border-left: 4px solid #4cd137 !important;">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fa fa-thumbs-up text-success mr-2" style="font-size: 1.2rem;"></i>
+                    <h5 class="m-0 font-weight-bold text-dark">{{str_personality_strengths}}</h5>
+                </div>
+                <div class="text-muted sp-scrollable-text" style="line-height: 1.6;">{{{personality_strengths}}}</div>
+            </div>
+        </div>
+        
+        <!-- Weaknesses -->
+        <div class="col-md-6 mb-4">
+            <div class="h-100 bg-white shadow-sm rounded-lg p-4 border-left" style="border-left: 4px solid #ff6b6b !important;">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fa fa-thumbs-down text-danger mr-2" style="font-size: 1.2rem;"></i>
+                    <h5 class="m-0 font-weight-bold text-dark">{{str_personality_weaknesses}}</h5>
+                </div>
+                <div class="text-muted sp-scrollable-text" style="line-height: 1.6;">{{{personality_weaknesses}}}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vocational & Emotional -->
+    <div class="vocational-card shadow-sm rounded-lg p-4 mb-5">
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center mr-2 text-white" style="width: 32px; height: 32px;"><i class="fa fa-briefcase"></i></div>
+                    <h5 class="m-0 font-weight-bold text-dark">{{str_vocational_profile}}</h5>
+                </div>
+                <div class="d-flex flex-column">
+                    {{#vocational_areas}}
+                    <div class="mb-3 px-3 py-3 rounded-lg d-flex align-items-center shadow-sm" style="background-color: {{bg}}; border-left: 4px solid {{color}};">
+                        <div class="mr-2 d-flex justify-content-center align-items-center" style="width: 32px; min-width: 32px;">
+                            <i class="fa {{icon}} fa-lg" style="color: {{color}};"></i>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-baseline" style="line-height: 1.2;">
+                            <span class="text-uppercase font-weight-bold mr-2" style="font-size: 0.8rem; color: {{color}}; opacity: 0.9;">{{label}}:</span>
+                            <span class="font-weight-bold" style="color: {{color}}; font-size: 1rem; overflow-wrap: break-word; word-wrap: break-word; hyphens: auto;">{{name}}</span>
+                        </div>
+                    </div>
+                    {{/vocational_areas}}
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center mr-2 text-white" style="width: 32px; height: 32px; min-width: 32px; background-color: #ff6600; flex-shrink: 0;"><i class="fa fa-heart"></i></div>
+                    <h5 class="m-0 font-weight-bold text-dark">{{str_emotional_skills_level}}</h5>
+                </div>
+                <div class="text-muted sp-scrollable-text" style="line-height: 1.6;">{{{emotional_skills_level}}}</div>
+            </div>
+            
+            <div class="col-12 mt-4">
+                <div class="p-3 rounded" style="background-color: #f8f9fa; border-left: 4px solid #ffb600;">
+                    <div class="d-flex">
+                        <i class="fa fa-quote-left mr-3 text-warning" style="font-size: 1.2rem; opacity: 0.5;"></i>
+                        <div class="font-italic text-dark sp-scrollable-text" style="line-height: 1.6;">{{vocational_description}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Goals Timeline -->
+    <div class="d-flex align-items-center mb-3 mt-5">
+        <div class="mr-3" style="width: 4px; height: 24px; background-color: #0054ce; border-radius: 2px;"></div>
+        <h4 class="m-0 font-weight-bold" style="color: #2d3748;">{{str_goals_and_actions}}</h4>
+    </div>
+    
+    <div class="sp-timeline position-relative pl-4">
+        <div class="position-absolute" style="top: 0; bottom: 0; left: 14px; width: 2px; background-color: #e2e8f0;"></div>
+        
+        {{#goals}}
+        <div class="mb-5 position-relative">
+            <div class="position-absolute rounded-circle bg-white border" style="width: 16px; height: 16px; left: -21px; top: 0; border-color: {{color}} !important; border-width: 3px !important; z-index: 2;"></div>
+            
+            <span class="badge badge-pill text-white mb-3 px-3 py-2 shadow-sm" style="background-color: {{color}}; font-size: 0.85rem;">{{label}}</span>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="bg-white p-4 rounded-lg shadow-sm h-100 border-left" style="border-left-width: 4px !important; border-color: {{color}} !important;">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fa fa-bullseye mr-2" style="color: {{color}};"></i>
+                            <h6 class="m-0 font-weight-bold text-dark">{{str_goal}}</h6>
+                        </div>
+                        <div class="text-muted sp-scrollable-text" style="line-height: 1.5;">{{{goal}}}</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="bg-white p-4 rounded-lg shadow-sm h-100 border-left" style="border-left-width: 4px !important; border-color: {{color}} !important;">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fa fa-tasks mr-2" style="color: {{color}};"></i>
+                            <h6 class="m-0 font-weight-bold text-dark">{{str_action_plan}}</h6>
+                        </div>
+                        <div class="text-muted sp-scrollable-text" style="line-height: 1.5;">{{{action}}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/goals}}
+    </div>
+{{/no_data}}

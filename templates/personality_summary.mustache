@@ -1,0 +1,32 @@
+<div class="personality-visualization">
+    <div class="mbti-summary text-center mb-4">
+        <div class="d-inline-block px-4 py-2 rounded-pill shadow-sm mb-3" style="background: linear-gradient(135deg, #00bf91 0%, #008f6d 100%); color: white;">
+            <h4 class="m-0 font-weight-bold" style="font-size: 2rem; letter-spacing: 2px;">{{mbti_type}}</h4>
+        </div>
+        <h6 class="text-muted font-weight-bold text-uppercase mb-2" style="letter-spacing: 1px;">{{mbti_title}}</h6>
+        <p class="text-muted mx-auto" style="max-width: 600px; line-height: 1.6;">{{mbti_description}}</p>
+    </div>
+
+    {{#dimensions}}
+    <div class="dimension-card mb-4 sp-dimension-container">
+        <div class="sp-dimension-grid" style="font-size: 0.9rem;">
+            <div class="sp-area-left">
+                <div class="font-weight-bold" style="color: #00bf91; line-height: 1.2;">{{left_label}} ({{left_code}})</div>
+                <div class="small text-muted">{{left_val}} ({{left_pct}}%)</div>
+            </div>
+            <div class="sp-area-bar">
+                <div class="position-relative" style="height: 12px; background-color: #f0f0f0; border-radius: 6px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);">
+                    <div class="d-flex w-100 h-100">
+                        <div style="width: {{left_pct}}%; background-color: {{color_primary}};"></div>
+                        <div style="width: {{right_pct}}%; background-color: #b2dfdb;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sp-area-right">
+                <div class="font-weight-bold" style="color: #008f6d; line-height: 1.2;">{{right_label}} ({{right_code}})</div>
+                <div class="small text-muted">{{right_val}} ({{right_pct}}%)</div>
+            </div>
+        </div>
+    </div>
+    {{/dimensions}}
+</div>

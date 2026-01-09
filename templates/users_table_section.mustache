@@ -1,0 +1,43 @@
+<div class="users-section">
+    <div class="table-controls">
+        <div class="search-box">
+            <input type="text" id="searchUsers" placeholder="{{str_search_users}}">
+        </div>
+        <div class="filter-controls">
+            <select id="perPageSelector" class="filter-select" style="margin-right: 10px;" onchange="updatePerPage(this.value)">
+                {{#per_page_options}}
+                    <option value="{{url}}" {{#selected}}selected{{/selected}}>{{value}} / {{str_pag}}</option>
+                {{/per_page_options}}
+            </select>
+
+            <select id="filterStatus" class="filter-select">
+                <option value="all" {{#filter_status_all}}selected{{/filter_status_all}}>{{str_all_students}}</option>
+                <option value="completed" {{#filter_status_completed}}selected{{/filter_status_completed}}>{{str_complete_profiles_only}}</option>
+                <option value="in-progress" {{#filter_status_in_progress}}selected{{/filter_status_in_progress}}>{{str_partial_profiles_only}}</option>
+                <option value="not-started" {{#filter_status_not_started}}selected{{/filter_status_not_started}}>{{str_no_profiles_only}}</option>
+            </select>
+            
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-download btn-export-icon"></i> {{str_export_data}}
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{export_excel_url}}">
+                        <i class="fa fa-file-excel-o mr-2"></i> Excel (.xlsx)
+                    </a>
+                    <a class="dropdown-item" href="{{export_csv_url}}">
+                        <i class="fa fa-file-text-o mr-2"></i> CSV (.csv)
+                    </a>
+                    <a class="dropdown-item" href="{{export_json_url}}">
+                        <i class="fa fa-file-code-o mr-2"></i> JSON (.json)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive" id="users-table-wrapper">
+        {{{table_html}}}
+        {{{paging_bar_html}}}
+    </div>
+</div>

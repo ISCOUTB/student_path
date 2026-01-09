@@ -1,0 +1,32 @@
+<div class="stats-overview-v4">
+    {{#stats_cards}}
+    <div class="stat-card-v4">
+        <i class="fa {{icon}} card-icon-bg"></i>
+        <div class="stat-header-v4">
+            <div class="stat-icon-box-v4"><i class="fa {{icon}}"></i></div>
+            <div class="stat-title-v4">{{title}}</div>
+        </div>
+        <div class="stat-value-v4">{{value}}</div>
+        <div class="stat-badge-v4">
+            <i class="fa {{badge_icon}}"></i>
+            <span>{{badge_text}}</span>
+        </div>
+        {{#progress_label}}
+        <div class="stat-progress-wrapper-v4">
+            <div class="stat-progress-labels-v4">
+                <span>{{progress_label}}</span>
+                <span>{{progress_text}}</span>
+            </div>
+            <div class="stat-progress-bg-v4">
+                <div class="stat-progress-fill-v4" style="width: {{progress_percentage}}%;"></div>
+            </div>
+        </div>
+        {{/progress_label}}
+        {{#footer_text}}
+        <div class="stat-simple-footer-v4">
+            {{{footer_text}}}
+        </div>
+        {{/footer_text}}
+    </div>
+    {{/stats_cards}}
+</div>

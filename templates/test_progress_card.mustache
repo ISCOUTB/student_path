@@ -1,0 +1,100 @@
+<div class="test-card {{type_class}}" onclick="toggleCard(this)">
+    <div class="card-inner">
+        <div class="card-front">
+            <div class="card-corner-hint"></div>
+            <div class="test-card-header">
+                <div>
+                    <div class="test-icon"><img src="{{icon_url}}" alt="{{title}}"></div>
+                    <h3 class="test-title">{{title}}</h3>
+                </div>
+            </div>
+            <div class="test-numbers">
+                <div class="number-item" {{#flex1}}style="flex: 1;"{{/flex1}}>
+                    <span class="number-value">{{completed_count}}</span>
+                    <span class="number-label">{{str_completed}}</span>
+                </div>
+                <div class="number-item">
+                    <span class="number-value">{{in_progress_count}}</span>
+                    <span class="number-label">{{str_in_progress}}</span>
+                </div>
+                <div class="number-item" {{#flex1}}style="flex: 1;"{{/flex1}}>
+                    <span class="number-value">{{not_started_count}}</span>
+                    <span class="number-label">{{str_not_started}}</span>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar-fill {{type_class}}" style="width: {{percentage}}%;"></div>
+                </div>
+                <div class="progress-text">{{percentage_rounded}}% {{str_completed}}</div>
+            </div>
+        </div>
+        <div class="card-back">
+            <div class="card-back-content">
+                <div class="card-back-header">
+                    <h3>{{title}}</h3>
+                    <button class="close-card-btn" title="Cerrar"><i class="fa fa-times"></i></button>
+                </div>
+                
+                <div class="card-back-tabs">
+                    <button class="tab-btn active" onclick="event.stopPropagation(); switchTab(this, 'completed')">{{str_completed}} ({{completed_count}})</button>
+                    <button class="tab-btn" onclick="event.stopPropagation(); switchTab(this, 'in-progress')">{{str_in_progress}} ({{in_progress_count}})</button>
+                    <button class="tab-btn" onclick="event.stopPropagation(); switchTab(this, 'not-started')">{{str_not_started}} ({{not_started_count}})</button>
+                </div>
+                
+                <div class="card-back-lists">
+                    <!-- Completed List -->
+                    <div class="user-list-panel active" data-tab-content="completed">
+                        {{^completed_users}}
+                            <p class="empty-list">{{str_no_test_completed}}</p>
+                        {{/completed_users}}
+                        {{#completed_users}}
+                            {{#first}}<ul>{{/first}}
+                            <li class="test-list-item completed" data-userid="{{id}}" data-test="{{type_key}}">
+                                <div class="user-info-row">
+                                    <span class="user-name"><i class="fa fa-check-circle text-success"></i> {{fullname}}</span>
+                                    <span class="user-meta">{{str_completed}}: {{date_str}}</span>
+                                </div>
+                            </li>
+                            {{#last}}</ul>{{/last}}
+                        {{/completed_users}}
+                    </div>
+                    
+                    <!-- In Progress List -->
+                    <div class="user-list-panel" data-tab-content="in-progress">
+                        {{^in_progress_users}}
+                            <p class="empty-list">{{str_no_test_in_progress}}</p>
+                        {{/in_progress_users}}
+                        {{#in_progress_users}}
+                            {{#first}}<ul>{{/first}}
+                            <li class="test-list-item in-progress" data-userid="{{id}}" data-test="{{type_key}}">
+                                <div class="user-info-row">
+                                    <span class="user-name"><i class="fa fa-clock-o text-warning"></i> {{fullname}}</span>
+                                    <span class="user-meta">{{str_last_access}}: {{date_str}}</span>
+                                </div>
+                            </li>
+                            {{#last}}</ul>{{/last}}
+                        {{/in_progress_users}}
+                    </div>
+                    
+                    <!-- Not Started List -->
+                    <div class="user-list-panel" data-tab-content="not-started">
+                        {{^not_started_users}}
+                            <p class="empty-list">{{str_all_tests_started}}</p>
+                        {{/not_started_users}}
+                        {{#not_started_users}}
+                            {{#first}}<ul>{{/first}}
+                            <li class="test-list-item not-started" data-userid="{{id}}" data-test="{{type_key}}">
+                                <div class="user-info-row">
+                                    <span class="user-name"><i class="fa fa-circle-o text-muted"></i> {{fullname}}</span>
+                                    <span class="user-meta email">{{email}}</span>
+                                </div>
+                            </li>
+                            {{#last}}</ul>{{/last}}
+                        {{/not_started_users}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

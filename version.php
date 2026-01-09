@@ -1,6 +1,24 @@
 <?php
+/**
+ * Student Path Block Major Update
+ * Version 2.0.0 - Production Ready
+ *
+ * @package    block_student_path
+ * @copyright  2026 Jairo Serrano, Yuranis Henriquez, Isaac Sanchez, Santiago Orejuela, Maria Valentina
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-$plugin->version = 2025093003;
-$plugin->requires = 2013050100;
-$plugin->component = 'block_student_path'; // Full name of the plugin (used for diagnostics)
-$plugin->release   = '1.9.3';
+defined('MOODLE_INTERNAL') || die();
+
+$plugin->version = 2026010800;
+$plugin->requires = 2022041900; // Moodle 4.0+
+$plugin->component = 'block_student_path';
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = '2.0.0';
+
+$plugin->dependencies = [
+    'block_chaside' => 2026010800,
+    'block_learning_style' => 2026010800,
+    'block_personality_test' => 2026010800,
+    'block_tmms_24' => 2026010800,
+];

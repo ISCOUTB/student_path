@@ -366,6 +366,7 @@
 
 .block_student_path_admin_container .search-box::before {
     content: "\f002" !important;
+    font-family: FontAwesome !important;
     position: absolute !important;
     left: 12px !important;
     top: 50% !important;

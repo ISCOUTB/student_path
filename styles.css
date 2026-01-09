@@ -366,7 +366,7 @@
 
 .block_student_path_admin_container .search-box::before {
     content: "\f002" !important;
-    font-family: FontAwesome !important;
+    font-family: FontAwesome, sans-serif !important;
     position: absolute !important;
     left: 12px !important;
     top: 50% !important;
@@ -415,7 +415,6 @@
     border-radius: 8px !important;
     font-weight: 600 !important;
     text-decoration: none !important;
-    display: inline-block !important;
     transition: all 0.3s ease !important;
     border: none !important;
     cursor: pointer !important;
@@ -760,7 +759,6 @@
 
 .tab-btn.active {
     color: #007bff !important;
-    border-bottom-color: #007bff !important;
     border-bottom: 2px solid #007bff !important;
 }
 
@@ -851,7 +849,7 @@
 /* Corner Visual Cue (Ribbon/Icon) */
 .card-corner-hint::after {
     content: '\f065' !important;
-    font-family: FontAwesome !important;
+    font-family: FontAwesome, sans-serif !important;
     position: absolute !important;
     top: 8px !important;
     right: -48px !important;
@@ -1495,7 +1493,6 @@
 }
 
 .progress-fill {
-    background-size: 200% 100% !important;
     animation: gradientMove 2s linear infinite, growBar 1.5s ease-out forwards !important;
     display: flex !important;
     align-items: center !important;
@@ -1503,6 +1500,7 @@
     position: relative !important;
     height: 100% !important;
     background: linear-gradient(90deg, #9c27b0, #764ba2) !important;
+    background-size: 200% 100% !important;
     border-radius: 12px !important;
     transition: width 1s ease-out !important;
 }
@@ -1630,7 +1628,6 @@
 }
 
 .tmms24-theme .dimension-block h4 {
-    margin-bottom: 10px !important;
     font-weight: 700 !important;
     color: #ff6600 !important;
     margin: 0 0 10px 0 !important;
@@ -2611,7 +2608,6 @@
 }
 
 .student_path_profile_view .dashboard-card-body {
-    overflow-y: visible !important;
     padding: 25px !important;
     flex-grow: 1 !important;
     max-height: none !important;

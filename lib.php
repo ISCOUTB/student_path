@@ -811,7 +811,6 @@ function get_tmms24_goal_string($dimension, $gender) {
         }
         return get_string('goal_linear', 'block_student_path', $a);
     }     
-    return '';
 }
 
 function interpret_tmms24_score($dimension, $score, $gender) {
@@ -1821,4 +1820,89 @@ function block_student_path_prepare_profile_data($user, $course, $profile, $hist
         'str_back_to_admin' => get_string('back_to_admin', 'block_student_path'),
         'str_back_to_course' => get_string('back_to_course', 'block_student_path'),
     ];
+}
+
+/**
+ * Prepares the user table data for the admin dashboard.
+ *
+ * @param array $users List of users.
+ * @param int $courseid The course ID.
+ * @return array The prepared table data.
+ */
+function block_student_path_prepare_users_table_data(array $users, int $courseid): array {
+    $table_data = [
+        'str_user_name' => get_string('user_name', 'block_student_path'),
+        'str_test_progress' => get_string('test_progress', 'block_student_path'),
+        'str_tests_completed' => get_string('tests_completed', 'block_student_path'),
+        'str_completion_percentage' => get_string('completion_percentage', 'block_student_path'),
+        'str_last_activity' => get_string('last_activity', 'block_student_path'),
+        'str_actions' => get_string('actions', 'block_student_path'),
+        'str_no_users_found' => get_string('no_users_found', 'block_student_path'),
+        'str_view_details' => get_string('view_details', 'block_student_path'),
+        'users' => []
+    ];
+
+    if (!empty($users)) {
+        foreach ($users as $user) {
+            $status_class = 'not-started';
+            if ($user->total_completed == 5) {
+                $status_class = 'completed';
+            } else if ($user->total_completed > 0 || $user->total_in_progress > 0) {
+                $status_class = 'in-progress';
+            }
+
+            $indicators = [
+                [
+                    'status' => $user->learning_style_status,
+                    'userid' => $user->id,
+                    'test' => 'learning_style',
+                    'tooltip' => get_string('learning_styles', 'block_student_path') . ': ' . get_string(str_replace('-', '_', $user->learning_style_status), 'block_student_path'),
+                    'label' => 'LS'
+                ],
+                [
+                    'status' => $user->personality_status,
+                    'userid' => $user->id,
+                    'test' => 'personality',
+                    'tooltip' => get_string('personality', 'block_student_path') . ': ' . get_string(str_replace('-', '_', $user->personality_status), 'block_student_path'),
+                    'label' => 'PT'
+                ],
+                [
+                    'status' => $user->chaside_status,
+                    'userid' => $user->id,
+                    'test' => 'chaside',
+                    'tooltip' => 'CHASIDE: ' . get_string(str_replace('-', '_', $user->chaside_status), 'block_student_path'),
+                    'label' => 'CH'
+                ],
+                [
+                    'status' => $user->tmms24_status,
+                    'userid' => $user->id,
+                    'test' => 'tmms24',
+                    'tooltip' => 'TMMS-24: ' . get_string(str_replace('-', '_', $user->tmms24_status), 'block_student_path'),
+                    'label' => 'TM'
+                ],
+                [
+                    'status' => $user->student_path_status,
+                    'userid' => $user->id,
+                    'test' => 'student_path',
+                    'tooltip' => get_string('student_path_map', 'block_student_path') . ': ' . get_string(str_replace('-', '_', $user->student_path_status), 'block_student_path'),
+                    'label' => 'IM'
+                ]
+            ];
+
+            $table_data['users'][] = [
+                'status_class' => $status_class,
+                'fullname' => fullname($user),
+                'email' => $user->email,
+                'indicators' => $indicators,
+                'total_completed' => $user->total_completed,
+                'completion_percentage' => $user->completion_percentage,
+                'completion_percentage_rounded' => round($user->completion_percentage, 0),
+                'last_activity_str' => ($user->last_activity > 0) ? userdate($user->last_activity, get_string('strftimedatetime')) : get_string('no_activity', 'block_student_path'),
+                'view_profile_url' => (new moodle_url('/blocks/student_path/view_profile.php', array('uid' => $user->id, 'cid' => $courseid)))->out(false),
+                'str_view_details' => get_string('view_details', 'block_student_path')
+            ];
+        }
+    }
+
+    return $table_data;
 }

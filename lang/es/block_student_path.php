@@ -36,7 +36,7 @@ $string['vocational_results'] = 'Resultados Vocacionales';
 $string['emotional_intelligence_results'] = 'Resultados Inteligencia Emocional';
 $string['learning_styles_results'] = 'Resultados Estilos de Aprendizaje';
 $string['personality_mbti_results'] = 'Resultados Personalidad (MBTI)';
-$string['in_progress_title'] = 'Test en Progreso';
+$string['in_progress_title'] = 'Exploración en Progreso';
 $string['questions_answered'] = '{$a->answered} de {$a->total} preguntas respondidas';
 $string['predominant_style'] = 'Los estilos de aprendizaje predominantes del estudiante son: {$a}';
 $string['score_pts'] = '{$a} pts';
@@ -52,7 +52,7 @@ $string['area_s_desc'] = 'Orientación a servicio, precisión y cuidado de perso
 $string['area_i_desc'] = 'Pensamiento técnico-analítico y planificación.';
 $string['area_d_desc'] = 'Disciplina, trabajo en equipo y perseverancia.';
 $string['area_e_desc'] = 'Observación rigurosa, método científico e investigación.';
-$string['no_test_completed'] = 'Nadie ha completado este test aún.';
+$string['no_test_completed'] = 'Nadie ha completado esta exploración aún.';
 $string['no_test_in_progress'] = 'Nadie está en progreso.';
 $string['all_tests_started'] = 'Todos han iniciado.';
 
@@ -127,7 +127,7 @@ $string['all_students'] = 'Todos los estudiantes';
 $string['emotional_skills_placeholder'] = 'Describe tus habilidades socioemocionales como liderazgo, trabajo en equipo, comunicación, resolución de conflictos, empatía...';
 
 // View Profile page strings
-$string['remind_submit_test'] = 'Recuerdále al estudiante que debe hundir el botón de "Enviar Test" para ver los resultados.';
+$string['remind_submit_test'] = 'Recuerdále al estudiante que debe hundir el botón de "Enviar Exploración" para ver los resultados.';
 $string['not_specified'] = 'No especificado';
 
 // New strings for integration
@@ -183,24 +183,24 @@ $string['distributed_among_student'] = 'Repartidos en <strong>{$a}</strong> estu
 $string['distributed_among_students'] = 'Repartidos en <strong>{$a}</strong> estudiantes';
 $string['cycle_completed'] = 'Ciclo finalizado';
 $string['goal_achieved'] = 'Meta Alcanzada';
-$string['in_progress_tests'] = 'Tests en Progreso';
+$string['in_progress_tests'] = 'Exploraciones en Progreso';
 $string['completion_rate'] = 'Tasa de Finalización';
-$string['progress_by_test'] = 'Progreso por Test';
+$string['progress_by_test'] = 'Progreso por Exploración';
 $string['view_details'] = 'Ver Detalles';
 $string['export_data'] = 'Exportar Datos';
 $string['not_started'] = 'No Iniciado';
-$string['not_started_desc'] = 'El estudiante no ha comenzado el test.';
+$string['not_started_desc'] = 'El estudiante no ha comenzado la exploración.';
 $string['completed'] = 'Completado';
 $string['last_access'] = 'Último Acceso';
 $string['completion_percentage'] = 'Porcentaje de Finalización';
 $string['users_list'] = 'Lista de Estudiantes';
 $string['user_name'] = 'Nombre de Estudiante';
-$string['tests_completed'] = 'Tests Completados';
+$string['tests_completed'] = 'Exploraciones Completadas';
 $string['last_activity'] = 'Última Actividad';
 $string['no_activity'] = 'Sin Actividad';
 $string['search_users'] = 'Buscar estudiantes o correos...';
 $string['no_users_found'] = 'No se encontraron estudiantes o correos.';
-$string['test_progress'] = 'Progreso del Test';
+$string['test_progress'] = 'Progreso de la Exploración';
 $string['no_data'] = 'Sin datos disponibles';
 $string['learning_styles'] = 'Estilos de Aprendizaje';
 $string['personality'] = 'Personalidad';

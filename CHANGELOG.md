@@ -5,6 +5,7 @@ Todas las modificaciones importantes del proyecto se documentarán en este archi
 ## [2.0.1] — 2026-01-16
 - Opción para mostrar/ocultar las descripciones en el bloque principal.
 - Se mantiene el titulo "Mapa de Identidad" en todas las vistas del bloque.
+- Se ha eliminado las referencias a la palabra "Test".
 
 ## [2.0.0] — 2026-01-08
 - A partir de la versión 2.0.0 se comienza a documentar este CHANGELOG.

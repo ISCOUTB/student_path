@@ -131,7 +131,7 @@ $string['remind_submit_test'] = 'Recuerdále al estudiante que debe hundir el bo
 $string['not_specified'] = 'No especificado';
 
 // New strings for integration
-$string['integrated_dashboard'] = 'Panel de Control Integrado';
+$string['integrated_dashboard'] = 'Mapa de Identidad - Panel de Control Integrado';
 $string['complete_profiles'] = 'Perfiles Completos';
 $string['evaluation_breakdown'] = 'Desglose por Evaluación';
 $string['learning_style_test'] = 'Exploración de Estilos de Aprendizaje';

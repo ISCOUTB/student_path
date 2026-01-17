@@ -131,7 +131,7 @@ $string['remind_submit_test'] = 'Remind the student to press the "Submit Test" b
 $string['not_specified'] = 'Not specified';
 
 // New strings for integration
-$string['integrated_dashboard'] = 'Integrated Dashboard';
+$string['integrated_dashboard'] = 'Identity Map - Integrated Dashboard';
 $string['complete_profiles'] = 'Complete Profiles';
 $string['evaluation_breakdown'] = 'Evaluation Breakdown';
 $string['learning_style_test'] = 'Learning Style Exploration';

@@ -2,6 +2,8 @@
 $string['pluginname'] = 'Mapa de identidad';
 $string['student_path:addinstance'] = 'Agregar bloque de ruta del estudiante';
 $string['student_path:myaddinstance'] = 'Agregar bloque de ruta del estudiante al panel';
+$string['config_showdescriptions'] = 'Mostrar descripciones';
+$string['config_showdescriptions_help'] = 'Mostrar u ocultar los banners de descripción en el bloque.';
 
 // Block messages
 $string['student_path_intro'] = 'Un portafolio personal diseñado para centralizar tu información académica, autopercepción y proyectos de futuro. Funciona como una bitácora dinámica donde registras tus metas bajo el modelo SMART, permitiéndote organizar y consultar tu plan de acción en un solo lugar siempre que lo necesites.';

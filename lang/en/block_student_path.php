@@ -2,6 +2,8 @@
 $string['pluginname'] = 'Identity Map';
 $string['student_path:addinstance'] = 'Add identity map block';
 $string['student_path:myaddinstance'] = 'Add identity map block to dashboard';
+$string['config_showdescriptions'] = 'Show descriptions';
+$string['config_showdescriptions_help'] = 'Show or hide the description banners in the block.';
 
 // Block messages
 $string['student_path_intro'] = 'A personal portfolio designed to centralize your academic information, self-perception, and future projects. It functions as a dynamic log where you record your goals using the SMART model, allowing you to organize and consult your action plan in one place whenever you need it.';

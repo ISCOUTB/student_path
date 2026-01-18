@@ -101,7 +101,7 @@ Tanto en escritorio como en móvil, el estudiante puede consultar sus mapas de s
 El profesor tiene acceso rápido a estadísticas y panel de administración desde el mismo bloque.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/65df8819-9713-4f7f-8fc9-6f85b29f7654" alt="Bloque Profesor" width="528">
+  <img src="https://github.com/user-attachments/assets/46d51594-a6df-4fce-bacc-e992555cba04" alt="Bloque Profesor" width="528">
 </p>
 
 **Panel de Administración**
@@ -109,13 +109,13 @@ El profesor tiene acceso rápido a estadísticas y panel de administración desd
 Ofrece un resumen general del avance del grupo y progreso por test.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/f7a1f8bf-fb6d-4a4f-99d4-85c0b7a534ef" alt="Panel Admin 1" width="800">
+  <img src="https://github.com/user-attachments/assets/e2528f0b-b2a2-4483-83af-c853936e5e8c" alt="Panel Admin 1" width="800">
 </p>
 
 Muestra la lista de estudiantes matriculados, su estado con respecto al Mapa de Identidad y opciones para ver detalles.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/dfa13778-0ac3-4dc0-857f-8acf83315ce3" alt="Panel Admin 2" width="800">
+  <img src="https://github.com/user-attachments/assets/957a2bff-3cc4-4852-b5cf-7f1421e77712" alt="Panel Admin 2" width="800">
 </p>
 
 **Tarjetas de Estudiante Expandidas**

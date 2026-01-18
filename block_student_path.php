@@ -89,6 +89,12 @@ class block_student_path extends block_base
         
         $is_completed = ($status === 'completed');
         $in_progress = ($status === 'in-progress');
+
+        // Check if show description is enabled
+        $showdescriptions = 0;
+        if (isset($this->config->showdescriptions)) {
+            $showdescriptions = $this->config->showdescriptions;
+        }
         
         // Check if entry exists for other data
         $entry = $DB->get_record('block_student_path', array('user' => $USER->id));
@@ -96,6 +102,7 @@ class block_student_path extends block_base
         $data = [
             'is_completed' => $is_completed,
             'in_progress' => $in_progress,
+            'show_descriptions' => $showdescriptions,
             'icon_url' => $this->get_icon_url(),
             'str_profile_completed' => get_string('profile_completed', 'block_student_path'),
             'str_profile_completed_small' => get_string('profile_completed_small', 'block_student_path'),

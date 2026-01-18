@@ -3042,6 +3042,7 @@
     border-bottom: none !important;
     font-weight: bold !important;
     min-height: 0 !important;
+    color: black !important;
 }
 
 .block_student_path .student-path-description .card-title i {

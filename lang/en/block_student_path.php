@@ -2,6 +2,8 @@
 $string['pluginname'] = 'Identity Map';
 $string['student_path:addinstance'] = 'Add identity map block';
 $string['student_path:myaddinstance'] = 'Add identity map block to dashboard';
+$string['config_showdescriptions'] = 'Show descriptions';
+$string['config_showdescriptions_help'] = 'Show or hide the description banners in the block.';
 
 // Block messages
 $string['student_path_intro'] = 'A personal portfolio designed to centralize your academic information, self-perception, and future projects. It functions as a dynamic log where you record your goals using the SMART model, allowing you to organize and consult your action plan in one place whenever you need it.';
@@ -34,7 +36,7 @@ $string['vocational_results'] = 'Vocational Results';
 $string['emotional_intelligence_results'] = 'Emotional Intelligence Results';
 $string['learning_styles_results'] = 'Learning Styles Results';
 $string['personality_mbti_results'] = 'Personality Results (MBTI)';
-$string['in_progress_title'] = 'Test in Progress';
+$string['in_progress_title'] = 'Exploration in Progress';
 $string['questions_answered'] = '{$a->answered} of {$a->total} questions answered';
 $string['predominant_style'] = 'The student\'s predominant learning styles are: {$a}';
 $string['score_pts'] = '{$a} pts';
@@ -50,7 +52,7 @@ $string['area_s_desc'] = 'Service orientation, precision, and care for people.';
 $string['area_i_desc'] = 'Technical-analytical thinking and planning.';
 $string['area_d_desc'] = 'Discipline, teamwork, and perseverance.';
 $string['area_e_desc'] = 'Rigorous observation, scientific method, and research.';
-$string['no_test_completed'] = 'No one has completed this test yet.';
+$string['no_test_completed'] = 'No one has completed this exploration yet.';
 $string['no_test_in_progress'] = 'No one is in progress.';
 $string['all_tests_started'] = 'Everyone has started.';
 
@@ -125,11 +127,11 @@ $string['all_students'] = 'All students';
 $string['emotional_skills_placeholder'] = 'Describe your socio-emotional skills such as leadership, teamwork, communication, conflict resolution, empathy...';
 
 // View Profile page strings
-$string['remind_submit_test'] = 'Remind the student to press the "Submit Test" button to see the results.';
+$string['remind_submit_test'] = 'Remind the student to press the "Submit Exploration" button to see the results.';
 $string['not_specified'] = 'Not specified';
 
 // New strings for integration
-$string['integrated_dashboard'] = 'Integrated Dashboard';
+$string['integrated_dashboard'] = 'Identity Map - Integrated Dashboard';
 $string['complete_profiles'] = 'Complete Profiles';
 $string['evaluation_breakdown'] = 'Evaluation Breakdown';
 $string['learning_style_test'] = 'Learning Style Exploration';
@@ -181,27 +183,27 @@ $string['distributed_among_student'] = 'Distributed among <strong>{$a}</strong> 
 $string['distributed_among_students'] = 'Distributed among <strong>{$a}</strong> students';
 $string['cycle_completed'] = 'Cycle Completed';
 $string['goal_achieved'] = 'Goal Achieved';
-$string['in_progress_tests'] = 'Tests in Progress';
+$string['in_progress_tests'] = 'Explorations in Progress';
 $string['completion_rate'] = 'Completion Rate';
-$string['progress_by_test'] = 'Progress by Test';
+$string['progress_by_test'] = 'Progress by Exploration';
 $string['view_details'] = 'View Details';
 $string['export_data'] = 'Export Data';
 $string['not_started'] = 'Not Started';
-$string['not_started_desc'] = 'The student has not started the test.';
+$string['not_started_desc'] = 'The student has not started the exploration.';
 $string['completed'] = 'Completed';
 $string['last_access'] = 'Last Access';
 $string['completion_percentage'] = 'Completion Percentage';
 $string['users_list'] = 'Students List';
 $string['user_name'] = 'Student Name';
-$string['tests_completed'] = 'Tests Completed';
+$string['tests_completed'] = 'Explorations Completed';
 $string['last_activity'] = 'Last Activity';
 $string['no_activity'] = 'No Activity';
 $string['search_users'] = 'Search students...';
 $string['no_users_found'] = 'No students or emails found';
-$string['test_progress'] = 'Test Progress';
+$string['test_progress'] = 'Exploration Progress';
 $string['no_data'] = 'No data available';
 $string['learning_styles'] = 'Learning Styles';
-$string['personality'] = 'Personality Test';
+$string['personality'] = 'Personality Exploration';
 $string['pag'] = "page";
 $string['saving'] = 'Saving...';
 $string['saved'] = 'Saved';

@@ -2,6 +2,9 @@
 
 Todas las modificaciones importantes del proyecto se documentarán en este archivo.
 
+## [2.0.2] - 2026-01-18
+- Se eliminaron las comprobaciones redundantes de administrador (`is_siteadmin()`) en `lib.php`, mejorando la detección correcta de roles locales (profesores vs estudiantes) y el sistema de permisos basado en capacidades.
+
 ## [2.0.1] — 2026-01-18
 - Opción para mostrar/ocultar las descripciones en el bloque principal.
 - Se mantiene el titulo "Mapa de Identidad" en todas las vistas del bloque.

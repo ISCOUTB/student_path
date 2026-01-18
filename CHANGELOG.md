@@ -2,7 +2,7 @@
 
 Todas las modificaciones importantes del proyecto se documentarán en este archivo.
 
-## [2.0.1] — 2026-01-16
+## [2.0.1] — 2026-01-18
 - Opción para mostrar/ocultar las descripciones en el bloque principal.
 - Se mantiene el titulo "Mapa de Identidad" en todas las vistas del bloque.
 - Se ha eliminado las referencias a la palabra "Test".

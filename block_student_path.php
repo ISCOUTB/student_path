@@ -149,12 +149,12 @@ class block_student_path extends block_base
             // Not Started
             $data['btn_text'] = get_string('start_map', 'block_student_path');
             $data['btn_class'] = 'btn-primary-custom';
-            $data['btn_icon'] = 'fa-play';
+            $data['btn_icon'] = 'fa-rocket';
         } elseif ($in_progress) {
             // In Progress
-            $data['btn_text'] = get_string('complete_profile', 'block_student_path');
+            $data['btn_text'] = get_string('continue_profile', 'block_student_path');
             $data['btn_class'] = 'btn-primary-custom';
-            $data['btn_icon'] = 'fa-pencil';
+            $data['btn_icon'] = 'fa-play';
         } else {
             // Completed
             $data['btn_text'] = get_string('view_edit_map', 'block_student_path');

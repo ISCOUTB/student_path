@@ -7,7 +7,7 @@ $string['config_showdescriptions_help'] = 'Show or hide the description banners 
 
 // Block messages
 $string['student_path_intro'] = 'A personal portfolio designed to centralize your academic information, self-perception, and future projects. It functions as a dynamic log where you record your goals using the SMART model, allowing you to organize and consult your action plan in one place whenever you need it.';
-$string['complete_profile'] = 'Complete Identity Map';
+$string['continue_profile'] = 'Continue Identity Map';
 $string['no_access'] = 'You do not have access to this block.';
 $string['discover_path'] = 'Discover your Path and Personal Projection';
 $string['course_overview'] = 'Course Overview';

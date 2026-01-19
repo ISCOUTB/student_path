@@ -3062,9 +3062,8 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 8px !important;
+    gap: 4px !important;
     line-height: 1.5 !important;
-    border-radius: 8px !important;
     color: #fff !important;
 }
 

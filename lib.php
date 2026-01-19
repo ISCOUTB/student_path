@@ -267,10 +267,8 @@ function get_integrated_student_profile($user_id, $course_id = null) {
     // Security Check: BOLA Prevention
     $context = $course_id ? context_course::instance($course_id) : context_system::instance();
     if ($USER->id != $user_id && !has_capability('block/student_path:viewreports', $context)) {
-         // Allow site admins as fallback if context is system
-         if (!is_siteadmin()) {
-             throw new moodle_exception('nopermissions', 'error', '', null, 'view student profile');
-         }
+         // Security check failed
+         throw new moodle_exception('nopermissions', 'error', '', null, 'view student profile');
     }
     
     $profile = new stdClass();
@@ -349,7 +347,7 @@ function get_integrated_course_stats($course_id) {
     $context = context_course::instance($course_id);
 
     // Security Check
-    if (!has_capability('block/student_path:viewreports', $context) && !is_siteadmin()) {
+    if (!has_capability('block/student_path:viewreports', $context)) {
         throw new moodle_exception('nopermissions', 'error', '', null, 'view course stats');
     }
     
@@ -931,7 +929,7 @@ function get_tmms24_summary($tmms_24_data, $user = null, $courseid = null) {
     // Security Check: BOLA Prevention
     if ($user && $USER->id != $user->id) {
         $context = ($courseid && $courseid != SITEID) ? context_course::instance($courseid) : context_system::instance();
-        if (!has_capability('block/student_path:viewreports', $context) && !is_siteadmin()) {
+        if (!has_capability('block/student_path:viewreports', $context)) {
              return $renderer->render_alert(get_string('nopermissions', 'error'));
         }
     }
@@ -1208,7 +1206,7 @@ function get_course_users_with_test_progress($courseid) {
         $context = context_course::instance($courseid);
 
         // Security Check
-        if (!has_capability('block/student_path:viewreports', $context) && !is_siteadmin()) {
+        if (!has_capability('block/student_path:viewreports', $context)) {
              throw new moodle_exception('nopermissions', 'error', '', null, 'view course users');
         }
 
@@ -1378,7 +1376,7 @@ function get_latest_test_activity($userid, $courseid = null) {
         } else {
             // Fallback to system context if no course provided
             $context = context_system::instance();
-            if (!has_capability('block/student_path:viewreports', $context) && !is_siteadmin()) {
+            if (!has_capability('block/student_path:viewreports', $context)) {
                  return 0;
             }
         }
@@ -1471,7 +1469,7 @@ function get_student_path_progress($user_or_id, $courseid = null) {
     // Security Check
     if ($userid != $USER->id) {
         $context = ($courseid && $courseid != SITEID) ? context_course::instance($courseid) : context_system::instance();
-        if (!has_capability('block/student_path:viewreports', $context) && !is_siteadmin()) {
+        if (!has_capability('block/student_path:viewreports', $context)) {
              throw new moodle_exception('nopermissions', 'error', '', null, 'view student progress');
         }
     }

@@ -7,7 +7,7 @@ $string['config_showdescriptions_help'] = 'Mostrar u ocultar los banners de desc
 
 // Block messages
 $string['student_path_intro'] = 'Un portafolio personal diseñado para centralizar tu información académica, autopercepción y proyectos de futuro. Funciona como una bitácora dinámica donde registras tus metas bajo el modelo SMART, permitiéndote organizar y consultar tu plan de acción en un solo lugar siempre que lo necesites.';
-$string['complete_profile'] = 'Completar Mapa de Identidad';
+$string['continue_profile'] = 'Continuar Mapa de Identidad';
 $string['no_access'] = 'No tienes acceso a este bloque.';
 $string['discover_path'] = 'Descubre tu Trayectoria y Proyección Personal';
 $string['course_overview'] = 'Resumen del Curso';

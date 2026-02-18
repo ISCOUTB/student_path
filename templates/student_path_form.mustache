@@ -382,13 +382,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function validateDates() {
         if (!yearInput) return true;
-        const year = parseInt(yearInput.value);
+        const yearVal = yearInput.value;
+        if (!yearVal) return true; // Empty is valid (not yet filled)
+        
+        const year = parseInt(yearVal);
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth() + 1; // 1-12
         let valid = true;
 
         // Year Validation
-        if (year < 2022) {
+        if (year !== 0 && year < 2022) {
             yearInput.classList.add('is-invalid');
             yearError.textContent = '{{#str}}error_year_min, block_student_path{{/str}}';
             valid = false;
@@ -402,14 +405,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Semester Validation
+        let semesterValid = true;
         if (year === currentYear) {
             const semester = parseInt(semesterInput.value);
-            // If current month is before June (6), Semester 2 hasn't started
-            // Actually, let's say Sem 2 starts in July (7).
+            // If current month is before July (7), Semester 2 hasn't started
             if (currentMonth < 7 && semester === 2) {
                 semesterInput.classList.add('is-invalid');
                 semesterError.textContent = '{{#str}}error_semester_future, block_student_path{{/str}}';
                 valid = false;
+                semesterValid = false;
             } else {
                 semesterInput.classList.remove('is-invalid');
                 semesterError.textContent = '';
@@ -419,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
             semesterError.textContent = '';
         }
 
-        return valid;
+        return { valid, semesterValid };
     }
 
     if (yearInput) {
@@ -558,11 +562,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function saveDat() {
-        if (!validateDates()) return;
+        // Validate but don't block saving entirely. 
+        // We want to save other fields even if the date is invalid.
+        // We will specific handled the admission_year sending.
+        const validation = validateDates(); 
 
         showStatus('{{#str}}saving, block_student_path{{/str}}...', 'saving');
         
         const formData = new FormData(document.getElementById('student-path-form'));
+        
+        // If the date is invalid, we simply DON'T send it to the server.
+        // We check the specific input valid states which are set by validateDates().
+        
+        const yearInput = document.getElementById('admission_year');
+        if (yearInput && yearInput.classList.contains('is-invalid')) {
+            formData.delete('admission_year');
+            // If year is invalid, the semester likely doesn't make sense or we shouldn't update it either in this context
+             formData.delete('admission_semester');
+        }
+        
+        const semesterInput = document.getElementById('admission_semester');
+        // Check classList OR the return from validation specifically for semester
+        if ((semesterInput && semesterInput.classList.contains('is-invalid')) || (validation && validation.semesterValid === false)) {
+            formData.delete('admission_semester');
+        }
         
         fetch('save_auto.php', {
             method: 'POST',

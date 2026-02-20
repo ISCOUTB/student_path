@@ -1,4 +1,12 @@
 <?php
+/**
+ * Upgrade script for Student Path Block
+ *
+ * @package    block_student_path
+ * @copyright  2026 SAVIO - Sistema de Aprendizaje Virtual Interactivo (UTB)
+ * @author     SAVIO Development Team
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -305,6 +313,23 @@ function xmldb_block_student_path_upgrade($oldversion) {
         }
 
         upgrade_block_savepoint(true, 2025122401, 'student_path');
+    }
+
+    if ($oldversion < 2026021800) {
+        // Fix for admission_year = 0 bug.
+        // Cascade cleanup: If year is 0 (invalid), clear both year and semester.
+        $DB->execute("UPDATE {block_student_path} SET admission_year = NULL, admission_semester = NULL WHERE admission_year = 0");
+
+        // Fix for FUTURE semesters invalid data (e.g. 2026 - Semester 2 when we are in Feb)
+        $current_year = (int)date('Y');
+        $current_month = (int)date('n');
+        
+        // If we are in the first half of the year (before July), Semester 2 is impossible for the current year.
+        if ($current_month < 7) {
+             $DB->execute("UPDATE {block_student_path} SET admission_semester = NULL WHERE admission_year = ? AND admission_semester = 2", array($current_year));
+        }
+
+        upgrade_block_savepoint(true, 2026021800, 'student_path');
     }
 
     return true;

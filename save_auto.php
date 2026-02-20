@@ -66,6 +66,67 @@ foreach ($fields as $field) {
     }
 }
 
+// --- SERVER-SIDE VALIDATION & CONSISTENCY CHECK ---
+
+// Get current effective values (merge existing DB values with new incoming data)
+// Note: We use existing values ONLY if we are updating an existing record.
+$effective_year = isset($data->admission_year) ? $data->admission_year : ($existing ? ($existing->admission_year ?? null) : null);
+$effective_semester = isset($data->admission_semester) ? $data->admission_semester : ($existing ? ($existing->admission_semester ?? null) : null);
+
+// 1. Validate Year
+if ($effective_year !== null) {
+    $current_year = (int)date('Y');
+    $year_val = (int)$effective_year;
+
+    if ($year_val < 2022 || $year_val > $current_year) {
+        // The effective year is invalid.
+        // If the user tried to submit this invalid year, remove it from the update queue.
+        if (isset($data->admission_year)) {
+            unset($data->admission_year);
+            // If year is invalid, we should also invalidate any accompanying semester update
+            if (isset($data->admission_semester)) {
+                unset($data->admission_semester);
+            }
+        }
+        $effective_year = null; 
+    }
+}
+
+// 2. Validate Semester (Contextual Check)
+// We need to check if the *resulting* Year-Semester combination is valid.
+if ($effective_year !== null && $effective_semester !== null) {
+    $year_val = (int)$effective_year;
+    $semester_val = (int)$effective_semester;
+    $current_year = (int)date('Y');
+    $current_month = (int)date('n');
+
+    $semester_valid = true;
+
+    // Basic range check
+    if (!in_array($semester_val, [1, 2])) {
+        $semester_valid = false;
+    } 
+    // Future semester check and Year consistency
+    elseif ($year_val == $current_year) {
+        if ($current_month < 7 && $semester_val == 2) {
+            $semester_valid = false;
+        }
+    }
+
+    if (!$semester_valid) {
+        // If the semester update itself was invalid, remove it
+        if (isset($data->admission_semester)) {
+            unset($data->admission_semester);
+        }
+        
+        // CRITICAL FIX: If we are changing the YEAR, and that new year makes the EXISTING semester invalid,
+        // we must force the semester to NULL in the database update to keep data consistent.
+        if (isset($data->admission_year) && !isset($data->admission_semester)) {
+             $data->admission_semester = null;
+        }
+    }
+}
+
 // Add required fields for new records
 $data->name = fullname($USER);
 $data->email = $USER->email;

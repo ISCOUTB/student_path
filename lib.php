@@ -1726,7 +1726,7 @@ function block_student_path_prepare_profile_data($user, $course, $profile, $hist
     }
     $chaside_summary = get_chaside_summary_complete($chaside_input);
     
-    $tmms24_summary = get_tmms24_summary(isset($profile->tmms_24_data) ? $profile->tmms_24_data : null, $user);
+    $tmms24_summary = get_tmms24_summary(isset($profile->tmms_24_data) ? $profile->tmms_24_data : null, $user, $course->id);
 
     // History Selector
     $history_options = [];

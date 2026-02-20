@@ -2,6 +2,10 @@
 
 Todas las modificaciones importantes del proyecto se documentarán en este archivo.
 
+## [2.0.3] - 2026-02-18
+- Se corrigió un bug de validación cruzada que bloqueaba permanentemente el guardado automático cuando estudiantes omitían el campo "Año de Ingreso".
+- Se corrigió un error de permisos en la función `get_tmms24_summary` que causaba que los profesores recibieran el mensaje "Lo sentimos, pero no tiene los permisos para hacer esto" en la tarjeta "Exploración de las Habilidades Socioemocionales".
+
 ## [2.0.2] - 2026-01-18
 - Se eliminaron las comprobaciones redundantes de administrador (`is_siteadmin()`) en `lib.php`, mejorando la detección correcta de roles locales (profesores vs estudiantes) y el sistema de permisos basado en capacidades.
 - Se corrigió el estilo del botón principal del bloque en `student_view.mustache` y `styles.css` para asegurar una apariencia consistente con los otros bloques.

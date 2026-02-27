@@ -171,8 +171,14 @@ class block_student_path extends block_base
     private function get_teacher_content($COURSE) {
         global $OUTPUT;
         
-        // Get stats
-        $stats = get_integrated_course_stats($COURSE->id);
+        // Get users and stats efficiently
+        $users = [];
+        try {
+            $users = get_course_users_with_test_progress($COURSE->id);
+        } catch (Exception $e) {
+            // Se manejará silenciosamente
+        }
+        $stats = get_integrated_course_stats($COURSE->id, $users);
         
         $data = [
             'icon_url' => $this->get_icon_url(),

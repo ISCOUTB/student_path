@@ -44,9 +44,6 @@ if (!has_capability('block/student_path:viewreports', $context)) {
 // Incluir CSS personalizado del admin dashboard
 $PAGE->requires->css(new moodle_url('/blocks/student_path/styles.css'));
 
-// Obtener estadísticas del curso
-$system_stats = get_integrated_course_stats($courseid);
-
 // Obtener usuarios del curso para poblar las tarjetas (y la tabla más abajo)
 $users = [];
 try {
@@ -54,6 +51,9 @@ try {
 } catch (Exception $e) {
     // Se manejará el error al mostrar la tabla
 }
+
+// Obtener estadísticas del curso
+$system_stats = get_integrated_course_stats($courseid, $users);
 
 // Sort users by last activity (descending), putting those with no activity at the bottom
 usort($users, function($a, $b) {
@@ -98,6 +98,9 @@ if ($status_filter !== 'all') {
 }
 if (!empty($search)) {
     $baseurl->param('search', $search);
+}
+if ($perpage != 50) {
+    $baseurl->param('perpage', $perpage);
 }
 
 // Slice users for the table
@@ -229,13 +232,8 @@ $per_page_options = [];
 $opts = [10, 25, 50, 100, 200];
 
 foreach ($opts as $opt) {
-    $url = new moodle_url('/blocks/student_path/admin_view.php', array('cid' => $courseid, 'perpage' => $opt));
-    if ($status_filter !== 'all') {
-        $url->param('status', $status_filter);
-    }
     $per_page_options[] = [
         'value' => $opt,
-        'url' => $url->out(),
         'selected' => ($perpage == $opt)
     ];
 }
@@ -318,10 +316,12 @@ document.getElementById('searchUsers').addEventListener('input', function(e) {
     
     // Debounce 300ms
     searchTimeout = setTimeout(() => {
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('search', searchTerm);
-        currentUrl.searchParams.set('page', 0); // Reset page
-        loadTable(currentUrl.toString());
+        const fetchUrl = new URL(window.location.origin + window.location.pathname);
+        fetchUrl.searchParams.set('cid', '<?php echo $courseid; ?>');
+        fetchUrl.searchParams.set('search', searchTerm);
+        fetchUrl.searchParams.set('page', 0); // Reset page
+        fetchUrl.searchParams.set('status', document.getElementById('filterStatus').value);
+        loadTable(fetchUrl.toString());
     }, 300);
 });
 
@@ -761,8 +761,22 @@ document.addEventListener('keydown', function(e) {
 
 // --- AJAX Pagination & Filtering Logic ---
 
-function updatePerPage(url) {
-    loadTable(url);
+function updatePerPage(val) {
+    const fetchUrl = new URL(window.location.origin + window.location.pathname);
+    fetchUrl.searchParams.set('cid', '<?php echo $courseid; ?>');
+    fetchUrl.searchParams.set('page', 0); // Reset page on perpage change
+    
+    // Preserve filters
+    const status = document.getElementById('filterStatus').value;
+    if (status !== 'all') fetchUrl.searchParams.set('status', status);
+    
+    const search = document.getElementById('searchUsers').value;
+    if (search) fetchUrl.searchParams.set('search', search);
+    
+    // Add perpage
+    if (val != 50) fetchUrl.searchParams.set('perpage', val);
+    
+    loadTable(fetchUrl.toString());
 }
 
 function loadTable(url) {
@@ -788,6 +802,12 @@ function loadTable(url) {
         fetchUrl.searchParams.set('search', currentSearch);
     }
     
+    // Ensure perpage is preserved from selector if exists
+    const perPageSelector = document.getElementById('perPageSelector');
+    if (perPageSelector && perPageSelector.value != 50) {
+        fetchUrl.searchParams.set('perpage', perPageSelector.value);
+    }
+    
     fetch(fetchUrl)
         .then(response => response.text())
         .then(html => {
@@ -797,6 +817,7 @@ function loadTable(url) {
             
             // Re-bind pagination links
             bindPaginationLinks();
+            updateExportLinks();
         })
         .catch(err => {
             console.error('Error loading table:', err);
@@ -824,26 +845,41 @@ document.addEventListener('DOMContentLoaded', function() {
     bindPaginationLinks();
 });
 
-// Search functionality (Client-side text filter on current page)
+// Search functionality (Server-side text filter on current page)
 document.getElementById('searchUsers').addEventListener('input', function(e) {
-    filterTable();
+    const searchTerm = e.target.value;
+    
+    // Clear existing timeout
+    if (searchTimeout) clearTimeout(searchTimeout);
+    
+    // Debounce 300ms
+    searchTimeout = setTimeout(() => {
+        const fetchUrl = new URL(window.location.origin + window.location.pathname);
+        fetchUrl.searchParams.set('cid', '<?php echo $courseid; ?>');
+        fetchUrl.searchParams.set('search', searchTerm);
+        fetchUrl.searchParams.set('page', 0); // Reset page
+        fetchUrl.searchParams.set('status', document.getElementById('filterStatus').value);
+        
+        loadTable(fetchUrl.toString());
+    }, 300);
 });
 
 // Filter functionality (Server-side reload)
 document.getElementById('filterStatus').addEventListener('change', function(e) {
     const status = e.target.value;
-    const currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.set('status', status);
+    const fetchUrl = new URL(window.location.origin + window.location.pathname);
+    fetchUrl.searchParams.set('cid', '<?php echo $courseid; ?>');
+    fetchUrl.searchParams.set('status', status);
     
     // Preserve search term
     const searchTerm = document.getElementById('searchUsers').value;
     if (searchTerm) {
-        currentUrl.searchParams.set('search', searchTerm);
+        fetchUrl.searchParams.set('search', searchTerm);
     }
     
-    currentUrl.searchParams.set('page', 0); // Reset to first page on filter change
+    fetchUrl.searchParams.set('page', 0); // Reset to first page on filter change
     
-    loadTable(currentUrl.toString());
+    loadTable(fetchUrl.toString());
     updateExportLinks();
 });
 

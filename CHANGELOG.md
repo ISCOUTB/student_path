@@ -2,6 +2,11 @@
 
 Todas las modificaciones importantes del proyecto se documentarán en este archivo.
 
+## [2.0.4] - 2026-02-26
+- Se resolvió un problema de discrepancia estadística en la tarjeta de "Perfiles Completos" del Dashboard y del bloque para el profesor (donde se mostraba un número superior al informe exportado) al unificar toda contabilidad mediante la iteración de perfiles individuales (Validación estricta de 5 tests completos).
+- Se redujo a la mitad la presión de carga de la base de datos producida por la consulta duplicada `get_integrated_course_stats()` al reusar inteligentemente los datos en memoria en `admin_view.php` y en las vistas del profesor.
+- Se reparó el paginador de usuarios de la tabla de reportes, evitando que la navegación AJAX y las búsquedas por texto limitaran o restablecieran erróneamente el visualizador a 50 estudiantes por página.
+
 ## [2.0.3] - 2026-02-18
 - Se corrigió un bug de validación cruzada que bloqueaba permanentemente el guardado automático cuando estudiantes omitían el campo "Año de Ingreso".
 - Se corrigió un error de permisos en la función `get_tmms24_summary` que causaba que los profesores recibieran el mensaje "Lo sentimos, pero no tiene los permisos para hacer esto" en la tarjeta "Exploración de las Habilidades Socioemocionales".

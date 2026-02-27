@@ -1,7 +1,7 @@
 <?php
 /**
  * Student Path Block Major Update
- * Version 2.0.3 - Production Ready
+ * Version 2.0.4 - Production Ready
  *
  * @package    block_student_path
  * @copyright  2026 Jairo Serrano, Yuranis Henriquez, Isaac Sanchez, Santiago Orejuela, Maria Valentina
@@ -10,11 +10,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026021800; // YYYYMMDDXX (year, month, day, 2-digit version number).
+$plugin->version = 2026022600; // YYYYMMDDXX (year, month, day, 2-digit version number).
 $plugin->requires = 2022041900; // Moodle 4.0+
 $plugin->component = 'block_student_path';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.0.3';
+$plugin->release = '2.0.4';
 
 $plugin->dependencies = [
     'block_chaside' => 2026010800,

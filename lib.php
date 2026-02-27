@@ -339,7 +339,7 @@ function get_integrated_student_profile($user_id, $course_id = null) {
 /**
  * Obtiene estadísticas integradas del curso para los cinco tipos de evaluaciones
  */
-function get_integrated_course_stats($course_id) {
+function get_integrated_course_stats($course_id, $users_array = null) {
     global $DB, $CFG;
     require_once($CFG->dirroot . '/lib/enrollib.php');
     
@@ -350,121 +350,88 @@ function get_integrated_course_stats($course_id) {
     if (!has_capability('block/student_path:viewreports', $context)) {
         throw new moodle_exception('nopermissions', 'error', '', null, 'view course stats');
     }
+
+    if ($users_array === null) {
+        $users_array = get_course_users_with_test_progress($course_id);
+    }
     
     // 1. Total Students
-    $stats->total_users = count_enrolled_users($context, 'block/student_path:makemap');
+    $stats->total_users = count($users_array);
     $stats->total_students = $stats->total_users; // Alias
-
-    // Helper for counts
-    list($esql, $params) = get_enrolled_sql($context, 'block/student_path:makemap', 0, true);
-
-    $get_count = function($table, $is_completed_val) use ($DB, $esql, $params) {
-        $sql = "SELECT COUNT(DISTINCT t.user) 
-                FROM {{$table}} t
-                JOIN ($esql) u ON t.user = u.id";
-        
-        if ($is_completed_val !== null) {
-            $sql .= " WHERE t.is_completed = :iscompleted";
-            $local_params = $params;
-            $local_params['iscompleted'] = $is_completed_val;
-            return $DB->count_records_sql($sql, $local_params);
-        } else {
-            return $DB->count_records_sql($sql, $params);
-        }
-    };
-
-    // CHASIDE (userid column is 'userid', others are 'user')
-    $get_chaside_count = function($is_completed_val) use ($DB, $esql, $params) {
-        $sql = "SELECT COUNT(DISTINCT t.userid) 
-                FROM {block_chaside_responses} t
-                JOIN ($esql) u ON t.userid = u.id
-                WHERE t.is_completed = :iscompleted";
-        $local_params = $params;
-        $local_params['iscompleted'] = $is_completed_val;
-        return $DB->count_records_sql($sql, $local_params);
-    };
-
-    // 2. Test Stats
     
-    // CHASIDE
-    $stats->chaside_completed = $get_chaside_count(1);
-    $stats->chaside_in_progress = $get_chaside_count(0);
+    // Initialize counters
+    $stats->chaside_completed = 0; $stats->chaside_in_progress = 0;
+    $stats->learning_style_completed = 0; $stats->learning_style_in_progress = 0;
+    $stats->personality_completed = 0; $stats->personality_in_progress = 0;
+    $stats->tmms24_completed = 0; $stats->tmms24_in_progress = 0;
+    $stats->student_path_completed = 0; $stats->student_path_in_progress = 0;
+    
+    $stats->active_users = 0;
+    $stats->users_with_in_progress = 0;
+    $stats->complete_profiles = 0;
+    
+    foreach ($users_array as $u) {
+        // CHASIDE
+        if ($u->chaside_status === 'completed') $stats->chaside_completed++;
+        elseif ($u->chaside_status === 'in-progress') $stats->chaside_in_progress++;
+        
+        // Learning Style
+        if ($u->learning_style_status === 'completed') $stats->learning_style_completed++;
+        elseif ($u->learning_style_status === 'in-progress') $stats->learning_style_in_progress++;
+        
+        // Personality
+        if ($u->personality_status === 'completed') $stats->personality_completed++;
+        elseif ($u->personality_status === 'in-progress') $stats->personality_in_progress++;
+        
+        // TMMS-24
+        if ($u->tmms24_status === 'completed') $stats->tmms24_completed++;
+        elseif ($u->tmms24_status === 'in-progress') $stats->tmms24_in_progress++;
+        
+        // Student Path
+        if ($u->student_path_status === 'completed') $stats->student_path_completed++;
+        elseif ($u->student_path_status === 'in-progress') $stats->student_path_in_progress++;
+        
+        // Aggregate per user logic
+        // Active if any test is completed or in progress
+        if ($u->total_completed > 0 || $u->total_in_progress > 0) {
+            $stats->active_users++;
+        }
+        
+        if ($u->total_in_progress > 0) {
+            $stats->users_with_in_progress++;
+        }
+        
+        // Completed profile -> All 5 completely finished
+        if ($u->total_completed == 5) {
+            $stats->complete_profiles++;
+        }
+    }
+    
     $stats->chaside_not_started = $stats->total_users - ($stats->chaside_completed + $stats->chaside_in_progress);
-    $stats->chaside_percentage = $stats->total_users > 0 ? ($stats->chaside_completed / $stats->total_users) * 100 : 0;
-
-    // Learning Style
-    $stats->learning_style_completed = $get_count('learning_style', 1);
-    $stats->learning_style_in_progress = $get_count('learning_style', 0);
     $stats->learning_style_not_started = $stats->total_users - ($stats->learning_style_completed + $stats->learning_style_in_progress);
-    $stats->learning_style_percentage = $stats->total_users > 0 ? ($stats->learning_style_completed / $stats->total_users) * 100 : 0;
-
-    // Personality
-    $stats->personality_completed = $get_count('personality_test', 1);
-    $stats->personality_in_progress = $get_count('personality_test', 0);
     $stats->personality_not_started = $stats->total_users - ($stats->personality_completed + $stats->personality_in_progress);
-    $stats->personality_percentage = $stats->total_users > 0 ? ($stats->personality_completed / $stats->total_users) * 100 : 0;
-
-    // TMMS-24
-    $stats->tmms24_completed = $get_count('tmms_24', 1);
-    $stats->tmms24_in_progress = $get_count('tmms_24', 0);
     $stats->tmms24_not_started = $stats->total_users - ($stats->tmms24_completed + $stats->tmms24_in_progress);
-    $stats->tmms24_percentage = $stats->total_users > 0 ? ($stats->tmms24_completed / $stats->total_users) * 100 : 0;
-
-    // Student Path
-    $stats->student_path_completed = $get_count('block_student_path', 1);
-    $stats->student_path_in_progress = $get_count('block_student_path', 0);
     $stats->student_path_not_started = $stats->total_users - ($stats->student_path_completed + $stats->student_path_in_progress);
+    
+    $stats->chaside_percentage = $stats->total_users > 0 ? ($stats->chaside_completed / $stats->total_users) * 100 : 0;
+    $stats->learning_style_percentage = $stats->total_users > 0 ? ($stats->learning_style_completed / $stats->total_users) * 100 : 0;
+    $stats->personality_percentage = $stats->total_users > 0 ? ($stats->personality_completed / $stats->total_users) * 100 : 0;
+    $stats->tmms24_percentage = $stats->total_users > 0 ? ($stats->tmms24_completed / $stats->total_users) * 100 : 0;
     $stats->student_path_percentage = $stats->total_users > 0 ? ($stats->student_path_completed / $stats->total_users) * 100 : 0;
-
-    // 3. Aggregates
+    
+    // Aggregates over all tests
     $stats->total_completed = $stats->chaside_completed + $stats->learning_style_completed + 
                               $stats->personality_completed + $stats->tmms24_completed + 
                               $stats->student_path_completed;
-    
+                              
     $stats->total_in_progress = $stats->chaside_in_progress + $stats->learning_style_in_progress + 
                                 $stats->personality_in_progress + $stats->tmms24_in_progress + 
                                 $stats->student_path_in_progress;
-    
+                                
     $total_possible = $stats->total_users * 5;
     $stats->completion_percentage = $total_possible > 0 ? ($stats->total_completed / $total_possible) * 100 : 0;
-
-    // Active Users (started at least one)
-    $sql_active = "SELECT COUNT(DISTINCT u.id)
-         FROM {user} u
-         JOIN ($esql) eu ON u.id = eu.id
-         WHERE (
-             EXISTS (SELECT 1 FROM {block_chaside_responses} WHERE userid = u.id) OR
-             EXISTS (SELECT 1 FROM {learning_style} WHERE user = u.id) OR
-             EXISTS (SELECT 1 FROM {personality_test} WHERE user = u.id) OR
-             EXISTS (SELECT 1 FROM {tmms_24} WHERE user = u.id) OR
-             EXISTS (SELECT 1 FROM {block_student_path} WHERE user = u.id)
-         )";
-    $stats->active_users = $DB->count_records_sql($sql_active, $params);
+    
     $stats->participation_rate = $stats->total_users > 0 ? ($stats->active_users / $stats->total_users) * 100 : 0;
-
-    // Users with at least one test in progress
-    $sql_in_progress_users = "SELECT COUNT(DISTINCT u.id)
-         FROM {user} u
-         JOIN ($esql) eu ON u.id = eu.id
-         WHERE (
-             EXISTS (SELECT 1 FROM {block_chaside_responses} WHERE userid = u.id AND is_completed = 0) OR
-             EXISTS (SELECT 1 FROM {learning_style} WHERE user = u.id AND is_completed = 0) OR
-             EXISTS (SELECT 1 FROM {personality_test} WHERE user = u.id AND is_completed = 0) OR
-             EXISTS (SELECT 1 FROM {tmms_24} WHERE user = u.id AND is_completed = 0) OR
-             EXISTS (SELECT 1 FROM {block_student_path} WHERE user = u.id AND is_completed = 0)
-         )";
-    $stats->users_with_in_progress = $DB->count_records_sql($sql_in_progress_users, $params);
-
-    // Complete Profiles
-    $sql_complete = "SELECT COUNT(DISTINCT u.id)
-         FROM {user} u
-         JOIN ($esql) eu ON u.id = eu.id
-         WHERE EXISTS (SELECT 1 FROM {block_chaside_responses} WHERE userid = u.id AND is_completed = 1)
-         AND EXISTS (SELECT 1 FROM {learning_style} WHERE user = u.id AND is_completed = 1)
-         AND EXISTS (SELECT 1 FROM {personality_test} WHERE user = u.id AND is_completed = 1)
-         AND EXISTS (SELECT 1 FROM {tmms_24} WHERE user = u.id AND is_completed = 1)
-         AND EXISTS (SELECT 1 FROM {block_student_path} WHERE user = u.id)";
-    $stats->complete_profiles = $DB->count_records_sql($sql_complete, $params);
     $stats->complete_profiles_percentage = $stats->total_users > 0 ? ($stats->complete_profiles / $stats->total_users) * 100 : 0;
 
     return $stats;

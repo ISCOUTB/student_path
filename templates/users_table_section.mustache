@@ -6,7 +6,7 @@
         <div class="filter-controls">
             <select id="perPageSelector" class="filter-select" style="margin-right: 10px;" onchange="updatePerPage(this.value)">
                 {{#per_page_options}}
-                    <option value="{{url}}" {{#selected}}selected{{/selected}}>{{value}} / {{str_pag}}</option>
+                    <option value="{{value}}" {{#selected}}selected{{/selected}}>{{value}} / {{str_pag}}</option>
                 {{/per_page_options}}
             </select>
 
